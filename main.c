@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
 #include "bmp.h"
 #include "image_op.c"
 /*********************************************************/
@@ -25,6 +26,7 @@ unsigned char *color_b;
 /*  swap       ： swap 2 data pointer (BMPSaveData and BMPData)
 /*  **alloc_memory： dynamically allocate the 1D array data (sim. 2D)
 /*  split_structure : split the original structure to fit SSE
+/*  diff_in_second : calculate the time of execution
 /*********************************************************/
 int readBMP( char *fileName);
 int saveBMP( char *fileName);
@@ -33,12 +35,14 @@ RGBTRIPLE *alloc_memory( int Y, int X );
 void swap(RGBTRIPLE **a, RGBTRIPLE **b);
 void split_structure();
 void merge_structure(int merge_mode);
+static double diff_in_second(struct timespec t1, struct timespec t2);
 
 int main(int argc,char *argv[])
 {
   char *infileName = argv[1];
   char *outfileName = argv[2];
-
+  struct timespec start, end;
+  double cpu_time;
   // Load Data into BMPSaveData
   if ( readBMP( infileName) )
     printf("Read file successfully\n");
@@ -53,9 +57,20 @@ int main(int argc,char *argv[])
 #endif
   // =================== Main Operation to BMP data ===================== //
 #if GAUSSIAN==1
+  clock_gettime(CLOCK_REALTIME, &start);
   naive_gaussian_blur_5(color_r,bmpInfo.biWidth,bmpInfo.biHeight);
   naive_gaussian_blur_5(color_g,bmpInfo.biWidth,bmpInfo.biHeight);
   naive_gaussian_blur_5(color_b,bmpInfo.biWidth,bmpInfo.biHeight);
+  clock_gettime(CLOCK_REALTIME, &end);
+  cpu_time = diff_in_second(start, end);
+  printf("Gaussian blur[5x5][split structure], execution time : %f sec\n",cpu_time);
+#endif
+#if GAUSSIAN==2
+clock_gettime(CLOCK_REALTIME, &start);
+naive_gaussian_blur_5_original(BMPSaveData,bmpInfo.biWidth,bmpInfo.biHeight);
+clock_gettime(CLOCK_REALTIME, &end);
+cpu_time = diff_in_second(start, end);
+printf("Gaussian blur[5x5][original structure], execution time : %f sec\n",cpu_time);
 #endif
   // =================== Main Operation to BMP data ===================== //
 
@@ -72,6 +87,9 @@ int main(int argc,char *argv[])
   return 0;
 }
 
+/*********************************************************/
+/* split the original structure                          */
+/*********************************************************/
 void split_structure(){
   for(int i=0;i<bmpInfo.biHeight;i++){
     for(int j=0;j<bmpInfo.biWidth;j++){
@@ -82,6 +100,9 @@ void split_structure(){
   }
 }
 
+/*********************************************************/
+/* merge the original structure (with choosing filter)   */
+/*********************************************************/
 void merge_structure(int merge_mode){
   for(int i=0;i<bmpInfo.biHeight;i++){
     for(int j=0;j<bmpInfo.biWidth;j++){
@@ -189,4 +210,19 @@ void swap(RGBTRIPLE **a, RGBTRIPLE **b)
 	temp = *a;
 	*a = *b;
 	*b = temp;
+}
+/*********************************************************/
+/* calculate execution time                              */
+/*********************************************************/
+static double diff_in_second(struct timespec t1, struct timespec t2)
+{
+    struct timespec diff;
+    if (t2.tv_nsec-t1.tv_nsec < 0) {
+        diff.tv_sec  = t2.tv_sec - t1.tv_sec - 1;
+        diff.tv_nsec = t2.tv_nsec - t1.tv_nsec + 1000000000;
+    } else {
+        diff.tv_sec  = t2.tv_sec - t1.tv_sec;
+        diff.tv_nsec = t2.tv_nsec - t1.tv_nsec;
+    }
+    return (diff.tv_sec + diff.tv_nsec / 1000000000.0);
 }
