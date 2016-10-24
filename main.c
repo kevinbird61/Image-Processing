@@ -41,6 +41,7 @@ int main(int argc,char *argv[])
 {
     char *infileName = argv[1];
     char *outfileName = argv[2];
+    int execution_times = atoi(argv[3]);
     struct timespec start, end;
     double cpu_time;
     // Load Data into BMPSaveData
@@ -58,19 +59,22 @@ int main(int argc,char *argv[])
     // =================== Main Operation to BMP data ===================== //
 #if GAUSSIAN==1
     clock_gettime(CLOCK_REALTIME, &start);
-    naive_gaussian_blur_5(color_r,bmpInfo.biWidth,bmpInfo.biHeight);
-    naive_gaussian_blur_5(color_g,bmpInfo.biWidth,bmpInfo.biHeight);
-    naive_gaussian_blur_5(color_b,bmpInfo.biWidth,bmpInfo.biHeight);
+    for(int i=0; i<execution_times; i++) {
+        naive_gaussian_blur_5(color_r,bmpInfo.biWidth,bmpInfo.biHeight);
+        naive_gaussian_blur_5(color_g,bmpInfo.biWidth,bmpInfo.biHeight);
+        naive_gaussian_blur_5(color_b,bmpInfo.biWidth,bmpInfo.biHeight);
+    }
     clock_gettime(CLOCK_REALTIME, &end);
     cpu_time = diff_in_second(start, end);
-    printf("Gaussian blur[5x5][split structure], execution time : %f sec\n",cpu_time);
+    printf("Gaussian blur[5x5][split structure], execution time : %f sec , with %d times Gaussian blur\n",cpu_time,execution_times);
 #endif
 #if GAUSSIAN==2
     clock_gettime(CLOCK_REALTIME, &start);
-    naive_gaussian_blur_5_original(BMPSaveData,bmpInfo.biWidth,bmpInfo.biHeight);
+    for(int i=0; i<execution_times; i++)
+        naive_gaussian_blur_5_original(BMPSaveData,bmpInfo.biWidth,bmpInfo.biHeight);
     clock_gettime(CLOCK_REALTIME, &end);
     cpu_time = diff_in_second(start, end);
-    printf("Gaussian blur[5x5][original structure], execution time : %f sec\n",cpu_time);
+    printf("Gaussian blur[5x5][original structure], execution time : %f sec , with %d times Gaussian blur\n",cpu_time,execution_times);
 #endif
     // =================== Main Operation to BMP data ===================== //
 

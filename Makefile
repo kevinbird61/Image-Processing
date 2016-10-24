@@ -1,4 +1,4 @@
-TARGET:=bmpreader
+TARGET := bmpreader
 GIT_HOOKS := .git/hooks/pre-commit
 
 format:
@@ -17,8 +17,9 @@ gau_blur_ori: $(GIT_HOOKS) format
 	gcc main.c -DGAUSSIAN=2 -o $(TARGET)
 
 run:
-	# img/wf.bmp => has the 4 element(alpha value)
-	./$(TARGET) img/input.bmp output.bmp
+	@# img/wf.bmp => has the 4 element(alpha value)
+	@read -p "Enter the times you want to execute Gaussian blur on the input picture:" TIMES; \
+	./$(TARGET) img/input.bmp output.bmp $$TIMES
 	eog output.bmp
 
 $(GIT_HOOKS):
