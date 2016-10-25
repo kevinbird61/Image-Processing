@@ -1,24 +1,26 @@
+CC := gcc
+CFLAGS := -g --std gnu99 -O0
+SSEFLAGS := -msse2 -msse3 -msse4
 TARGET := bmpreader
-CFLAGS:= --std gnu99 
 GIT_HOOKS := .git/hooks/pre-commit
 
 format:
 	astyle --style=kr --indent=spaces=4 --indent-switches --suffix=none *.[ch]
 
-all: format
-	gcc $(CFLAGS) main.c -o $(TARGET)
-
 # Gaussian blur
 # 1: 5x5 with r,g	,b 3 array
 # 2: 5x5 with original structure
 gau_blur_tri: $(GIT_HOOKS) format
-	gcc $(CFLAGS) main.c -DSPLIT=7 -DGAUSSIAN=1 -o $(TARGET)
+	$(CC) $(CFLAGS) main.c -DSPLIT=7 -DGAUSSIAN=1 -o $(TARGET)
 
 gau_blur_ori: $(GIT_HOOKS) format
-	gcc $(CFLAGS) main.c -DGAUSSIAN=2 -o $(TARGET)
+	$(CC) $(CFLAGS) main.c -DGAUSSIAN=2 -o $(TARGET)
+
+gau_blur_sse_tri: $(GIT_HOOKS) format
+	$(CC) $(CFLAGS) $(SSEFLAGS) main.c -DGAUSSIAN=3 -o $(TARGET)
 
 run:
-	@# img/wf.bmp => has the 4 element(alpha value)
+	@ # img/wf.bmp => has the 4 element(alpha value)
 	@read -p "Enter the times you want to execute Gaussian blur on the input picture:" TIMES; \
 	./$(TARGET) img/input.bmp output.bmp $$TIMES
 	eog output.bmp
