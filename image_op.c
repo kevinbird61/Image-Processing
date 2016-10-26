@@ -10,13 +10,13 @@
 int deno33 = 16;
 int deno55 = 273;
 
-// Gaussian function #1
+// Gaussian kernel #1
 unsigned char gaussian33[9] = {
     1,2,1,
     2,4,2,
     1,2,1
 };
-// Gaussian function #2
+// Gaussian kernel #2
 unsigned char gaussian55[25] = {
     1,  4,  7,  4, 1,
     4, 16, 26, 16, 4,
@@ -31,6 +31,33 @@ unsigned char sse_g3[16] = { 7,0,26,0,41,0,26,0,7,0,0,0,0,0,0,0 };
 unsigned char sse_g4[16] = { 4,0,16,0,26,0,16,0,4,0,0,0,0,0,0,0 };
 unsigned char sse_g5[16] = { 1,0,4,0,7,0,4,0,1,0,0,0,0,0,0,0 };
 
+void unroll_gaussian_blur_5_tri(unsigned char *src,int w,int h)
+{
+    for(int j=2; j<h-2; j++) {
+        for(int i=2; i<w-2; i++) {
+            int sum = 0;
+            int index = 0;
+            // Unroll the 5x5 for loop
+            sum = src[(j-2)*w+(i-2)]*gaussian55[index++] + src[(j-2)*w+(i-1)]*gaussian55[index++]
+                  + src[(j-2)*w+(i)]*gaussian55[index++] + src[(j-2)*w+(i+1)]*gaussian55[index++]
+                  + src[(j-2)*w+(i+2)]*gaussian55[index++] + src[(j-1)*w+(i-2)]*gaussian55[index++]
+                  + src[(j-1)*w+(i-1)]*gaussian55[index++] + src[(j-1)*w+(i)]*gaussian55[index++]
+                  + src[(j-1)*w+(i+1)]*gaussian55[index++] + src[(j-1)*w+(i+2)]*gaussian55[index++]
+                  + src[(j)*w+(i-2)]*gaussian55[index++] + src[(j)*w+(i-1)]*gaussian55[index++]
+                  + src[(j)*w+(i)]*gaussian55[index++] + src[(j)*w+(i+1)]*gaussian55[index++]
+                  + src[(j)*w+(i+2)]*gaussian55[index++] + src[(j+1)*w+(i-2)]*gaussian55[index++]
+                  + src[(j+1)*w+(i-1)]*gaussian55[index++] + src[(j+1)*w+(i)]*gaussian55[index++]
+                  + src[(j+1)*w+(i+1)]*gaussian55[index++] + src[(j+1)*w+(i+2)]*gaussian55[index++]
+                  + src[(j+2)*w+(i-2)]*gaussian55[index++] + src[(j+2)*w+(i-1)]*gaussian55[index++]
+                  + src[(j+2)*w+(i)]*gaussian55[index++] + src[(j+2)*w+(i+1)]*gaussian55[index++]
+                  + src[(j+2)*w+(i+2)]*gaussian55[index++];
+
+            sum = ((sum / 273) > 255 ? 255 : sum/273);
+            src[j*w+i] = sum;
+        }
+    }
+}
+
 void sse_gaussian_blur_5_tri(unsigned char *src,int w,int h)
 {
     // const data
@@ -41,14 +68,14 @@ void sse_gaussian_blur_5_tri(unsigned char *src,int w,int h)
     const __m128i vg4 = _mm_loadu_si128((__m128i *)sse_g4);
     const __m128i vg5 = _mm_loadu_si128((__m128i *)sse_g5);
     // Operation to image
-    for(int i=0; i<w-16; i++) {
+    for(int i=0; i<w-16; i+=16) {
         for(int j=0; j<h-5; j++) {
             int sum = 0;
             int index = 0;
-            printf("%d\n",j);
             __m128i vsum = _mm_set1_epi8(0);
             // Load in data
-            __m128i L0 = _mm_loadu_si128((__m128i *)(src+(j+0)*w + i));
+            __m128i L0 = _mm_loadu_si128((__m128i *)(char *)(src));
+            /*__m128i L0 = _mm_loadu_si128((__m128i *)(src+(j+0)*w + i));
             __m128i L1 = _mm_loadu_si128((__m128i *)(src+(j+1)*w + i));
             __m128i L2 = _mm_loadu_si128((__m128i *)(src+(j+2)*w + i));
             __m128i L3 = _mm_loadu_si128((__m128i *)(src+(j+3)*w + i));
@@ -84,7 +111,7 @@ void sse_gaussian_blur_5_tri(unsigned char *src,int w,int h)
             sum /= deno55;
             if(sum > 255)
                 sum = 255;
-            src[j*w+i] = sum;
+            src[j*w+i] = sum;*/
         }
     }
 }

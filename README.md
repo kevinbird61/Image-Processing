@@ -6,6 +6,8 @@ Using image processing to test some interest expriment.
    - `naive_gaussian_blur_5`:implement gaussian blur with 5x5 weight matrix in 3 seperated color buffers
    - `naive_gaussian_blur_5_original`:implement gaussian blur with 5x5 weight matrix in original data structure
 - `main.c` : using #define macro to choose which code section should execute.
+- `Makefile` : using `-D` to do different implementation
+   - `GAUSSIAN` : doing gaussian blur , and using the value to switch mode. 
 
 # Run
 - `make` : get the original data structure (RGBTRIPLE) to operate.

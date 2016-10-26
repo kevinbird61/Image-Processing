@@ -76,6 +76,28 @@ int main(int argc,char *argv[])
     cpu_time = diff_in_second(start, end);
     printf("Gaussian blur[5x5][original structure], execution time : %f sec , with %d times Gaussian blur\n",cpu_time,execution_times);
 #endif
+#if GAUSSIAN==3
+    clock_gettime(CLOCK_REALTIME, &start);
+    for(int i=0; i<execution_times; i++) {
+        sse_gaussian_blur_5_tri(color_r,bmpInfo.biWidth,bmpInfo.biHeight);
+        sse_gaussian_blur_5_tri(color_g,bmpInfo.biWidth,bmpInfo.biHeight);
+        sse_gaussian_blur_5_tri(color_b,bmpInfo.biWidth,bmpInfo.biHeight);
+    }
+    clock_gettime(CLOCK_REALTIME, &end);
+    cpu_time = diff_in_second(start, end);
+    printf("Gaussian blur[5x5][sse split structure], execution time : %f sec , with %d times Gaussian blur\n",cpu_time,execution_times);
+#endif
+#if GAUSSIAN==4
+    clock_gettime(CLOCK_REALTIME, &start);
+    for(int i=0; i<execution_times; i++) {
+        unroll_gaussian_blur_5_tri(color_r,bmpInfo.biWidth,bmpInfo.biHeight);
+        unroll_gaussian_blur_5_tri(color_g,bmpInfo.biWidth,bmpInfo.biHeight);
+        unroll_gaussian_blur_5_tri(color_b,bmpInfo.biWidth,bmpInfo.biHeight);
+    }
+    clock_gettime(CLOCK_REALTIME, &end);
+    cpu_time = diff_in_second(start, end);
+    printf("Gaussian blur[5x5][unroll split structure], execution time : %f sec , with %d times Gaussian blur\n",cpu_time,execution_times);
+#endif
     // =================== Main Operation to BMP data ===================== //
 
 #ifdef SPLIT

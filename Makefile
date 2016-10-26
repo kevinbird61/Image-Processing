@@ -19,6 +19,9 @@ gau_blur_ori: $(GIT_HOOKS) format
 gau_blur_sse_tri: $(GIT_HOOKS) format
 	$(CC) $(CFLAGS) $(SSEFLAGS) main.c -DGAUSSIAN=3 -o $(TARGET)
 
+gau_blur_unr_tri: $(GIT_HOOKS) format
+	$(CC) $(CFLAGS) main.c -DSPLIT=7 -DGAUSSIAN=4 -o $(TARGET)
+
 run:
 	@ # img/wf.bmp => has the 4 element(alpha value)
 	@read -p "Enter the times you want to execute Gaussian blur on the input picture:" TIMES; \
