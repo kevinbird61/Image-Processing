@@ -58,6 +58,65 @@ void unroll_gaussian_blur_5_tri(unsigned char *src,int w,int h)
     }
 }
 
+void unroll_gaussian_blur_5_ori(RGBTRIPLE *src,int w,int h)
+{
+    for(int j=2; j<h-2; j++) {
+        for(int i=2; i<w-2; i++) {
+            int sum_r = 0,sum_g = 0,sum_b = 0;
+            int index = 0;
+            // Unroll the 5x5 for loop
+            sum_r = src[(j-2)*w+(i-2)].rgbRed*gaussian55[index++] + src[(j-2)*w+(i-1)].rgbRed*gaussian55[index++]
+                    + src[(j-2)*w+(i)].rgbRed*gaussian55[index++] + src[(j-2)*w+(i+1)].rgbRed*gaussian55[index++]
+                    + src[(j-2)*w+(i+2)].rgbRed*gaussian55[index++] + src[(j-1)*w+(i-2)].rgbRed*gaussian55[index++]
+                    + src[(j-1)*w+(i-1)].rgbRed*gaussian55[index++] + src[(j-1)*w+(i)].rgbRed*gaussian55[index++]
+                    + src[(j-1)*w+(i+1)].rgbRed*gaussian55[index++] + src[(j-1)*w+(i+2)].rgbRed*gaussian55[index++]
+                    + src[(j)*w+(i-2)].rgbRed*gaussian55[index++] + src[(j)*w+(i-1)].rgbRed*gaussian55[index++]
+                    + src[(j)*w+(i)].rgbRed*gaussian55[index++] + src[(j)*w+(i+1)].rgbRed*gaussian55[index++]
+                    + src[(j)*w+(i+2)].rgbRed*gaussian55[index++] + src[(j+1)*w+(i-2)].rgbRed*gaussian55[index++]
+                    + src[(j+1)*w+(i-1)].rgbRed*gaussian55[index++] + src[(j+1)*w+(i)].rgbRed*gaussian55[index++]
+                    + src[(j+1)*w+(i+1)].rgbRed*gaussian55[index++] + src[(j+1)*w+(i+2)].rgbRed*gaussian55[index++]
+                    + src[(j+2)*w+(i-2)].rgbRed*gaussian55[index++] + src[(j+2)*w+(i-1)].rgbRed*gaussian55[index++]
+                    + src[(j+2)*w+(i)].rgbRed*gaussian55[index++] + src[(j+2)*w+(i+1)].rgbRed*gaussian55[index++]
+                    + src[(j+2)*w+(i+2)].rgbRed*gaussian55[index++];
+            index=0;
+            sum_g = src[(j-2)*w+(i-2)].rgbGreen*gaussian55[index++] + src[(j-2)*w+(i-1)].rgbGreen*gaussian55[index++]
+                    + src[(j-2)*w+(i)].rgbGreen*gaussian55[index++] + src[(j-2)*w+(i+1)].rgbGreen*gaussian55[index++]
+                    + src[(j-2)*w+(i+2)].rgbGreen*gaussian55[index++] + src[(j-1)*w+(i-2)].rgbGreen*gaussian55[index++]
+                    + src[(j-1)*w+(i-1)].rgbGreen*gaussian55[index++] + src[(j-1)*w+(i)].rgbGreen*gaussian55[index++]
+                    + src[(j-1)*w+(i+1)].rgbGreen*gaussian55[index++] + src[(j-1)*w+(i+2)].rgbGreen*gaussian55[index++]
+                    + src[(j)*w+(i-2)].rgbGreen*gaussian55[index++] + src[(j)*w+(i-1)].rgbGreen*gaussian55[index++]
+                    + src[(j)*w+(i)].rgbGreen*gaussian55[index++] + src[(j)*w+(i+1)].rgbGreen*gaussian55[index++]
+                    + src[(j)*w+(i+2)].rgbGreen*gaussian55[index++] + src[(j+1)*w+(i-2)].rgbGreen*gaussian55[index++]
+                    + src[(j+1)*w+(i-1)].rgbGreen*gaussian55[index++] + src[(j+1)*w+(i)].rgbGreen*gaussian55[index++]
+                    + src[(j+1)*w+(i+1)].rgbGreen*gaussian55[index++] + src[(j+1)*w+(i+2)].rgbGreen*gaussian55[index++]
+                    + src[(j+2)*w+(i-2)].rgbGreen*gaussian55[index++] + src[(j+2)*w+(i-1)].rgbGreen*gaussian55[index++]
+                    + src[(j+2)*w+(i)].rgbGreen*gaussian55[index++] + src[(j+2)*w+(i+1)].rgbGreen*gaussian55[index++]
+                    + src[(j+2)*w+(i+2)].rgbGreen*gaussian55[index++];
+            index=0;
+            sum_b = src[(j-2)*w+(i-2)].rgbBlue*gaussian55[index++] + src[(j-2)*w+(i-1)].rgbBlue*gaussian55[index++]
+                    + src[(j-2)*w+(i)].rgbBlue*gaussian55[index++] + src[(j-2)*w+(i+1)].rgbBlue*gaussian55[index++]
+                    + src[(j-2)*w+(i+2)].rgbBlue*gaussian55[index++] + src[(j-1)*w+(i-2)].rgbBlue*gaussian55[index++]
+                    + src[(j-1)*w+(i-1)].rgbBlue*gaussian55[index++] + src[(j-1)*w+(i)].rgbBlue*gaussian55[index++]
+                    + src[(j-1)*w+(i+1)].rgbBlue*gaussian55[index++] + src[(j-1)*w+(i+2)].rgbBlue*gaussian55[index++]
+                    + src[(j)*w+(i-2)].rgbBlue*gaussian55[index++] + src[(j)*w+(i-1)].rgbBlue*gaussian55[index++]
+                    + src[(j)*w+(i)].rgbBlue*gaussian55[index++] + src[(j)*w+(i+1)].rgbBlue*gaussian55[index++]
+                    + src[(j)*w+(i+2)].rgbBlue*gaussian55[index++] + src[(j+1)*w+(i-2)].rgbBlue*gaussian55[index++]
+                    + src[(j+1)*w+(i-1)].rgbBlue*gaussian55[index++] + src[(j+1)*w+(i)].rgbBlue*gaussian55[index++]
+                    + src[(j+1)*w+(i+1)].rgbBlue*gaussian55[index++] + src[(j+1)*w+(i+2)].rgbBlue*gaussian55[index++]
+                    + src[(j+2)*w+(i-2)].rgbBlue*gaussian55[index++] + src[(j+2)*w+(i-1)].rgbBlue*gaussian55[index++]
+                    + src[(j+2)*w+(i)].rgbBlue*gaussian55[index++] + src[(j+2)*w+(i+1)].rgbBlue*gaussian55[index++]
+                    + src[(j+2)*w+(i+2)].rgbBlue*gaussian55[index++];
+
+            sum_r = ((sum_r / 273) > 255 ? 255 : sum_r/273);
+            sum_g = ((sum_g / 273) > 255 ? 255 : sum_g/273);
+            sum_b = ((sum_b / 273) > 255 ? 255 : sum_b/273);
+            src[j*w+i].rgbRed = sum_r;
+            src[j*w+i].rgbGreen = sum_g;
+            src[j*w+i].rgbBlue = sum_b;
+        }
+    }
+}
+
 void sse_gaussian_blur_5_tri(unsigned char *src,int w,int h)
 {
     // const data
@@ -68,14 +127,13 @@ void sse_gaussian_blur_5_tri(unsigned char *src,int w,int h)
     const __m128i vg4 = _mm_loadu_si128((__m128i *)sse_g4);
     const __m128i vg5 = _mm_loadu_si128((__m128i *)sse_g5);
     // Operation to image
-    for(int i=0; i<w-16; i+=16) {
+    for(int i=0; i<w-4; i++) {
         for(int j=0; j<h-5; j++) {
             int sum = 0;
             int index = 0;
             __m128i vsum = _mm_set1_epi8(0);
             // Load in data
-            __m128i L0 = _mm_loadu_si128((__m128i *)(char *)(src));
-            /*__m128i L0 = _mm_loadu_si128((__m128i *)(src+(j+0)*w + i));
+            __m128i L0 = _mm_loadu_si128((__m128i *)(src+(j+0)*w + i));
             __m128i L1 = _mm_loadu_si128((__m128i *)(src+(j+1)*w + i));
             __m128i L2 = _mm_loadu_si128((__m128i *)(src+(j+2)*w + i));
             __m128i L3 = _mm_loadu_si128((__m128i *)(src+(j+3)*w + i));
@@ -111,7 +169,7 @@ void sse_gaussian_blur_5_tri(unsigned char *src,int w,int h)
             sum /= deno55;
             if(sum > 255)
                 sum = 255;
-            src[j*w+i] = sum;*/
+            src[j*w+i] = sum;
         }
     }
 }
