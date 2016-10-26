@@ -127,11 +127,11 @@ void sse_gaussian_blur_5_tri(unsigned char *src,int w,int h)
     const __m128i vg4 = _mm_loadu_si128((__m128i *)sse_g4);
     const __m128i vg5 = _mm_loadu_si128((__m128i *)sse_g5);
     // Operation to image
-    for(int i=0; i<w-4; i++) {
+    for(int i=0; i<w-16; i++) {
         for(int j=0; j<h-5; j++) {
             int sum = 0;
             int index = 0;
-            __m128i vsum = _mm_set1_epi8(0);
+            __m128i vsum = _mm_set1_epi8(0),vtemplow = _mm_set1_epi8(0),vtemphigh = _mm_set1_epi8(0),vempty = _mm_set1_epi8(0);
             // Load in data
             __m128i L0 = _mm_loadu_si128((__m128i *)(src+(j+0)*w + i));
             __m128i L1 = _mm_loadu_si128((__m128i *)(src+(j+1)*w + i));
@@ -139,7 +139,7 @@ void sse_gaussian_blur_5_tri(unsigned char *src,int w,int h)
             __m128i L3 = _mm_loadu_si128((__m128i *)(src+(j+3)*w + i));
             __m128i L4 = _mm_loadu_si128((__m128i *)(src+(j+4)*w + i));
             // Get the data we need (5 element per-line) , because we only
-            // need 5 element from sse instruction set , so only get low part
+            // need 5 element from sse instruction set , so only get low part(contain 8 elements)
             __m128i v0 = _mm_unpacklo_epi8(L0,vk0);
             __m128i v1 = _mm_unpacklo_epi8(L1,vk0);
             __m128i v2 = _mm_unpacklo_epi8(L2,vk0);
@@ -158,13 +158,15 @@ void sse_gaussian_blur_5_tri(unsigned char *src,int w,int h)
             vsum = _mm_add_epi16(vsum,v3);
             vsum = _mm_add_epi16(vsum,v4);
             // Vsum summation
-            vsum = _mm_add_epi16(vsum,_mm_srli_si128(vsum, 2)); // sum = L0+L1
-            vsum = _mm_add_epi16(vsum,_mm_srli_si128(vsum, 4)); // L0+L1+L2
-            vsum = _mm_add_epi16(vsum,_mm_srli_si128(vsum, 6)); // L0+L1+L2+L3
-            vsum = _mm_add_epi16(vsum,_mm_srli_si128(vsum, 8)); // L0+L1+L2+L3+L4
-            // Get value
-            vsum = _mm_unpacklo_epi32(vsum,vk0);
-            sum = _mm_cvtsi128_si32(vsum);
+            // Summation all - (Summation all - (Summation with shift-off 5 number))
+            vtemplow = _mm_unpacklo_epi16(vsum,vempty); // 1,2,3,4
+            vtemphigh = _mm_unpackhi_epi16(vsum,vempty); // 5
+
+            sum += _mm_cvtsi128_si32(vtemplow); // get 1
+            sum += _mm_cvtsi128_si32(_mm_srli_si128(vtemplow,4)); // get 2
+            sum += _mm_cvtsi128_si32(_mm_srli_si128(vtemplow,8)); // get 3
+            sum += _mm_cvtsi128_si32(_mm_srli_si128(vtemplow,12)); // get 4
+            sum += _mm_cvtsi128_si32(vtemphigh); // get 5
 
             sum /= deno55;
             if(sum > 255)
