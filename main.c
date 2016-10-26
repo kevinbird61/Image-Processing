@@ -35,7 +35,7 @@ RGBTRIPLE fetchloc(RGBTRIPLE *arr, int Y, int X);
 RGBTRIPLE *alloc_memory( int Y, int X );
 void swap(RGBTRIPLE **a, RGBTRIPLE **b);
 void split_structure();
-void merge_structure(int merge_mode);
+void merge_structure();
 static double diff_in_second(struct timespec t1, struct timespec t2);
 
 int main(int argc,char *argv[])
@@ -68,6 +68,7 @@ int main(int argc,char *argv[])
     }
     clock_gettime(CLOCK_REALTIME, &end);
     cpu_time = diff_in_second(start, end);
+    merge_structure();
 #ifdef PERF
     printf("%f ",cpu_time);
 #else
@@ -99,6 +100,7 @@ int main(int argc,char *argv[])
     }
     clock_gettime(CLOCK_REALTIME, &end);
     cpu_time = diff_in_second(start, end);
+    merge_structure();
 #ifdef PERF
     printf("%f ",cpu_time);
 #else
@@ -118,6 +120,7 @@ int main(int argc,char *argv[])
     }
     clock_gettime(CLOCK_REALTIME, &end);
     cpu_time = diff_in_second(start, end);
+    merge_structure();
 #ifdef PERF
     printf("%f ",cpu_time);
 #else
@@ -138,10 +141,6 @@ int main(int argc,char *argv[])
 #endif
     printf("\n");
     // =================== Main Operation to BMP data ===================== //
-
-#ifdef SPLIT
-    merge_structure(SPLIT);
-#endif
 
     // Save Data into output file from BMPSaveData
     if ( saveBMP( outfileName ) ) {
@@ -172,13 +171,13 @@ void split_structure()
 /*********************************************************/
 /* merge the original structure (with choosing filter)   */
 /*********************************************************/
-void merge_structure(int merge_mode)
+void merge_structure()
 {
     for(int i=0; i<bmpInfo.biHeight; i++) {
         for(int j=0; j<bmpInfo.biWidth; j++) {
-            BMPSaveData[i*bmpInfo.biWidth+j].rgbRed = color_r[i*bmpInfo.biWidth+j]*(merge_mode & 1);
-            BMPSaveData[i*bmpInfo.biWidth+j].rgbGreen = color_g[i*bmpInfo.biWidth+j]*((merge_mode & 2)>>1);
-            BMPSaveData[i*bmpInfo.biWidth+j].rgbBlue = color_b[i*bmpInfo.biWidth+j]*((merge_mode & 4)>>2);
+            BMPSaveData[i*bmpInfo.biWidth+j].rgbRed = color_r[i*bmpInfo.biWidth+j];
+            BMPSaveData[i*bmpInfo.biWidth+j].rgbGreen = color_g[i*bmpInfo.biWidth+j];
+            BMPSaveData[i*bmpInfo.biWidth+j].rgbBlue = color_b[i*bmpInfo.biWidth+j];
         }
     }
 }
