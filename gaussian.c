@@ -1,29 +1,4 @@
-#ifndef IMAGE_OPERATION
-#define IMAGE_OPERATION
-
-#include <xmmintrin.h>
-#include <immintrin.h>
-#include <tmmintrin.h>
-#include <avxintrin.h>
-#include <emmintrin.h>
-
-int deno33 = 16;
-int deno55 = 273;
-
-// Gaussian kernel #1
-unsigned char gaussian33[9] = {
-    1,2,1,
-    2,4,2,
-    1,2,1
-};
-// Gaussian kernel #2
-unsigned char gaussian55[25] = {
-    1,  4,  7,  4, 1,
-    4, 16, 26, 16, 4,
-    7, 26, 41, 26, 7,
-    4, 16, 26, 16, 4,
-    1,  4,  7,  4, 1,
-};
+#include "gaussian.h"
 
 void unroll_gaussian_blur_5_tri(unsigned char *src,int w,int h)
 {
@@ -151,34 +126,6 @@ void naive_gaussian_blur_5_original(RGBTRIPLE *src,int w,int h)
     }
 }
 
-static void swap_pixel(RGBTRIPLE *a, RGBTRIPLE *b)
-{
-    RGBTRIPLE tmp;
-    tmp = *a;
-    *a = *b;
-    *b = tmp;
-}
-
-void naive_flip_vertical(RGBTRIPLE *src, int w, int h)
-{
-    int half_height = h / 2;
-    for(int i = 0; i < half_height; i++) {
-        for(int j = 0; j < w; j++) {
-            swap_pixel(&src[i*w+j], &src[(h-1-i)*w+j]);
-        }
-    }
-}
-
-void naive_flip_horizontal(RGBTRIPLE *src, int w, int h)
-{
-    int half_width = w / 2;
-    for(int i = 0; i < h; i++) {
-        for(int j = 0; j < half_width; j++) {
-            swap_pixel(&src[i*w+j], &src[i*w+w-j-1]);
-        }
-    }
-}
-
 void sse_gaussian_blur_5_tri(unsigned char *src,int w,int h)
 {
     // const data
@@ -244,4 +191,3 @@ void sse_gaussian_blur_5_tri(unsigned char *src,int w,int h)
         }
     }
 }
-#endif

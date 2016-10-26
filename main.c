@@ -2,8 +2,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include "gaussian.h"
 #include "bmp.h"
-#include "image_op.c"
+//#include "mirror.h"
 #define FILTER(a,b) a&b
 /*********************************************************/
 /*  Global variables declaration：                                             */
