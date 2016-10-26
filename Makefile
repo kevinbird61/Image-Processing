@@ -27,7 +27,7 @@ gau_blur_unr_tri: $(GIT_HOOKS) format
 gau_blur_unr_ori: $(GIT_HOOKS) format
 	$(CC) $(CFLAGS) main.c -DGAUSSIAN=16 -o $(TARGET)
 
-perf_time:
+perf_time: $(GIT_HOOKS) format
 	@ # All time output in one line
 	$(CC) $(CFLAGS) main.c -DPERF=1 -DSPLIT=7 -DGAUSSIAN=31 -o $(TARGET)
 	@read -p "Enter the times you want to execute Gaussian blur on the input picture:" TIMES; \
