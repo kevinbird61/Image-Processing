@@ -1,5 +1,58 @@
 #include "gaussian.h"
 
+void *thread_blur(void *arg)
+{
+    tInfo *info = arg;
+    // working range : 2 ~ w-2 ; 2 ~ h-2 (size : w-4 , h-4)
+    // calculate work load per thread (direction : col)
+    int workload = (info->height - 4) / info->total_thread_size;
+    for(int j=2+(workload)*(int)info->thread_id ; j < 2 + (workload)*((int)(info->thread_id)+1); j++) {
+        for(int i=2; i < info->width-2 ; i++) {
+            // do the image blur
+            int sum = 0;
+            int index = 0;
+            sum = global_src[(j-2)*info->width + i-2]*gaussian55[index++] + global_src[(j-2)*info->width + i-1]*gaussian55[index++]
+                  + global_src[(j-2)*info->width + i]*gaussian55[index++] + global_src[(j-2)*info->width + i+1]*gaussian55[index++]
+                  + global_src[(j-2)*info->width + i+2]*gaussian55[index++] + global_src[(j-1)*info->width + i-2]*gaussian55[index++]
+                  + global_src[(j-1)*info->width + i-1]*gaussian55[index++] + global_src[(j-1)*info->width + i]*gaussian55[index++]
+                  + global_src[(j-1)*info->width + i+1]*gaussian55[index++] + global_src[(j-1)*info->width + i+2]*gaussian55[index++]
+                  + global_src[(j)*info->width + i-2]*gaussian55[index++] + global_src[(j)*info->width + i-1]*gaussian55[index++]
+                  + global_src[(j)*info->width + i]*gaussian55[index++] + global_src[(j)*info->width + i+1]*gaussian55[index++]
+                  + global_src[(j)*info->width + i+2]*gaussian55[index++] + global_src[(j+1)*info->width + i-2]*gaussian55[index++]
+                  + global_src[(j+1)*info->width + i-1]*gaussian55[index++] + global_src[(j+1)*info->width + i]*gaussian55[index++]
+                  + global_src[(j+1)*info->width + i+1]*gaussian55[index++] + global_src[(j+1)*info->width + i+2]*gaussian55[index++]
+                  + global_src[(j+2)*info->width + i-2]*gaussian55[index++] + global_src[(j+2)*info->width + i-1]*gaussian55[index++]
+                  + global_src[(j+2)*info->width + i]*gaussian55[index++] + global_src[(j+2)*info->width + i+1]*gaussian55[index++]
+                  + global_src[(j+2)*info->width + i+2]*gaussian55[index++];
+            global_src[j*info->width + i] = ((sum / 273) > 255 ? 255 : sum/273);
+        }
+    }
+    return NULL;
+}
+
+void pt_gaussian_blur_5_tri(unsigned char *src,int num_threads,int w,int h)
+{
+    // calculate for width (For a pthread to go through)
+    pthread_t *thread_handler;
+    global_src = src;
+    /* Allocate memory for pthread_create() arguments */
+    thread_handler = malloc(num_threads*sizeof(pthread_t));
+
+    /* Create one thread for each command-line argument */
+    for(int tnum = 0; tnum < num_threads ; tnum++) {
+        tInfo *threadInfo = malloc(sizeof(tInfo));
+        threadInfo->thread_id = tnum;
+        threadInfo->total_thread_size = num_threads;
+        threadInfo->width = w;
+        threadInfo->height = h;
+        pthread_create(&thread_handler[tnum],NULL,thread_blur,(void *)threadInfo);
+    }
+    /* Now join with each thread */
+    for(int tnum = 0; tnum < num_threads ; tnum++) {
+        pthread_join(thread_handler[tnum],NULL);
+    }
+}
+
 void unroll_gaussian_blur_5_tri(unsigned char *src,int w,int h)
 {
     for(int j=2; j<h-2; j++) {
@@ -21,8 +74,7 @@ void unroll_gaussian_blur_5_tri(unsigned char *src,int w,int h)
                   + src[(j+2)*w+(i)]*gaussian55[index++] + src[(j+2)*w+(i+1)]*gaussian55[index++]
                   + src[(j+2)*w+(i+2)]*gaussian55[index++];
 
-            sum = ((sum / 273) > 255 ? 255 : sum/273);
-            src[j*w+i] = sum;
+            src[j*w+i] = ((sum / 273) > 255 ? 255 : sum/273);
         }
     }
 }

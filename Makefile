@@ -1,5 +1,6 @@
 CC := gcc
 CFLAGS := -msse2 -msse3 -msse4 --std gnu99 -O0
+PFLAGS := -lpthread
 OBJS := gaussian.o mirror.o
 TARGET := bmpreader
 GIT_HOOKS := .git/hooks/pre-commit
@@ -31,17 +32,22 @@ gau_blur_unr_tri: $(GIT_HOOKS) format main.c $(OBJS)
 gau_blur_unr_ori: $(GIT_HOOKS) format main.c $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -DGAUSSIAN=16 -o $(TARGET) main.c
 
+gau_blur_ptunr_tri: $(GIT_HOOKS) format main.c $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -DGAUSSIAN=32 -o $(TARGET) main.c $(PFLAGS)
+
 gau_all: $(GIT_HOOKS) format main.c $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -DPERF=1 -DGAUSSIAN=31 -o $(TARGET) main.c
+	$(CC) $(CFLAGS) $(OBJS) -DPERF=1 -DGAUSSIAN=63 -o $(TARGET) main.c $(PFLAGS)
 
 perf_time: gau_all
-	perf stat -r 10 -e cache-misses,cache-references \
-	./$(TARGET) img/input.bmp output.bmp 1 > exec_time.log
+	perf stat -r 100 -e cache-misses,cache-references \
+	./$(TARGET) img/input.bmp output.bmp 1 4 > exec_time.log
+	gnuplot scripts/plot_time.gp
 
 run:
 	@ # img/wf.bmp => has the 4 element(alpha value)
 	@read -p "Enter the times you want to execute Gaussian blur on the input picture:" TIMES; \
-	./$(TARGET) img/input.bmp output.bmp $$TIMES
+	read -p "Enter the thread number: " THREADS; \
+	./$(TARGET) img/input.bmp output.bmp $$TIMES $$THREADS
 	eog output.bmp
 
 $(GIT_HOOKS):

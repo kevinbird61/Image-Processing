@@ -43,7 +43,9 @@ int main(int argc,char *argv[])
 {
     char *infileName = argv[1];
     char *outfileName = argv[2];
-    int execution_times = atoi(argv[3]);
+    int execution_times = atoi(argv[3]),threadcount;
+    if(argc == 5)
+        threadcount = atoi(argv[4]);
     struct timespec start, end;
     double cpu_time;
     // Load Data into BMPSaveData
@@ -138,6 +140,26 @@ int main(int argc,char *argv[])
     printf("%f ",cpu_time);
 #else
     printf("Gaussian blur[5x5][unroll original structure], execution time : %f sec , with %d times Gaussian blur\n",cpu_time,execution_times);
+#endif
+#endif
+#if FILTER(GAUSSIAN,32)
+    color_r = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
+    color_g = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
+    color_b = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
+    split_structure();
+    clock_gettime(CLOCK_REALTIME, &start);
+    for(int i=0; i<execution_times; i++) {
+        pt_gaussian_blur_5_tri(color_r,threadcount,bmpInfo.biWidth,bmpInfo.biHeight);
+        pt_gaussian_blur_5_tri(color_g,threadcount,bmpInfo.biWidth,bmpInfo.biHeight);
+        pt_gaussian_blur_5_tri(color_b,threadcount,bmpInfo.biWidth,bmpInfo.biHeight);
+    }
+    clock_gettime(CLOCK_REALTIME, &end);
+    cpu_time = diff_in_second(start, end);
+    merge_structure();
+#ifdef PERF
+    printf("%f ",cpu_time);
+#else
+    printf("Gaussian blur[5x5][pthread unroll split structure], execution time : %f sec , with %d times Gaussian blur\n",cpu_time,execution_times);
 #endif
 #endif
     printf("\n");
