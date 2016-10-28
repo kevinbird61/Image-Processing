@@ -39,20 +39,18 @@ gau_all: $(GIT_HOOKS) format main.c $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -DPERF=1 -DGAUSSIAN=63 -o $(TARGET) main.c $(PFLAGS)
 
 perf_time: gau_all
+	@read -p "Enter the times you want to execute Gaussian blur on the input picture:" TIMES; \
+	read -p "Enter the thread number: " THREADS; \
 	perf stat -r 100 -e cache-misses,cache-references \
-	./$(TARGET) img/input.bmp output.bmp 1 4 > exec_time.log
+	./$(TARGET) img/input.bmp output.bmp $$TIMES $$THREADS > exec_time.log
 	gnuplot scripts/plot_time.gp
 
 run:
-	@ # img/wf.bmp => has the 4 element(alpha value)
-	@read -p "Enter the times you want to execute Gaussian blur on the input picture:" TIMES; \
-	read -p "Enter the thread number: " THREADS; \
-	./$(TARGET) img/input.bmp output.bmp $$TIMES $$THREADS
+	bash execute.sh $(TARGET) img/input.bmp output.bmp;
 	eog output.bmp
 
 $(GIT_HOOKS):
 	@scripts/install-git-hooks
-	@echo
 
 clean:
 	rm *output.bmp runtime.png $(TARGET) *.log *.o
