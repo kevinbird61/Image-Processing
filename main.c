@@ -160,9 +160,21 @@ int main(int argc,char *argv[])
     printf("%f ",cpu_time);
 #else
     printf("Gaussian blur[5x5][pthread unroll split structure], execution time : %f sec , with %d times Gaussian blur\n",cpu_time,execution_times);
+#endif
+#endif
+#if FILTER(GAUSSIAN,64)
+    clock_gettime(CLOCK_REALTIME, &start);
+    for(int i=0; i<execution_times; i++)
+        sse_gaussian_blur_5_ori(BMPSaveData,bmpInfo.biWidth,bmpInfo.biHeight);
+    clock_gettime(CLOCK_REALTIME, &end);
+    cpu_time = diff_in_second(start, end);
+#ifdef PERF
+    printf("%f ",cpu_time);
+#else
+    printf("Gaussian blur[5x5][sse original structure], execution time : %f sec , with %d times Gaussian blur\n",cpu_time,execution_times);
+#endif
+#endif
     printf("\n");
-#endif
-#endif
 
 #if FILTER(MIRROR,1)
     color_r = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
