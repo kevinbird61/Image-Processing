@@ -328,3 +328,93 @@ void sse_gaussian_blur_5_ori(RGBTRIPLE *src,int w,int h)
         }
     }
 }
+
+void sse_gaussian_blur_5_prefetch_ori(RGBTRIPLE *src,int w,int h)
+{
+    const __m128i vk0 = _mm_set1_epi8(0);
+    const unsigned char sse_g1_lo[16] = {1,0,1,0,1,0,4,0,4,0,4,0,7,0,7,0};
+    const unsigned char sse_g1_hi[16] = {7,0,4,0,4,0,4,0,1,0,1,0,1,0,0,0};
+    const unsigned char sse_g2_lo[16] = {4,0,4,0,4,0,16,0,16,0,16,0,26,0,26,0};
+    const unsigned char sse_g2_hi[16] = {26,0,16,0,16,0,16,0,4,0,4,0,4,0,0,0};
+    const unsigned char sse_g3_lo[16] = {7,0,7,0,7,0,26,0,26,0,26,0,41,0,41,0};
+    const unsigned char sse_g3_hi[16] = {41,0,26,0,26,0,26,0,7,0,7,0,7,0,0,0};
+    const unsigned char sse_g4_lo[16] = {4,0,4,0,4,0,16,0,16,0,16,0,26,0,26,0};
+    const unsigned char sse_g4_hi[16] = {26,0,16,0,16,0,16,0,4,0,4,0,4,0,0,0};
+    const unsigned char sse_g5_lo[16] = {1,0,1,0,1,0,4,0,4,0,4,0,7,0,7,0};
+    const unsigned char sse_g5_hi[16] = {7,0,4,0,4,0,4,0,1,0,1,0,1,0,0,0};
+    for(int i=0; i<(w-2); i++) {
+        for(int j=0; j<(h-2); j++) {
+            _mm_prefetch(src+(j + 16 + 0) *w + i, _MM_HINT_T0);
+            _mm_prefetch(src+(j + 16 + 1) *w + i, _MM_HINT_T0);
+            _mm_prefetch(src+(j + 16 + 2) *w + i, _MM_HINT_T0);
+            _mm_prefetch(src+(j + 16 + 3) *w + i, _MM_HINT_T0);
+            _mm_prefetch(src+(j + 16 + 4) *w + i, _MM_HINT_T0);
+            int sum_r = 0,sum_g = 0,sum_b = 0;
+            __m128i vg1lo = _mm_loadu_si128((__m128i *)sse_g1_lo);
+            __m128i vg1hi = _mm_loadu_si128((__m128i *)sse_g1_hi);
+            __m128i vg2lo = _mm_loadu_si128((__m128i *)sse_g2_lo);
+            __m128i vg2hi = _mm_loadu_si128((__m128i *)sse_g2_hi);
+            __m128i vg3lo = _mm_loadu_si128((__m128i *)sse_g3_lo);
+            __m128i vg3hi = _mm_loadu_si128((__m128i *)sse_g3_hi);
+            __m128i vg4lo = _mm_loadu_si128((__m128i *)sse_g4_lo);
+            __m128i vg4hi = _mm_loadu_si128((__m128i *)sse_g4_hi);
+            __m128i vg5lo = _mm_loadu_si128((__m128i *)sse_g5_lo);
+            __m128i vg5hi = _mm_loadu_si128((__m128i *)sse_g5_hi);
+
+            __m128i L0 = _mm_loadu_si128((__m128i *)(src+(j+0)*w + i));
+            __m128i L1 = _mm_loadu_si128((__m128i *)(src+(j+1)*w + i));
+            __m128i L2 = _mm_loadu_si128((__m128i *)(src+(j+2)*w + i));
+            __m128i L3 = _mm_loadu_si128((__m128i *)(src+(j+3)*w + i));
+            __m128i L4 = _mm_loadu_si128((__m128i *)(src+(j+4)*w + i));
+
+            __m128i v0lo = _mm_unpacklo_epi8(L0,vk0);
+            __m128i v0hi = _mm_unpackhi_epi8(L0,vk0);
+            __m128i v1lo = _mm_unpacklo_epi8(L1,vk0);
+            __m128i v1hi = _mm_unpackhi_epi8(L1,vk0);
+            __m128i v2lo = _mm_unpacklo_epi8(L2,vk0);
+            __m128i v2hi = _mm_unpackhi_epi8(L2,vk0);
+            __m128i v3lo = _mm_unpacklo_epi8(L3,vk0);
+            __m128i v3hi = _mm_unpackhi_epi8(L3,vk0);
+            __m128i v4lo = _mm_unpacklo_epi8(L4,vk0);
+            __m128i v4hi = _mm_unpackhi_epi8(L4,vk0);
+
+            v0lo = _mm_maddubs_epi16(v0lo,vg1lo);
+            v0hi = _mm_maddubs_epi16(v0hi,vg1hi);
+            v1lo = _mm_maddubs_epi16(v1lo,vg2lo);
+            v1hi = _mm_maddubs_epi16(v1hi,vg2hi);
+            v2lo = _mm_maddubs_epi16(v2lo,vg3lo);
+            v2hi = _mm_maddubs_epi16(v2hi,vg3hi);
+            v3lo = _mm_maddubs_epi16(v3lo,vg4lo);
+            v3hi = _mm_maddubs_epi16(v3hi,vg4hi);
+            v4lo = _mm_maddubs_epi16(v4lo,vg5lo);
+            v4hi = _mm_maddubs_epi16(v4hi,vg5hi);
+
+            __m128i vsumlo = _mm_set1_epi16(0),vsumhi = _mm_set1_epi16(0),vtemp_1 = _mm_set1_epi16(0),vtemp_2 = _mm_set1_epi16(0),vtemp_3 = _mm_set1_epi16(0),vtemp_4 = _mm_set1_epi16(0);
+            vsumlo = _mm_add_epi16(vsumlo,v0lo);
+            vsumhi = _mm_add_epi16(vsumhi,v0hi);
+            vsumlo = _mm_add_epi16(vsumlo,v1lo);
+            vsumhi = _mm_add_epi16(vsumhi,v1hi);
+            vsumlo = _mm_add_epi16(vsumlo,v2lo);
+            vsumhi = _mm_add_epi16(vsumhi,v2hi);
+            vsumlo = _mm_add_epi16(vsumlo,v3lo);
+            vsumhi = _mm_add_epi16(vsumhi,v3hi);
+            vsumlo = _mm_add_epi16(vsumlo,v4lo);
+            vsumhi = _mm_add_epi16(vsumhi,v4hi);
+
+            // Get each R,G,B
+            vtemp_1 = _mm_unpacklo_epi16(vsumlo,vk0);
+            vtemp_2 = _mm_unpackhi_epi16(vsumlo,vk0);
+            vtemp_3 = _mm_unpacklo_epi16(vsumhi,vk0);
+            vtemp_4 = _mm_unpackhi_epi16(vsumhi,vk0);
+
+            // Get sum
+            sum_b += _mm_cvtsi128_si32(vtemp_1) + _mm_cvtsi128_si32(_mm_srli_si128(vtemp_1,12)) + _mm_cvtsi128_si32(_mm_srli_si128(vtemp_2,8)) + _mm_cvtsi128_si32(_mm_srli_si128(vtemp_3,4)) + _mm_cvtsi128_si32(vtemp_4);
+            sum_g += _mm_cvtsi128_si32(_mm_srli_si128(vtemp_1,4)) + _mm_cvtsi128_si32(vtemp_2) + _mm_cvtsi128_si32(_mm_srli_si128(vtemp_2,12)) + _mm_cvtsi128_si32(_mm_srli_si128(vtemp_3,8)) + _mm_cvtsi128_si32(_mm_srli_si128(vtemp_4,4));
+            sum_r += _mm_cvtsi128_si32(_mm_srli_si128(vtemp_1,8)) + _mm_cvtsi128_si32(_mm_srli_si128(vtemp_2,4)) + _mm_cvtsi128_si32(vtemp_3) + _mm_cvtsi128_si32(_mm_srli_si128(vtemp_3,12)) + _mm_cvtsi128_si32(_mm_srli_si128(vtemp_4,8));
+
+            src[j*w+i].rgbRed = ((sum_r/273) > 255 ) ? 255 : sum_r/273 ;
+            src[j*w+i].rgbGreen = ((sum_g/273) > 255 ) ? 255 : sum_g/273 ;
+            src[j*w+i].rgbBlue = ((sum_b/273) > 255 ) ? 255 : sum_b/273 ;
+        }
+    }
+}
