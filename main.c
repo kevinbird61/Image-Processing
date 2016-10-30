@@ -160,9 +160,81 @@ int main(int argc,char *argv[])
     printf("%f ",cpu_time);
 #else
     printf("Gaussian blur[5x5][pthread unroll split structure], execution time : %f sec , with %d times Gaussian blur\n",cpu_time,execution_times);
-#endif
-#endif
     printf("\n");
+#endif
+#endif
+
+#if FILTER(MIRROR,1)
+    color_r = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
+    color_g = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
+    color_b = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
+    split_structure();
+    clock_gettime(CLOCK_REALTIME, &start);
+    naive_flip_vertical_ori(BMPSaveData,bmpInfo.biWidth,bmpInfo.biHeight);
+    clock_gettime(CLOCK_REALTIME, &end);
+    cpu_time = diff_in_second(start, end);
+    printf("flip vertical ori, execution time : %f sec\n", cpu_time);
+    clock_gettime(CLOCK_REALTIME, &start);
+    naive_flip_vertical_tri(color_r,bmpInfo.biWidth,bmpInfo.biHeight);
+    naive_flip_vertical_tri(color_g,bmpInfo.biWidth,bmpInfo.biHeight);
+    naive_flip_vertical_tri(color_b,bmpInfo.biWidth,bmpInfo.biHeight);
+    clock_gettime(CLOCK_REALTIME, &end);
+    cpu_time = diff_in_second(start, end);
+    printf("flip vertical tri, execution time : %f sec\n", cpu_time);
+    clock_gettime(CLOCK_REALTIME, &start);
+    omp_flip_vertical_tri(color_r,bmpInfo.biWidth,bmpInfo.biHeight);
+    omp_flip_vertical_tri(color_g,bmpInfo.biWidth,bmpInfo.biHeight);
+    omp_flip_vertical_tri(color_b,bmpInfo.biWidth,bmpInfo.biHeight);
+    clock_gettime(CLOCK_REALTIME, &end);
+    cpu_time = diff_in_second(start, end);
+    printf("omp flip vertical tri, execution time : %f sec\n", cpu_time);
+    clock_gettime(CLOCK_REALTIME, &start);
+    sse_flip_vertical_tri(color_r,bmpInfo.biWidth,bmpInfo.biHeight);
+    sse_flip_vertical_tri(color_g,bmpInfo.biWidth,bmpInfo.biHeight);
+    sse_flip_vertical_tri(color_b,bmpInfo.biWidth,bmpInfo.biHeight);
+    clock_gettime(CLOCK_REALTIME, &end);
+    cpu_time = diff_in_second(start, end);
+    printf("sse flip vertical tri, execution time : %f sec\n", cpu_time);
+    clock_gettime(CLOCK_REALTIME, &start);
+    naive_flip_horizontal_ori(BMPSaveData,bmpInfo.biWidth,bmpInfo.biHeight);
+    clock_gettime(CLOCK_REALTIME, &end);
+    cpu_time = diff_in_second(start, end);
+    printf("naive flip horizontal ori, execution time : %f sec\n", cpu_time);
+    clock_gettime(CLOCK_REALTIME, &start);
+    naive_flip_horizontal_tri(color_r,bmpInfo.biWidth,bmpInfo.biHeight);
+    naive_flip_horizontal_tri(color_g,bmpInfo.biWidth,bmpInfo.biHeight);
+    naive_flip_horizontal_tri(color_b,bmpInfo.biWidth,bmpInfo.biHeight);
+    clock_gettime(CLOCK_REALTIME, &end);
+    cpu_time = diff_in_second(start, end);
+    printf("naive flip horizontal tri, execution time : %f sec\n", cpu_time);
+    clock_gettime(CLOCK_REALTIME, &start);
+    sse_flip_horizontal_tri(color_r,bmpInfo.biWidth,bmpInfo.biHeight);
+    sse_flip_horizontal_tri(color_g,bmpInfo.biWidth,bmpInfo.biHeight);
+    sse_flip_horizontal_tri(color_b,bmpInfo.biWidth,bmpInfo.biHeight);
+    clock_gettime(CLOCK_REALTIME, &end);
+    cpu_time = diff_in_second(start, end);
+    printf("sse flip horizontal tri using, execution time : %f sec\n", cpu_time);
+    clock_gettime(CLOCK_REALTIME, &start);
+    omp_flip_horizontal_tri(color_r,bmpInfo.biWidth,bmpInfo.biHeight);
+    omp_flip_horizontal_tri(color_g,bmpInfo.biWidth,bmpInfo.biHeight);
+    omp_flip_horizontal_tri(color_b,bmpInfo.biWidth,bmpInfo.biHeight);
+    clock_gettime(CLOCK_REALTIME, &end);
+    cpu_time = diff_in_second(start, end);
+    printf("omp flip horizontal tri using, execution time : %f sec\n", cpu_time);
+    merge_structure();
+#endif
+#if FILTER(HSV,1)
+    clock_gettime(CLOCK_REALTIME, &start);
+    change_brightness(BMPSaveData, 1, bmpInfo.biWidth,bmpInfo.biHeight);
+    clock_gettime(CLOCK_REALTIME, &end);
+    cpu_time = diff_in_second(start, end);
+    printf("change brightness: %f sec\n", cpu_time);
+    clock_gettime(CLOCK_REALTIME, &start);
+    change_saturation(BMPSaveData, 0.5, bmpInfo.biWidth,bmpInfo.biHeight);
+    clock_gettime(CLOCK_REALTIME, &end);
+    cpu_time = diff_in_second(start, end);
+    printf("change saturation: %f sec\n", cpu_time);
+#endif
     // =================== Main Operation to BMP data ===================== //
 
     // Save Data into output file from BMPSaveData

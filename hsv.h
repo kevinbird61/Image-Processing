@@ -1,5 +1,5 @@
 #ifndef HSV
-#define HSV 
+#define HSV
 #include <stdlib.h>
 #include  "bmp.h"
 

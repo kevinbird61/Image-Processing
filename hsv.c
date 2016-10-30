@@ -21,7 +21,7 @@ static void find_min_max(RGBTRIPLE rgb, unsigned char *max, unsigned char *min)
 void rgb2hsv(const RGBTRIPLE *rgb, HSVTRIPLE *hsv, int w, int h)
 {
     int len = w * h;
-    for(int i = 0; i < len; i++){
+    for(int i = 0; i < len; i++) {
         unsigned char max, min;
         find_min_max(rgb[i], &max, &min);
         //calculate H
@@ -48,13 +48,13 @@ void rgb2hsv(const RGBTRIPLE *rgb, HSVTRIPLE *hsv, int w, int h)
 void hsv2rgb(RGBTRIPLE *rgb, HSVTRIPLE *hsv, int w, int h)
 {
     int len = w * h;
-    for(int i = 0; i < len; i++){
+    for(int i = 0; i < len; i++) {
         int hi = (int)(hsv[i].h / 60) % 6;
         float f = (hsv[i].h / 60) - hi;
         float p = hsv[i].v * (1 - hsv[i].s);
         float q = hsv[i].v * (1 - (f * hsv[i].s));
         float t = hsv[i].v * (1 - ((1 - f) * hsv[i].s));
-        switch(hi){
+        switch(hi) {
             case 0:
                 rgb[i].rgbRed = (unsigned char)(hsv[i].v * 255);
                 rgb[i].rgbGreen = (unsigned char)(t * 255);

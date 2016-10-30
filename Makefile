@@ -1,7 +1,7 @@
 CC := gcc
 CFLAGS := -msse2 -msse3 -msse4 --std gnu99 -O0
 PFLAGS := -lpthread
-OBJS := gaussian.o mirror.o
+OBJS := gaussian.o mirror.o hsv.o
 TARGET := bmpreader
 GIT_HOOKS := .git/hooks/pre-commit
 
@@ -37,6 +37,12 @@ gau_blur_ptunr_tri: $(GIT_HOOKS) format main.c $(OBJS)
 
 gau_all: $(GIT_HOOKS) format main.c $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -DPERF=1 -DGAUSSIAN=63 -o $(TARGET) main.c $(PFLAGS)
+
+mirror_all: $(GIT_HOOKS) format main.c $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -DGAUSSIAN=0 -DMIRROR=1 -DHSV=0 -o $(TARGET) main.c $(PFLAGS)
+
+hsv: $(GIT_HOOKS) format main.c $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -DGAUSSIAN=0 -DMIRROR=0 -DHSV=1 -o $(TARGET) main.c -fopenmp
 
 perf_time: gau_all
 	@read -p "Enter the times you want to execute Gaussian blur on the input picture:" TIMES; \
