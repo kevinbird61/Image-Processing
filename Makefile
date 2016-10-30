@@ -41,8 +41,11 @@ gau_blur_sse_ori: $(GIT_HOOKS) format main.c $(OBJS)
 gau_blur_sse_ori_prefetch: $(GIT_HOOKS) format main.c $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -DGAUSSIAN=128 -o $(TARGET) main.c $(PFLAGS)
 
+gau_blur_ptsse_ori: $(GIT_HOOKS) format main.c $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -DGAUSSIAN=256 -o $(TARGET) main.c $(PFLAGS)
+
 gau_all: $(GIT_HOOKS) format main.c $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -DPERF=1 -DGAUSSIAN=255 -o $(TARGET) main.c $(PFLAGS)
+	$(CC) $(CFLAGS) $(OBJS) -DPERF=1 -DGAUSSIAN=511 -o $(TARGET) main.c $(PFLAGS)
 
 mirror_all: $(GIT_HOOKS) format main.c $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -DGAUSSIAN=0 -DMIRROR=1 -DHSV=0 -o $(TARGET) main.c $(PFLAGS)

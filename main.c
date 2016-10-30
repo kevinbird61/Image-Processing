@@ -186,6 +186,18 @@ int main(int argc,char *argv[])
     printf("Gaussian blur[5x5][prefetch sse original structure], execution time : %f sec , with %d times Gaussian blur\n",cpu_time,execution_times);
 #endif
 #endif
+#if FILTER(GAUSSIAN,256)
+    clock_gettime(CLOCK_REALTIME, &start);
+    for(int i=0; i<execution_times; i++)
+        pt_sse_gaussian_blur_5_ori(BMPSaveData,threadcount,bmpInfo.biWidth,bmpInfo.biHeight);
+    clock_gettime(CLOCK_REALTIME, &end);
+    cpu_time = diff_in_second(start, end);
+#ifdef PERF
+    printf("%f ",cpu_time);
+#else
+    printf("Gaussian blur[5x5][sse pthread original structure], execution time : %f sec , with %d times Gaussian blur\n",cpu_time,execution_times);
+#endif
+#endif
     printf("\n");
 
 #if FILTER(MIRROR,1)

@@ -35,10 +35,10 @@ typedef struct thread_info {
     int total_thread_size; // count for total
     int width; // image width
     int height; // image height
-    unsigned char *image; // the original image
 } tInfo;
 
 unsigned char *global_src;
+RGBTRIPLE *global_src_ori;
 
 void unroll_gaussian_blur_5_tri(unsigned char *src,int w,int h);
 void unroll_gaussian_blur_5_ori(RGBTRIPLE *src,int w,int h);
@@ -48,5 +48,6 @@ void sse_gaussian_blur_5_tri(unsigned char *src,int w,int h);
 void sse_gaussian_blur_5_ori(RGBTRIPLE *src,int w,int h);
 void sse_gaussian_blur_5_prefetch_ori(RGBTRIPLE *src,int w,int h);
 void pt_gaussian_blur_5_tri(unsigned char *src,int num_threads,int w,int h);
+void pt_sse_gaussian_blur_5_ori(RGBTRIPLE *src,int num_threads,int w,int h);
 
 #endif
