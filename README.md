@@ -24,6 +24,9 @@ Using image processing to test some interest expriment.
    - `make gau_blur_sse_tri` : get the split data and do 5x5 gaussian blur implementation with SSE instruction set.
    - `make gau_blur_unr_tri` : get the split data and do 5x5 gaussian blur implementation with loop unrolling.
    - `gau_blur_unr_ori` :  get the original structure and do 5x5 gaussian blur implementation with loop unrolling.
+   - `sse_gaussian_blur_5_ori` : get the original structure and do do 5x5 gaussian blur implementation with sse.
+   - `sse_gaussian_blur_5_prefetch_ori` : get the original structure and do do 5x5 gaussian blur implementation with sse prefetch.
+   - `pt_sse_gaussian_blur_5_ori` : get the original structure and do do 5x5 gaussian blur implementation with pthread + sse.
    - `gau_all` : let all type of function be compile
 - Run/check performance:
    - `make run` : run the program and get and show the image.
