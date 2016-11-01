@@ -68,4 +68,4 @@ $(GIT_HOOKS):
 	@scripts/install-git-hooks
 
 clean:
-	rm *output.bmp runtime.png $(TARGET) *.log *.o
+	$(RM) *output.bmp runtime.png $(TARGET) *.log *.o
