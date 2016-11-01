@@ -28,7 +28,7 @@ unsigned char *color_b;
 /*  swap       ： swap 2 data pointer (BMPSaveData and BMPData)
 /*  **alloc_memory： dynamically allocate the 1D array data (sim. 2D)
 /*  split_structure : split the original structure to fit SSE
-/*  diff_in_second : calculate the time of execution
+/*  diff_in_millisecond : calculate the time of execution
 /*********************************************************/
 int readBMP( char *fileName);
 int saveBMP( char *fileName);
@@ -37,7 +37,7 @@ RGBTRIPLE *alloc_memory( int Y, int X );
 void swap(RGBTRIPLE **a, RGBTRIPLE **b);
 void split_structure();
 void merge_structure();
-static double diff_in_second(struct timespec t1, struct timespec t2);
+static double diff_in_millisecond(struct timespec t1, struct timespec t2);
 
 int main(int argc,char *argv[])
 {
@@ -70,12 +70,12 @@ int main(int argc,char *argv[])
         naive_gaussian_blur_5(color_b,bmpInfo.biWidth,bmpInfo.biHeight);
     }
     clock_gettime(CLOCK_REALTIME, &end);
-    cpu_time = diff_in_second(start, end);
+    cpu_time = diff_in_millisecond(start, end);
     merge_structure();
 #ifdef PERF
     printf("%f ",cpu_time);
 #else
-    printf("Gaussian blur[5x5][split structure], execution time : %f sec , with %d times Gaussian blur\n",cpu_time,execution_times);
+    printf("Gaussian blur[5x5][split structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
 #endif
 #endif
 #if FILTER(GAUSSIAN,2)
@@ -83,11 +83,11 @@ int main(int argc,char *argv[])
     for(int i=0; i<execution_times; i++)
         naive_gaussian_blur_5_original(BMPSaveData,bmpInfo.biWidth,bmpInfo.biHeight);
     clock_gettime(CLOCK_REALTIME, &end);
-    cpu_time = diff_in_second(start, end);
+    cpu_time = diff_in_millisecond(start, end);
 #ifdef PERF
     printf("%f ",cpu_time);
 #else
-    printf("Gaussian blur[5x5][original structure], execution time : %f sec , with %d times Gaussian blur\n",cpu_time,execution_times);
+    printf("Gaussian blur[5x5][original structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
 #endif
 #endif
 #if FILTER(GAUSSIAN,4)
@@ -102,12 +102,12 @@ int main(int argc,char *argv[])
         sse_gaussian_blur_5_tri(color_b,bmpInfo.biWidth,bmpInfo.biHeight);
     }
     clock_gettime(CLOCK_REALTIME, &end);
-    cpu_time = diff_in_second(start, end);
+    cpu_time = diff_in_millisecond(start, end);
     merge_structure();
 #ifdef PERF
     printf("%f ",cpu_time);
 #else
-    printf("Gaussian blur[5x5][sse split structure], execution time : %f sec , with %d times Gaussian blur\n",cpu_time,execution_times);
+    printf("Gaussian blur[5x5][sse split structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
 #endif
 #endif
 #if FILTER(GAUSSIAN,8)
@@ -122,12 +122,12 @@ int main(int argc,char *argv[])
         unroll_gaussian_blur_5_tri(color_b,bmpInfo.biWidth,bmpInfo.biHeight);
     }
     clock_gettime(CLOCK_REALTIME, &end);
-    cpu_time = diff_in_second(start, end);
+    cpu_time = diff_in_millisecond(start, end);
     merge_structure();
 #ifdef PERF
     printf("%f ",cpu_time);
 #else
-    printf("Gaussian blur[5x5][unroll split structure], execution time : %f sec , with %d times Gaussian blur\n",cpu_time,execution_times);
+    printf("Gaussian blur[5x5][unroll split structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
 #endif
 #endif
 #if FILTER(GAUSSIAN,16)
@@ -135,11 +135,11 @@ int main(int argc,char *argv[])
     for(int i=0; i<execution_times; i++)
         unroll_gaussian_blur_5_ori(BMPSaveData,bmpInfo.biWidth,bmpInfo.biHeight);
     clock_gettime(CLOCK_REALTIME, &end);
-    cpu_time = diff_in_second(start, end);
+    cpu_time = diff_in_millisecond(start, end);
 #ifdef PERF
     printf("%f ",cpu_time);
 #else
-    printf("Gaussian blur[5x5][unroll original structure], execution time : %f sec , with %d times Gaussian blur\n",cpu_time,execution_times);
+    printf("Gaussian blur[5x5][unroll original structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
 #endif
 #endif
 #if FILTER(GAUSSIAN,32)
@@ -154,12 +154,12 @@ int main(int argc,char *argv[])
         pt_gaussian_blur_5_tri(color_b,threadcount,bmpInfo.biWidth,bmpInfo.biHeight);
     }
     clock_gettime(CLOCK_REALTIME, &end);
-    cpu_time = diff_in_second(start, end);
+    cpu_time = diff_in_millisecond(start, end);
     merge_structure();
 #ifdef PERF
     printf("%f ",cpu_time);
 #else
-    printf("Gaussian blur[5x5][pthread unroll split structure], execution time : %f sec , with %d times Gaussian blur\n",cpu_time,execution_times);
+    printf("Gaussian blur[5x5][pthread unroll split structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
 #endif
 #endif
 #if FILTER(GAUSSIAN,64)
@@ -167,11 +167,11 @@ int main(int argc,char *argv[])
     for(int i=0; i<execution_times; i++)
         sse_gaussian_blur_5_ori(BMPSaveData,bmpInfo.biWidth,bmpInfo.biHeight);
     clock_gettime(CLOCK_REALTIME, &end);
-    cpu_time = diff_in_second(start, end);
+    cpu_time = diff_in_millisecond(start, end);
 #ifdef PERF
     printf("%f ",cpu_time);
 #else
-    printf("Gaussian blur[5x5][sse original structure], execution time : %f sec , with %d times Gaussian blur\n",cpu_time,execution_times);
+    printf("Gaussian blur[5x5][sse original structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
 #endif
 #endif
 #if FILTER(GAUSSIAN,128)
@@ -179,11 +179,11 @@ int main(int argc,char *argv[])
     for(int i=0; i<execution_times; i++)
         sse_gaussian_blur_5_prefetch_ori(BMPSaveData,bmpInfo.biWidth,bmpInfo.biHeight);
     clock_gettime(CLOCK_REALTIME, &end);
-    cpu_time = diff_in_second(start, end);
+    cpu_time = diff_in_millisecond(start, end);
 #ifdef PERF
     printf("%f ",cpu_time);
 #else
-    printf("Gaussian blur[5x5][prefetch sse original structure], execution time : %f sec , with %d times Gaussian blur\n",cpu_time,execution_times);
+    printf("Gaussian blur[5x5][prefetch sse original structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
 #endif
 #endif
 #if FILTER(GAUSSIAN,256)
@@ -191,11 +191,11 @@ int main(int argc,char *argv[])
     for(int i=0; i<execution_times; i++)
         pt_sse_gaussian_blur_5_ori(BMPSaveData,threadcount,bmpInfo.biWidth,bmpInfo.biHeight);
     clock_gettime(CLOCK_REALTIME, &end);
-    cpu_time = diff_in_second(start, end);
+    cpu_time = diff_in_millisecond(start, end);
 #ifdef PERF
     printf("%f ",cpu_time);
 #else
-    printf("Gaussian blur[5x5][sse pthread original structure], execution time : %f sec , with %d times Gaussian blur\n",cpu_time,execution_times);
+    printf("Gaussian blur[5x5][sse pthread original structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
 #endif
 #endif
     printf("\n");
@@ -208,68 +208,68 @@ int main(int argc,char *argv[])
     clock_gettime(CLOCK_REALTIME, &start);
     naive_flip_vertical_ori(BMPSaveData,bmpInfo.biWidth,bmpInfo.biHeight);
     clock_gettime(CLOCK_REALTIME, &end);
-    cpu_time = diff_in_second(start, end);
-    printf("flip vertical ori, execution time : %f sec\n", cpu_time);
+    cpu_time = diff_in_millisecond(start, end);
+    printf("flip vertical ori, execution time : %f ms\n", cpu_time);
     clock_gettime(CLOCK_REALTIME, &start);
     naive_flip_vertical_tri(color_r,bmpInfo.biWidth,bmpInfo.biHeight);
     naive_flip_vertical_tri(color_g,bmpInfo.biWidth,bmpInfo.biHeight);
     naive_flip_vertical_tri(color_b,bmpInfo.biWidth,bmpInfo.biHeight);
     clock_gettime(CLOCK_REALTIME, &end);
-    cpu_time = diff_in_second(start, end);
-    printf("flip vertical tri, execution time : %f sec\n", cpu_time);
+    cpu_time = diff_in_millisecond(start, end);
+    printf("flip vertical tri, execution time : %f ms\n", cpu_time);
     clock_gettime(CLOCK_REALTIME, &start);
     omp_flip_vertical_tri(color_r,bmpInfo.biWidth,bmpInfo.biHeight);
     omp_flip_vertical_tri(color_g,bmpInfo.biWidth,bmpInfo.biHeight);
     omp_flip_vertical_tri(color_b,bmpInfo.biWidth,bmpInfo.biHeight);
     clock_gettime(CLOCK_REALTIME, &end);
-    cpu_time = diff_in_second(start, end);
-    printf("omp flip vertical tri, execution time : %f sec\n", cpu_time);
+    cpu_time = diff_in_millisecond(start, end);
+    printf("omp flip vertical tri, execution time : %f ms\n", cpu_time);
     clock_gettime(CLOCK_REALTIME, &start);
     sse_flip_vertical_tri(color_r,bmpInfo.biWidth,bmpInfo.biHeight);
     sse_flip_vertical_tri(color_g,bmpInfo.biWidth,bmpInfo.biHeight);
     sse_flip_vertical_tri(color_b,bmpInfo.biWidth,bmpInfo.biHeight);
     clock_gettime(CLOCK_REALTIME, &end);
-    cpu_time = diff_in_second(start, end);
-    printf("sse flip vertical tri, execution time : %f sec\n", cpu_time);
+    cpu_time = diff_in_millisecond(start, end);
+    printf("sse flip vertical tri, execution time : %f ms\n", cpu_time);
     clock_gettime(CLOCK_REALTIME, &start);
     naive_flip_horizontal_ori(BMPSaveData,bmpInfo.biWidth,bmpInfo.biHeight);
     clock_gettime(CLOCK_REALTIME, &end);
-    cpu_time = diff_in_second(start, end);
-    printf("naive flip horizontal ori, execution time : %f sec\n", cpu_time);
+    cpu_time = diff_in_millisecond(start, end);
+    printf("naive flip horizontal ori, execution time : %f ms\n", cpu_time);
     clock_gettime(CLOCK_REALTIME, &start);
     naive_flip_horizontal_tri(color_r,bmpInfo.biWidth,bmpInfo.biHeight);
     naive_flip_horizontal_tri(color_g,bmpInfo.biWidth,bmpInfo.biHeight);
     naive_flip_horizontal_tri(color_b,bmpInfo.biWidth,bmpInfo.biHeight);
     clock_gettime(CLOCK_REALTIME, &end);
-    cpu_time = diff_in_second(start, end);
-    printf("naive flip horizontal tri, execution time : %f sec\n", cpu_time);
+    cpu_time = diff_in_millisecond(start, end);
+    printf("naive flip horizontal tri, execution time : %f ms\n", cpu_time);
     clock_gettime(CLOCK_REALTIME, &start);
     sse_flip_horizontal_tri(color_r,bmpInfo.biWidth,bmpInfo.biHeight);
     sse_flip_horizontal_tri(color_g,bmpInfo.biWidth,bmpInfo.biHeight);
     sse_flip_horizontal_tri(color_b,bmpInfo.biWidth,bmpInfo.biHeight);
     clock_gettime(CLOCK_REALTIME, &end);
-    cpu_time = diff_in_second(start, end);
-    printf("sse flip horizontal tri using, execution time : %f sec\n", cpu_time);
+    cpu_time = diff_in_millisecond(start, end);
+    printf("sse flip horizontal tri using, execution time : %f ms\n", cpu_time);
     clock_gettime(CLOCK_REALTIME, &start);
     omp_flip_horizontal_tri(color_r,bmpInfo.biWidth,bmpInfo.biHeight);
     omp_flip_horizontal_tri(color_g,bmpInfo.biWidth,bmpInfo.biHeight);
     omp_flip_horizontal_tri(color_b,bmpInfo.biWidth,bmpInfo.biHeight);
     clock_gettime(CLOCK_REALTIME, &end);
-    cpu_time = diff_in_second(start, end);
-    printf("omp flip horizontal tri using, execution time : %f sec\n", cpu_time);
+    cpu_time = diff_in_millisecond(start, end);
+    printf("omp flip horizontal tri using, execution time : %f ms\n", cpu_time);
     merge_structure();
 #endif
 #if FILTER(HSV,1)
     clock_gettime(CLOCK_REALTIME, &start);
     change_brightness(BMPSaveData, 1, bmpInfo.biWidth,bmpInfo.biHeight);
     clock_gettime(CLOCK_REALTIME, &end);
-    cpu_time = diff_in_second(start, end);
-    printf("change brightness: %f sec\n", cpu_time);
+    cpu_time = diff_in_millisecond(start, end);
+    printf("change brightness: %f ms\n", cpu_time);
     clock_gettime(CLOCK_REALTIME, &start);
     change_saturation(BMPSaveData, 0.5, bmpInfo.biWidth,bmpInfo.biHeight);
     clock_gettime(CLOCK_REALTIME, &end);
-    cpu_time = diff_in_second(start, end);
-    printf("change saturation: %f sec\n", cpu_time);
+    cpu_time = diff_in_millisecond(start, end);
+    printf("change saturation: %f ms\n", cpu_time);
 #endif
     // =================== Main Operation to BMP data ===================== //
 
@@ -417,7 +417,7 @@ void swap(RGBTRIPLE **a, RGBTRIPLE **b)
 /*********************************************************/
 /* calculate execution time                              */
 /*********************************************************/
-static double diff_in_second(struct timespec t1, struct timespec t2)
+static double diff_in_millisecond(struct timespec t1, struct timespec t2)
 {
     struct timespec diff;
     if (t2.tv_nsec-t1.tv_nsec < 0) {
@@ -427,5 +427,5 @@ static double diff_in_second(struct timespec t1, struct timespec t2)
         diff.tv_sec  = t2.tv_sec - t1.tv_sec;
         diff.tv_nsec = t2.tv_nsec - t1.tv_nsec;
     }
-    return (diff.tv_sec + diff.tv_nsec / 1000000000.0);
+    return (diff.tv_sec + diff.tv_nsec / 1000000.0);
 }
