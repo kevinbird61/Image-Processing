@@ -38,6 +38,18 @@ void swap(RGBTRIPLE **a, RGBTRIPLE **b);
 void split_structure();
 void merge_structure();
 static double diff_in_millisecond(struct timespec t1, struct timespec t2);
+// Gaussian - header , fixing lots of warning
+void unroll_gaussian_blur_5_tri(unsigned char *src,int w,int h);
+void unroll_gaussian_blur_5_ori(RGBTRIPLE *src,int w,int h);
+void naive_gaussian_blur_5(unsigned char *src,int w,int h);
+void naive_gaussian_blur_5_original(RGBTRIPLE *src,int w,int h);
+void sse_gaussian_blur_5_tri(unsigned char *src,int w,int h);
+void sse_gaussian_blur_5_ori(RGBTRIPLE *src,int w,int h);
+void sse_gaussian_blur_5_prefetch_ori(RGBTRIPLE *src,int w,int h);
+void pt_gaussian_blur_5_tri(unsigned char *src,int num_threads,int w,int h);
+void pt_sse_gaussian_blur_5_ori(RGBTRIPLE *src,int num_threads,int w,int h);
+
+
 
 int main(int argc,char *argv[])
 {
