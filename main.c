@@ -79,6 +79,9 @@ int main(int argc,char *argv[])
     clock_gettime(CLOCK_REALTIME, &end);
     cpu_time = diff_in_millisecond(start, end);
     merge_structure();
+    free(color_r);
+    free(color_b);
+    free(color_g);
 #ifdef PERF
     printf("%f ",cpu_time);
 #else
@@ -107,6 +110,9 @@ int main(int argc,char *argv[])
     clock_gettime(CLOCK_REALTIME, &end);
     cpu_time = diff_in_millisecond(start, end);
     merge_structure();
+    free(color_r);
+    free(color_b);
+    free(color_g);
 #ifdef PERF
     printf("%f ",cpu_time);
 #else
@@ -125,6 +131,9 @@ int main(int argc,char *argv[])
     clock_gettime(CLOCK_REALTIME, &end);
     cpu_time = diff_in_millisecond(start, end);
     merge_structure();
+    free(color_r);
+    free(color_b);
+    free(color_g);
 #ifdef PERF
     printf("%f ",cpu_time);
 #else
@@ -153,6 +162,9 @@ int main(int argc,char *argv[])
     clock_gettime(CLOCK_REALTIME, &end);
     cpu_time = diff_in_millisecond(start, end);
     merge_structure();
+    free(color_r);
+    free(color_b);
+    free(color_g);
 #ifdef PERF
     printf("%f ",cpu_time);
 #else
@@ -249,6 +261,9 @@ int main(int argc,char *argv[])
     cpu_time = diff_in_millisecond(start, end);
     printf("omp flip horizontal tri using, execution time : %f ms\n", cpu_time);
     merge_structure();
+    free(color_r);
+    free(color_b);
+    free(color_g);
 #endif
 #if FILTER(HSV,1)
     clock_gettime(CLOCK_REALTIME, &start);

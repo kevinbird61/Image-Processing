@@ -139,6 +139,7 @@ void pt_gaussian_blur_5_tri(unsigned char *src,int num_threads,int w,int h)
     for(int tnum = 0; tnum < num_threads ; tnum++) {
         pthread_join(thread_handler[tnum],NULL);
     }
+    free(thread_handler);
 }
 
 void pt_sse_gaussian_blur_5_ori(RGBTRIPLE *src,int num_threads,int w,int h)
@@ -159,6 +160,7 @@ void pt_sse_gaussian_blur_5_ori(RGBTRIPLE *src,int num_threads,int w,int h)
     for(int tnum = 0; tnum < num_threads ; tnum++) {
         pthread_join(thread_handler[tnum],NULL);
     }
+    free(thread_handler);
 }
 
 void unroll_gaussian_blur_5_tri(unsigned char *src,int w,int h)

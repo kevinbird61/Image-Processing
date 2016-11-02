@@ -96,6 +96,7 @@ void change_brightness(RGBTRIPLE *src, float brightness, int w, int h)
     for(int i = 0; i < w * h; i++)
         hsv[i].v = (brightness * hsv[i].v > 1 ? 1 : brightness * hsv[i].v);
     hsv2rgb(src, hsv, w, h);
+    free(hsv);
 }
 
 void change_saturation(RGBTRIPLE *src, float saturation, int w, int h)
@@ -105,5 +106,5 @@ void change_saturation(RGBTRIPLE *src, float saturation, int w, int h)
     for(int i = 0; i < w * h; i++)
         hsv[i].s = (saturation * hsv[i].s > 1 ? 1 : saturation * hsv[i].s);
     hsv2rgb(src, hsv, w, h);
+    free(hsv);
 }
-
