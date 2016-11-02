@@ -18,16 +18,10 @@ Using image processing to test some interest expriment.
 
 # Run
 - `make` : get the original data structure (RGBTRIPLE) to operate.
-- Individual mode:
-   - `make gau_blur_tri` : get the split data and do 5x5 gaussian blur implementation.
-   - `make gau_blur_ori` : get the original structure and do 5x5 gaussian blur implementation.
-   - `make gau_blur_sse_tri` : get the split data and do 5x5 gaussian blur implementation with SSE instruction set.
-   - `make gau_blur_unr_tri` : get the split data and do 5x5 gaussian blur implementation with loop unrolling.
-   - `gau_blur_unr_ori` :  get the original structure and do 5x5 gaussian blur implementation with loop unrolling.
-   - `sse_gaussian_blur_5_ori` : get the original structure and do do 5x5 gaussian blur implementation with sse.
-   - `sse_gaussian_blur_5_prefetch_ori` : get the original structure and do do 5x5 gaussian blur implementation with sse prefetch.
-   - `pt_sse_gaussian_blur_5_ori` : get the original structure and do do 5x5 gaussian blur implementation with pthread + sse.
-   - `gau_all` : let all type of function be compile
+- Function mode:
+   - `gau_all` : run all types of gaussian blur functions on image.
+   - `mirror_all` : run all types of mirror functions on image.
+   - `hsv` : run all types of hsv functions on image.
 - Run/check performance:
    - `make run` : run the program and get and show the image.
    - `make perf_time` : run the program with all function execution, and output the execution times.

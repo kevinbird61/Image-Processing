@@ -4,15 +4,14 @@
 #include <time.h>
 #include "gaussian.h"
 #include "bmp.h"
-//#include "mirror.h"
+#include "mirror.h"
+#include "hsv.h"
 #define FILTER(a,b) a&b
-/*********************************************************/
-/*  Global variables declaration：                                             */
-/*  bmpHeader    ： BMP's header part
-/*  bmpInfo      ： BMP's file infomation
-/*  **BMPSaveData： BMP's data , which will be store into output
-/*  **BMPData    ： BMP's temperary data storage
-/*********************************************************/
+//  Global variables declaration：                                             */
+//  bmpHeader    ： BMP's header part
+//  bmpInfo      ： BMP's file infomation
+//  **BMPSaveData： BMP's data , which will be store into output
+//  **BMPData    ： BMP's temperary data storage
 BMPHEADER bmpHeader;
 BMPINFO bmpInfo;
 RGBTRIPLE *BMPSaveData = NULL;
@@ -20,16 +19,14 @@ RGBTRIPLE *BMPData = NULL;
 unsigned char *color_r;
 unsigned char *color_g;
 unsigned char *color_b;
-/*********************************************************/
-/* Function declaration：
-/*  readBMP    ： read the source bmp data , and store data into BMPSaveData
-/*  saveBMP    ： write the BMPSaveData into output file , which is also .bmp
-/*  fetchloc   :  get the element which is on (X,Y)
-/*  swap       ： swap 2 data pointer (BMPSaveData and BMPData)
-/*  **alloc_memory： dynamically allocate the 1D array data (sim. 2D)
-/*  split_structure : split the original structure to fit SSE
-/*  diff_in_millisecond : calculate the time of execution
-/*********************************************************/
+// Function declaration：
+//  readBMP    ： read the source bmp data , and store data into BMPSaveData
+//  saveBMP    ： write the BMPSaveData into output file , which is also .bmp
+//  fetchloc   :  get the element which is on (X,Y)
+//  swap       ： swap 2 data pointer (BMPSaveData and BMPData)
+//  **alloc_memory： dynamically allocate the 1D array data (sim. 2D)
+//  split_structure : split the original structure to fit SSE
+//  diff_in_millisecond : calculate the time of execution
 int readBMP( char *fileName);
 int saveBMP( char *fileName);
 RGBTRIPLE fetchloc(RGBTRIPLE *arr, int Y, int X);
@@ -48,8 +45,6 @@ void sse_gaussian_blur_5_ori(RGBTRIPLE *src,int w,int h);
 void sse_gaussian_blur_5_prefetch_ori(RGBTRIPLE *src,int w,int h);
 void pt_gaussian_blur_5_tri(unsigned char *src,int num_threads,int w,int h);
 void pt_sse_gaussian_blur_5_ori(RGBTRIPLE *src,int num_threads,int w,int h);
-
-
 
 int main(int argc,char *argv[])
 {
@@ -89,8 +84,6 @@ int main(int argc,char *argv[])
 #else
     printf("Gaussian blur[5x5][split structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
 #endif
-#endif
-#if FILTER(GAUSSIAN,2)
     clock_gettime(CLOCK_REALTIME, &start);
     for(int i=0; i<execution_times; i++)
         naive_gaussian_blur_5_original(BMPSaveData,bmpInfo.biWidth,bmpInfo.biHeight);
@@ -101,8 +94,6 @@ int main(int argc,char *argv[])
 #else
     printf("Gaussian blur[5x5][original structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
 #endif
-#endif
-#if FILTER(GAUSSIAN,4)
     color_r = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
     color_g = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
     color_b = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
@@ -121,8 +112,6 @@ int main(int argc,char *argv[])
 #else
     printf("Gaussian blur[5x5][sse split structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
 #endif
-#endif
-#if FILTER(GAUSSIAN,8)
     color_r = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
     color_g = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
     color_b = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
@@ -141,8 +130,6 @@ int main(int argc,char *argv[])
 #else
     printf("Gaussian blur[5x5][unroll split structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
 #endif
-#endif
-#if FILTER(GAUSSIAN,16)
     clock_gettime(CLOCK_REALTIME, &start);
     for(int i=0; i<execution_times; i++)
         unroll_gaussian_blur_5_ori(BMPSaveData,bmpInfo.biWidth,bmpInfo.biHeight);
@@ -153,8 +140,6 @@ int main(int argc,char *argv[])
 #else
     printf("Gaussian blur[5x5][unroll original structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
 #endif
-#endif
-#if FILTER(GAUSSIAN,32)
     color_r = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
     color_g = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
     color_b = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
@@ -173,8 +158,6 @@ int main(int argc,char *argv[])
 #else
     printf("Gaussian blur[5x5][pthread unroll split structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
 #endif
-#endif
-#if FILTER(GAUSSIAN,64)
     clock_gettime(CLOCK_REALTIME, &start);
     for(int i=0; i<execution_times; i++)
         sse_gaussian_blur_5_ori(BMPSaveData,bmpInfo.biWidth,bmpInfo.biHeight);
@@ -185,8 +168,6 @@ int main(int argc,char *argv[])
 #else
     printf("Gaussian blur[5x5][sse original structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
 #endif
-#endif
-#if FILTER(GAUSSIAN,128)
     clock_gettime(CLOCK_REALTIME, &start);
     for(int i=0; i<execution_times; i++)
         sse_gaussian_blur_5_prefetch_ori(BMPSaveData,bmpInfo.biWidth,bmpInfo.biHeight);
@@ -197,8 +178,6 @@ int main(int argc,char *argv[])
 #else
     printf("Gaussian blur[5x5][prefetch sse original structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
 #endif
-#endif
-#if FILTER(GAUSSIAN,256)
     clock_gettime(CLOCK_REALTIME, &start);
     for(int i=0; i<execution_times; i++)
         pt_sse_gaussian_blur_5_ori(BMPSaveData,threadcount,bmpInfo.biWidth,bmpInfo.biHeight);
@@ -298,7 +277,7 @@ int main(int argc,char *argv[])
 }
 
 /*********************************************************/
-/* split the original structure                          */
+// split the original structure
 /*********************************************************/
 void split_structure()
 {
@@ -312,7 +291,7 @@ void split_structure()
 }
 
 /*********************************************************/
-/* merge the original structure (with choosing filter)   */
+// merge the original structure (with choosing filter)
 /*********************************************************/
 void merge_structure()
 {
@@ -326,7 +305,7 @@ void merge_structure()
 }
 
 /*********************************************************/
-/* Read BMP                                              */
+// Read BMP
 /*********************************************************/
 int readBMP(char *fileName)
 {
@@ -372,7 +351,7 @@ int readBMP(char *fileName)
     return 1;
 }
 /*********************************************************/
-/* Save BMP                                              */
+// Save BMP
 /*********************************************************/
 int saveBMP( char *fileName)
 {
@@ -400,14 +379,14 @@ int saveBMP( char *fileName)
     return 1;
 }
 /*********************************************************/
-/*  Retrive location                                     */
+//  Retrive location
 /*********************************************************/
 RGBTRIPLE fetchloc(RGBTRIPLE *arr, int Y, int X)
 {
     return arr[bmpInfo.biWidth * Y + X ];
 }
 /*********************************************************/
-/* allocate 1D array memory                              */
+// allocate 1D array memory
 /*********************************************************/
 RGBTRIPLE *alloc_memory(int Y, int X )
 {
@@ -417,7 +396,7 @@ RGBTRIPLE *alloc_memory(int Y, int X )
     return temp;
 }
 /*********************************************************/
-/* swap data pointer                                     */
+// swap data pointer
 /*********************************************************/
 void swap(RGBTRIPLE **a, RGBTRIPLE **b)
 {
@@ -427,7 +406,7 @@ void swap(RGBTRIPLE **a, RGBTRIPLE **b)
     *b = temp;
 }
 /*********************************************************/
-/* calculate execution time                              */
+// calculate execution time
 /*********************************************************/
 static double diff_in_millisecond(struct timespec t1, struct timespec t2)
 {
