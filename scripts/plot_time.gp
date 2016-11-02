@@ -1,6 +1,6 @@
 reset
 set xlabel "第幾次執行次數"
-set ylabel "time(sec)"
+set ylabel "time(ms)"
 set title "execution time"
 set term png enhanced font 'Consolas,10'
 set output 'runtime.png'
