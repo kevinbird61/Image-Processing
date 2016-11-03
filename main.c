@@ -288,6 +288,8 @@ int main(int argc,char *argv[])
     } else
         printf("Save file failed\n");
 
+    free(BMPSaveData);
+
     return 0;
 }
 

@@ -45,8 +45,8 @@ void *sse_thread_blur(void *arg)
     const unsigned char sse_g5_lo[16] = {1,0,1,0,1,0,4,0,4,0,4,0,7,0,7,0};
     const unsigned char sse_g5_hi[16] = {7,0,4,0,4,0,4,0,1,0,1,0,1,0,0,0};
     int workload = (info->height - 4) / info->total_thread_size;
-    for(int i=0; i < info->width-2 ; i++) {
-        for(int j=(workload)*(int)info->thread_id ; j < 2 + (workload)*((int)(info->thread_id)+1); j++) {
+    for(int i=0; i < info->width-5 ; i++) {
+        for(int j=(workload)*(int)info->thread_id ; j < (workload)*((int)(info->thread_id)+1)-5 ; j++) {
             int sum_r = 0,sum_g = 0,sum_b = 0;
             __m128i vg1lo = _mm_loadu_si128((__m128i *)sse_g1_lo);
             __m128i vg1hi = _mm_loadu_si128((__m128i *)sse_g1_hi);
@@ -134,11 +134,15 @@ void pt_gaussian_blur_5_tri(unsigned char *src,int num_threads,int w,int h)
         threadInfo->width = w;
         threadInfo->height = h;
         pthread_create(&thread_handler[tnum],NULL,thread_blur,(void *)threadInfo);
+        threadInfo = NULL;
+        free(threadInfo);
     }
     /* Now join with each thread */
     for(int tnum = 0; tnum < num_threads ; tnum++) {
         pthread_join(thread_handler[tnum],NULL);
     }
+
+    global_src = NULL;
     free(thread_handler);
 }
 
@@ -156,10 +160,14 @@ void pt_sse_gaussian_blur_5_ori(RGBTRIPLE *src,int num_threads,int w,int h)
         threadInfo->width = w;
         threadInfo->height = h;
         pthread_create(&thread_handler[tnum],NULL,sse_thread_blur,(void *)threadInfo);
+        threadInfo = NULL;
+        free(threadInfo);
     }
     for(int tnum = 0; tnum < num_threads ; tnum++) {
         pthread_join(thread_handler[tnum],NULL);
     }
+
+    global_src_ori = NULL;
     free(thread_handler);
 }
 
@@ -298,8 +306,8 @@ void sse_gaussian_blur_5_tri(unsigned char *src,int w,int h)
     const unsigned char sse_g4[16] = { 4,0,16,0,26,0,16,0,4,0,0,0,0,0,0,0 };
     const unsigned char sse_g5[16] = { 1,0,4,0,7,0,4,0,1,0,0,0,0,0,0,0 };
     // Operation to image
-    for(int i=0; i<w-2; i++) {
-        for(int j=0; j<h-2; j++) {
+    for(int i=0; i<w-5; i++) {
+        for(int j=0; j<h-5; j++) {
             int sum = 0;
             int index = 0;
             __m128i vg1 = _mm_loadu_si128((__m128i *)sse_g1);
@@ -367,8 +375,8 @@ void sse_gaussian_blur_5_ori(RGBTRIPLE *src,int w,int h)
     const unsigned char sse_g4_hi[16] = {26,0,16,0,16,0,16,0,4,0,4,0,4,0,0,0};
     const unsigned char sse_g5_lo[16] = {1,0,1,0,1,0,4,0,4,0,4,0,7,0,7,0};
     const unsigned char sse_g5_hi[16] = {7,0,4,0,4,0,4,0,1,0,1,0,1,0,0,0};
-    for(int i=0; i<(w-2); i++) {
-        for(int j=0; j<(h-2); j++) {
+    for(int i=0; i<(w-5); i++) {
+        for(int j=0; j<(h-5); j++) {
             int sum_r = 0,sum_g = 0,sum_b = 0;
             __m128i vg1lo = _mm_loadu_si128((__m128i *)sse_g1_lo);
             __m128i vg1hi = _mm_loadu_si128((__m128i *)sse_g1_hi);
@@ -452,8 +460,8 @@ void sse_gaussian_blur_5_prefetch_ori(RGBTRIPLE *src,int w,int h)
     const unsigned char sse_g4_hi[16] = {26,0,16,0,16,0,16,0,4,0,4,0,4,0,0,0};
     const unsigned char sse_g5_lo[16] = {1,0,1,0,1,0,4,0,4,0,4,0,7,0,7,0};
     const unsigned char sse_g5_hi[16] = {7,0,4,0,4,0,4,0,1,0,1,0,1,0,0,0};
-    for(int i=0; i<(w-2); i++) {
-        for(int j=0; j<(h-2); j++) {
+    for(int i=0; i<(w-5); i++) {
+        for(int j=0; j<(h-5); j++) {
             _mm_prefetch(src+(j + 16 + 0) *w + i, _MM_HINT_T0);
             _mm_prefetch(src+(j + 16 + 1) *w + i, _MM_HINT_T0);
             _mm_prefetch(src+(j + 16 + 2) *w + i, _MM_HINT_T0);

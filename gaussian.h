@@ -37,8 +37,8 @@ typedef struct thread_info {
     int height; // image height
 } tInfo;
 
-unsigned char *global_src;
-RGBTRIPLE *global_src_ori;
+unsigned char *global_src = NULL;
+RGBTRIPLE *global_src_ori = NULL;
 
 void unroll_gaussian_blur_5_tri(unsigned char *src,int w,int h);
 void unroll_gaussian_blur_5_ori(RGBTRIPLE *src,int w,int h);

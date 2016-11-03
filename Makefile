@@ -1,6 +1,6 @@
 CC := gcc
 CFLAGS := -msse2 -msse3 -msse4 --std gnu99 -O0
-OBJS := gaussian.o mirror.o hsv.o main.o
+OBJS := gaussian.o mirror.o hsv.o
 HEADER := gaussian.h mirror.h hsv.h
 TARGET := bmpreader
 GIT_HOOKS := .git/hooks/pre-commit
@@ -14,9 +14,12 @@ format:
 main.o: main.c $(HEADER)
 	$(CC) -c -DPERF=1 -DGAUSSIAN=1 -DMIRROR=0 -DHSV=0 -o $@ $<
 
+vmain.o: main.c $(HEADER)
+	$(CC) -c -DPERF=1 -DGAUSSIAN=1 -DMIRROR=0 -DHSV=0 -g -o $@ $<
+
 # Gaussian blur
-gau_all: $(GIT_HOOKS) format $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $(TARGET) -lpthread
+gau_all: $(GIT_HOOKS) format $(OBJS) main.o
+	$(CC) $(CFLAGS) $(OBJS) main.o -o $(TARGET) -lpthread
 
 mirror_all: $(GIT_HOOKS) format main.c $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -DGAUSSIAN=0 -DMIRROR=1 -DHSV=0 -o $(TARGET) main.c
@@ -34,6 +37,10 @@ perf_time: gau_all
 run:
 	bash execute.sh $(TARGET) img/input.bmp output.bmp;
 	eog output.bmp
+
+valgrind: $(GIT_HOOKS) format $(OBJS) vmain.o
+	$(CC) $(CFLAGS) $(OBJS) vmain.o -o $(TARGET) -lpthread
+	valgrind --leak-check=full ./$(TARGET) img/input.bmp output.bmp 1 4
 
 $(GIT_HOOKS):
 	@scripts/install-git-hooks
