@@ -13,4 +13,5 @@ plot "exec_time.log" using 1 with linespoints title "naive split" , \
      "exec_time.log" using 6 with linespoints title "pthread unroll split", \
      "exec_time.log" using 7 with linespoints title "sse original", \
      "exec_time.log" using 8 with linespoints title "sse prefetch original", \
-     "exec_time.log" using 9 with linespoints title "pthread sse original"
+     "exec_time.log" using 9 with linespoints title "pthread sse original", \
+     "exec_time.log" using 10 with linespoints title "unroll 1D-filter original"

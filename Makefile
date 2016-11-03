@@ -12,7 +12,7 @@ format:
 	$(CC) -c $(CFLAGS) -o $@ $<
 
 main.o: main.c $(HEADER)
-	$(CC) -c -DPERF=1 -DGAUSSIAN=1 -DMIRROR=0 -DHSV=0 -o $@ $<
+	$(CC) -std=gnu99 -c -DPERF=1 -DGAUSSIAN=1 -DMIRROR=0 -DHSV=0 -o $@ $<
 
 vmain.o: main.c $(HEADER)
 	$(CC) -c -DPERF=1 -DGAUSSIAN=1 -DMIRROR=0 -DHSV=0 -g -o $@ $<
