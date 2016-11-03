@@ -30,7 +30,8 @@ hsv: $(GIT_HOOKS) format main.c $(OBJS)
 perf_time: gau_all
 	@read -p "Enter the times you want to execute Gaussian blur on the input picture:" TIMES; \
 	read -p "Enter the thread number: " THREADS; \
-	perf stat -r 100 -e cache-misses,cache-references \
+	read -p "Enter the times on perf analysis: " PERFT; \
+	perf stat -r $$PERFT -e cache-misses,cache-references \
 	./$(TARGET) img/input.bmp output.bmp $$TIMES $$THREADS > exec_time.log
 	gnuplot scripts/plot_time.gp
 
