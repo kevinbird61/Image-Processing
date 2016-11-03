@@ -38,6 +38,7 @@ static double diff_in_millisecond(struct timespec t1, struct timespec t2);
 // Gaussian - header , fixing lots of warning
 void unroll_gaussian_blur_5_tri(unsigned char *src,int w,int h);
 void unroll_gaussian_blur_5_ori(RGBTRIPLE *src,int w,int h);
+void unroll_gaussian_1D_tri(RGBTRIPLE *src,int w,int h);
 void naive_gaussian_blur_5(unsigned char *src,int w,int h);
 void naive_gaussian_blur_5_original(RGBTRIPLE *src,int w,int h);
 void sse_gaussian_blur_5_tri(unsigned char *src,int w,int h);
@@ -199,6 +200,16 @@ int main(int argc,char *argv[])
     printf("%f ",cpu_time);
 #else
     printf("Gaussian blur[5x5][sse pthread original structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
+#endif
+    clock_gettime(CLOCK_REALTIME, &start);
+    for(int i=0; i<execution_times; i++)
+        unroll_gaussian_1D_tri(BMPSaveData,bmpInfo.biWidth,bmpInfo.biHeight);
+    clock_gettime(CLOCK_REALTIME, &end);
+    cpu_time = diff_in_millisecond(start, end);
+#ifdef PERF
+    printf("%f ",cpu_time);
+#else
+    printf("Gaussian blur[1x5][unroll original structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
 #endif
 #endif
     printf("\n");
