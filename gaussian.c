@@ -10,20 +10,19 @@ void *thread_blur(void *arg)
         for(int i=2; i < info->width-2 ; i++) {
             // do the image blur
             int sum = 0;
-            int index = 0;
-            sum = global_src[(j-2)*info->width + i-2]*gaussian55[index++] + global_src[(j-2)*info->width + i-1]*gaussian55[index++]
-                  + global_src[(j-2)*info->width + i]*gaussian55[index++] + global_src[(j-2)*info->width + i+1]*gaussian55[index++]
-                  + global_src[(j-2)*info->width + i+2]*gaussian55[index++] + global_src[(j-1)*info->width + i-2]*gaussian55[index++]
-                  + global_src[(j-1)*info->width + i-1]*gaussian55[index++] + global_src[(j-1)*info->width + i]*gaussian55[index++]
-                  + global_src[(j-1)*info->width + i+1]*gaussian55[index++] + global_src[(j-1)*info->width + i+2]*gaussian55[index++]
-                  + global_src[(j)*info->width + i-2]*gaussian55[index++] + global_src[(j)*info->width + i-1]*gaussian55[index++]
-                  + global_src[(j)*info->width + i]*gaussian55[index++] + global_src[(j)*info->width + i+1]*gaussian55[index++]
-                  + global_src[(j)*info->width + i+2]*gaussian55[index++] + global_src[(j+1)*info->width + i-2]*gaussian55[index++]
-                  + global_src[(j+1)*info->width + i-1]*gaussian55[index++] + global_src[(j+1)*info->width + i]*gaussian55[index++]
-                  + global_src[(j+1)*info->width + i+1]*gaussian55[index++] + global_src[(j+1)*info->width + i+2]*gaussian55[index++]
-                  + global_src[(j+2)*info->width + i-2]*gaussian55[index++] + global_src[(j+2)*info->width + i-1]*gaussian55[index++]
-                  + global_src[(j+2)*info->width + i]*gaussian55[index++] + global_src[(j+2)*info->width + i+1]*gaussian55[index++]
-                  + global_src[(j+2)*info->width + i+2]*gaussian55[index++];
+            sum = global_src[(j-2)*info->width + i-2]*gaussian55[0] + global_src[(j-2)*info->width + i-1]*gaussian55[1]
+                  + global_src[(j-2)*info->width + i]*gaussian55[2] + global_src[(j-2)*info->width + i+1]*gaussian55[3]
+                  + global_src[(j-2)*info->width + i+2]*gaussian55[4] + global_src[(j-1)*info->width + i-2]*gaussian55[5]
+                  + global_src[(j-1)*info->width + i-1]*gaussian55[6] + global_src[(j-1)*info->width + i]*gaussian55[7]
+                  + global_src[(j-1)*info->width + i+1]*gaussian55[8] + global_src[(j-1)*info->width + i+2]*gaussian55[9]
+                  + global_src[(j)*info->width + i-2]*gaussian55[10] + global_src[(j)*info->width + i-1]*gaussian55[11]
+                  + global_src[(j)*info->width + i]*gaussian55[12] + global_src[(j)*info->width + i+1]*gaussian55[13]
+                  + global_src[(j)*info->width + i+2]*gaussian55[14] + global_src[(j+1)*info->width + i-2]*gaussian55[15]
+                  + global_src[(j+1)*info->width + i-1]*gaussian55[16] + global_src[(j+1)*info->width + i]*gaussian55[17]
+                  + global_src[(j+1)*info->width + i+1]*gaussian55[18] + global_src[(j+1)*info->width + i+2]*gaussian55[19]
+                  + global_src[(j+2)*info->width + i-2]*gaussian55[20] + global_src[(j+2)*info->width + i-1]*gaussian55[21]
+                  + global_src[(j+2)*info->width + i]*gaussian55[22] + global_src[(j+2)*info->width + i+1]*gaussian55[23]
+                  + global_src[(j+2)*info->width + i+2]*gaussian55[24];
             global_src[j*info->width + i] = ((sum / 273) > 255 ? 255 : sum/273);
         }
     }
@@ -176,21 +175,20 @@ void unroll_gaussian_blur_5_tri(unsigned char *src,int w,int h)
     for(int j=2; j<h-2; j++) {
         for(int i=2; i<w-2; i++) {
             int sum = 0;
-            int index = 0;
             // Unroll the 5x5 for loop
-            sum = src[(j-2)*w+(i-2)]*gaussian55[index++] + src[(j-2)*w+(i-1)]*gaussian55[index++]
-                  + src[(j-2)*w+(i)]*gaussian55[index++] + src[(j-2)*w+(i+1)]*gaussian55[index++]
-                  + src[(j-2)*w+(i+2)]*gaussian55[index++] + src[(j-1)*w+(i-2)]*gaussian55[index++]
-                  + src[(j-1)*w+(i-1)]*gaussian55[index++] + src[(j-1)*w+(i)]*gaussian55[index++]
-                  + src[(j-1)*w+(i+1)]*gaussian55[index++] + src[(j-1)*w+(i+2)]*gaussian55[index++]
-                  + src[(j)*w+(i-2)]*gaussian55[index++] + src[(j)*w+(i-1)]*gaussian55[index++]
-                  + src[(j)*w+(i)]*gaussian55[index++] + src[(j)*w+(i+1)]*gaussian55[index++]
-                  + src[(j)*w+(i+2)]*gaussian55[index++] + src[(j+1)*w+(i-2)]*gaussian55[index++]
-                  + src[(j+1)*w+(i-1)]*gaussian55[index++] + src[(j+1)*w+(i)]*gaussian55[index++]
-                  + src[(j+1)*w+(i+1)]*gaussian55[index++] + src[(j+1)*w+(i+2)]*gaussian55[index++]
-                  + src[(j+2)*w+(i-2)]*gaussian55[index++] + src[(j+2)*w+(i-1)]*gaussian55[index++]
-                  + src[(j+2)*w+(i)]*gaussian55[index++] + src[(j+2)*w+(i+1)]*gaussian55[index++]
-                  + src[(j+2)*w+(i+2)]*gaussian55[index++];
+            sum = src[(j-2)*w+(i-2)]*gaussian55[0] + src[(j-2)*w+(i-1)]*gaussian55[1]
+                  + src[(j-2)*w+(i)]*gaussian55[2] + src[(j-2)*w+(i+1)]*gaussian55[3]
+                  + src[(j-2)*w+(i+2)]*gaussian55[4] + src[(j-1)*w+(i-2)]*gaussian55[5]
+                  + src[(j-1)*w+(i-1)]*gaussian55[6] + src[(j-1)*w+(i)]*gaussian55[7]
+                  + src[(j-1)*w+(i+1)]*gaussian55[8] + src[(j-1)*w+(i+2)]*gaussian55[9]
+                  + src[(j)*w+(i-2)]*gaussian55[10] + src[(j)*w+(i-1)]*gaussian55[11]
+                  + src[(j)*w+(i)]*gaussian55[12] + src[(j)*w+(i+1)]*gaussian55[13]
+                  + src[(j)*w+(i+2)]*gaussian55[14] + src[(j+1)*w+(i-2)]*gaussian55[15]
+                  + src[(j+1)*w+(i-1)]*gaussian55[16] + src[(j+1)*w+(i)]*gaussian55[17]
+                  + src[(j+1)*w+(i+1)]*gaussian55[18] + src[(j+1)*w+(i+2)]*gaussian55[19]
+                  + src[(j+2)*w+(i-2)]*gaussian55[20] + src[(j+2)*w+(i-1)]*gaussian55[21]
+                  + src[(j+2)*w+(i)]*gaussian55[22] + src[(j+2)*w+(i+1)]*gaussian55[23]
+                  + src[(j+2)*w+(i+2)]*gaussian55[24];
 
             src[j*w+i] = ((sum / 273) > 255 ? 255 : sum/273);
         }
@@ -202,49 +200,46 @@ void unroll_gaussian_blur_5_ori(RGBTRIPLE *src,int w,int h)
     for(int j=2; j<h-2; j++) {
         for(int i=2; i<w-2; i++) {
             int sum_r = 0,sum_g = 0,sum_b = 0;
-            int index = 0;
             // Unroll the 5x5 for loop
-            sum_r = src[(j-2)*w+(i-2)].rgbRed*gaussian55[index++] + src[(j-2)*w+(i-1)].rgbRed*gaussian55[index++]
-                    + src[(j-2)*w+(i)].rgbRed*gaussian55[index++] + src[(j-2)*w+(i+1)].rgbRed*gaussian55[index++]
-                    + src[(j-2)*w+(i+2)].rgbRed*gaussian55[index++] + src[(j-1)*w+(i-2)].rgbRed*gaussian55[index++]
-                    + src[(j-1)*w+(i-1)].rgbRed*gaussian55[index++] + src[(j-1)*w+(i)].rgbRed*gaussian55[index++]
-                    + src[(j-1)*w+(i+1)].rgbRed*gaussian55[index++] + src[(j-1)*w+(i+2)].rgbRed*gaussian55[index++]
-                    + src[(j)*w+(i-2)].rgbRed*gaussian55[index++] + src[(j)*w+(i-1)].rgbRed*gaussian55[index++]
-                    + src[(j)*w+(i)].rgbRed*gaussian55[index++] + src[(j)*w+(i+1)].rgbRed*gaussian55[index++]
-                    + src[(j)*w+(i+2)].rgbRed*gaussian55[index++] + src[(j+1)*w+(i-2)].rgbRed*gaussian55[index++]
-                    + src[(j+1)*w+(i-1)].rgbRed*gaussian55[index++] + src[(j+1)*w+(i)].rgbRed*gaussian55[index++]
-                    + src[(j+1)*w+(i+1)].rgbRed*gaussian55[index++] + src[(j+1)*w+(i+2)].rgbRed*gaussian55[index++]
-                    + src[(j+2)*w+(i-2)].rgbRed*gaussian55[index++] + src[(j+2)*w+(i-1)].rgbRed*gaussian55[index++]
-                    + src[(j+2)*w+(i)].rgbRed*gaussian55[index++] + src[(j+2)*w+(i+1)].rgbRed*gaussian55[index++]
-                    + src[(j+2)*w+(i+2)].rgbRed*gaussian55[index++];
-            index=0;
-            sum_g = src[(j-2)*w+(i-2)].rgbGreen*gaussian55[index++] + src[(j-2)*w+(i-1)].rgbGreen*gaussian55[index++]
-                    + src[(j-2)*w+(i)].rgbGreen*gaussian55[index++] + src[(j-2)*w+(i+1)].rgbGreen*gaussian55[index++]
-                    + src[(j-2)*w+(i+2)].rgbGreen*gaussian55[index++] + src[(j-1)*w+(i-2)].rgbGreen*gaussian55[index++]
-                    + src[(j-1)*w+(i-1)].rgbGreen*gaussian55[index++] + src[(j-1)*w+(i)].rgbGreen*gaussian55[index++]
-                    + src[(j-1)*w+(i+1)].rgbGreen*gaussian55[index++] + src[(j-1)*w+(i+2)].rgbGreen*gaussian55[index++]
-                    + src[(j)*w+(i-2)].rgbGreen*gaussian55[index++] + src[(j)*w+(i-1)].rgbGreen*gaussian55[index++]
-                    + src[(j)*w+(i)].rgbGreen*gaussian55[index++] + src[(j)*w+(i+1)].rgbGreen*gaussian55[index++]
-                    + src[(j)*w+(i+2)].rgbGreen*gaussian55[index++] + src[(j+1)*w+(i-2)].rgbGreen*gaussian55[index++]
-                    + src[(j+1)*w+(i-1)].rgbGreen*gaussian55[index++] + src[(j+1)*w+(i)].rgbGreen*gaussian55[index++]
-                    + src[(j+1)*w+(i+1)].rgbGreen*gaussian55[index++] + src[(j+1)*w+(i+2)].rgbGreen*gaussian55[index++]
-                    + src[(j+2)*w+(i-2)].rgbGreen*gaussian55[index++] + src[(j+2)*w+(i-1)].rgbGreen*gaussian55[index++]
-                    + src[(j+2)*w+(i)].rgbGreen*gaussian55[index++] + src[(j+2)*w+(i+1)].rgbGreen*gaussian55[index++]
-                    + src[(j+2)*w+(i+2)].rgbGreen*gaussian55[index++];
-            index=0;
-            sum_b = src[(j-2)*w+(i-2)].rgbBlue*gaussian55[index++] + src[(j-2)*w+(i-1)].rgbBlue*gaussian55[index++]
-                    + src[(j-2)*w+(i)].rgbBlue*gaussian55[index++] + src[(j-2)*w+(i+1)].rgbBlue*gaussian55[index++]
-                    + src[(j-2)*w+(i+2)].rgbBlue*gaussian55[index++] + src[(j-1)*w+(i-2)].rgbBlue*gaussian55[index++]
-                    + src[(j-1)*w+(i-1)].rgbBlue*gaussian55[index++] + src[(j-1)*w+(i)].rgbBlue*gaussian55[index++]
-                    + src[(j-1)*w+(i+1)].rgbBlue*gaussian55[index++] + src[(j-1)*w+(i+2)].rgbBlue*gaussian55[index++]
-                    + src[(j)*w+(i-2)].rgbBlue*gaussian55[index++] + src[(j)*w+(i-1)].rgbBlue*gaussian55[index++]
-                    + src[(j)*w+(i)].rgbBlue*gaussian55[index++] + src[(j)*w+(i+1)].rgbBlue*gaussian55[index++]
-                    + src[(j)*w+(i+2)].rgbBlue*gaussian55[index++] + src[(j+1)*w+(i-2)].rgbBlue*gaussian55[index++]
-                    + src[(j+1)*w+(i-1)].rgbBlue*gaussian55[index++] + src[(j+1)*w+(i)].rgbBlue*gaussian55[index++]
-                    + src[(j+1)*w+(i+1)].rgbBlue*gaussian55[index++] + src[(j+1)*w+(i+2)].rgbBlue*gaussian55[index++]
-                    + src[(j+2)*w+(i-2)].rgbBlue*gaussian55[index++] + src[(j+2)*w+(i-1)].rgbBlue*gaussian55[index++]
-                    + src[(j+2)*w+(i)].rgbBlue*gaussian55[index++] + src[(j+2)*w+(i+1)].rgbBlue*gaussian55[index++]
-                    + src[(j+2)*w+(i+2)].rgbBlue*gaussian55[index++];
+            sum_r = src[(j-2)*w+(i-2)].rgbRed*gaussian55[0] + src[(j-2)*w+(i-1)].rgbRed*gaussian55[1]
+                    + src[(j-2)*w+(i)].rgbRed*gaussian55[2] + src[(j-2)*w+(i+1)].rgbRed*gaussian55[3]
+                    + src[(j-2)*w+(i+2)].rgbRed*gaussian55[4] + src[(j-1)*w+(i-2)].rgbRed*gaussian55[5]
+                    + src[(j-1)*w+(i-1)].rgbRed*gaussian55[6] + src[(j-1)*w+(i)].rgbRed*gaussian55[7]
+                    + src[(j-1)*w+(i+1)].rgbRed*gaussian55[8] + src[(j-1)*w+(i+2)].rgbRed*gaussian55[9]
+                    + src[(j)*w+(i-2)].rgbRed*gaussian55[10] + src[(j)*w+(i-1)].rgbRed*gaussian55[11]
+                    + src[(j)*w+(i)].rgbRed*gaussian55[12] + src[(j)*w+(i+1)].rgbRed*gaussian55[13]
+                    + src[(j)*w+(i+2)].rgbRed*gaussian55[14] + src[(j+1)*w+(i-2)].rgbRed*gaussian55[15]
+                    + src[(j+1)*w+(i-1)].rgbRed*gaussian55[16] + src[(j+1)*w+(i)].rgbRed*gaussian55[17]
+                    + src[(j+1)*w+(i+1)].rgbRed*gaussian55[18] + src[(j+1)*w+(i+2)].rgbRed*gaussian55[19]
+                    + src[(j+2)*w+(i-2)].rgbRed*gaussian55[20] + src[(j+2)*w+(i-1)].rgbRed*gaussian55[21]
+                    + src[(j+2)*w+(i)].rgbRed*gaussian55[22] + src[(j+2)*w+(i+1)].rgbRed*gaussian55[23]
+                    + src[(j+2)*w+(i+2)].rgbRed*gaussian55[24];
+            sum_g = src[(j-2)*w+(i-2)].rgbGreen*gaussian55[0] + src[(j-2)*w+(i-1)].rgbGreen*gaussian55[1]
+                    + src[(j-2)*w+(i)].rgbGreen*gaussian55[2] + src[(j-2)*w+(i+1)].rgbGreen*gaussian55[3]
+                    + src[(j-2)*w+(i+2)].rgbGreen*gaussian55[4] + src[(j-1)*w+(i-2)].rgbGreen*gaussian55[5]
+                    + src[(j-1)*w+(i-1)].rgbGreen*gaussian55[6] + src[(j-1)*w+(i)].rgbGreen*gaussian55[7]
+                    + src[(j-1)*w+(i+1)].rgbGreen*gaussian55[8] + src[(j-1)*w+(i+2)].rgbGreen*gaussian55[9]
+                    + src[(j)*w+(i-2)].rgbGreen*gaussian55[10] + src[(j)*w+(i-1)].rgbGreen*gaussian55[11]
+                    + src[(j)*w+(i)].rgbGreen*gaussian55[12] + src[(j)*w+(i+1)].rgbGreen*gaussian55[13]
+                    + src[(j)*w+(i+2)].rgbGreen*gaussian55[14] + src[(j+1)*w+(i-2)].rgbGreen*gaussian55[15]
+                    + src[(j+1)*w+(i-1)].rgbGreen*gaussian55[16] + src[(j+1)*w+(i)].rgbGreen*gaussian55[17]
+                    + src[(j+1)*w+(i+1)].rgbGreen*gaussian55[18] + src[(j+1)*w+(i+2)].rgbGreen*gaussian55[19]
+                    + src[(j+2)*w+(i-2)].rgbGreen*gaussian55[20] + src[(j+2)*w+(i-1)].rgbGreen*gaussian55[21]
+                    + src[(j+2)*w+(i)].rgbGreen*gaussian55[22] + src[(j+2)*w+(i+1)].rgbGreen*gaussian55[23]
+                    + src[(j+2)*w+(i+2)].rgbGreen*gaussian55[24];
+            sum_b = src[(j-2)*w+(i-2)].rgbBlue*gaussian55[0] + src[(j-2)*w+(i-1)].rgbBlue*gaussian55[1]
+                    + src[(j-2)*w+(i)].rgbBlue*gaussian55[2] + src[(j-2)*w+(i+1)].rgbBlue*gaussian55[3]
+                    + src[(j-2)*w+(i+2)].rgbBlue*gaussian55[4] + src[(j-1)*w+(i-2)].rgbBlue*gaussian55[5]
+                    + src[(j-1)*w+(i-1)].rgbBlue*gaussian55[6] + src[(j-1)*w+(i)].rgbBlue*gaussian55[7]
+                    + src[(j-1)*w+(i+1)].rgbBlue*gaussian55[8] + src[(j-1)*w+(i+2)].rgbBlue*gaussian55[9]
+                    + src[(j)*w+(i-2)].rgbBlue*gaussian55[10] + src[(j)*w+(i-1)].rgbBlue*gaussian55[11]
+                    + src[(j)*w+(i)].rgbBlue*gaussian55[12] + src[(j)*w+(i+1)].rgbBlue*gaussian55[13]
+                    + src[(j)*w+(i+2)].rgbBlue*gaussian55[14] + src[(j+1)*w+(i-2)].rgbBlue*gaussian55[15]
+                    + src[(j+1)*w+(i-1)].rgbBlue*gaussian55[16] + src[(j+1)*w+(i)].rgbBlue*gaussian55[17]
+                    + src[(j+1)*w+(i+1)].rgbBlue*gaussian55[18] + src[(j+1)*w+(i+2)].rgbBlue*gaussian55[19]
+                    + src[(j+2)*w+(i-2)].rgbBlue*gaussian55[20] + src[(j+2)*w+(i-1)].rgbBlue*gaussian55[21]
+                    + src[(j+2)*w+(i)].rgbBlue*gaussian55[22] + src[(j+2)*w+(i+1)].rgbBlue*gaussian55[23]
+                    + src[(j+2)*w+(i+2)].rgbBlue*gaussian55[24];
 
             sum_r = ((sum_r / 273) > 255 ? 255 : sum_r/273);
             sum_g = ((sum_g / 273) > 255 ? 255 : sum_g/273);
