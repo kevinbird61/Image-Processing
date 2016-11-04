@@ -34,6 +34,7 @@ perf_time: gau_all
 	perf stat -r $$PERFT -e cache-misses,cache-references \
 	./$(TARGET) img/input.bmp output.bmp $$TIMES $$THREADS > exec_time.log
 	gnuplot scripts/plot_time.gp
+	gnuplot scripts/plot_time_2.gp
 
 run:
 	bash execute.sh $(TARGET) img/input.bmp output.bmp;
@@ -47,4 +48,4 @@ $(GIT_HOOKS):
 	@scripts/install-git-hooks
 
 clean:
-	$(RM) *output.bmp runtime.png $(TARGET) *.log *.o
+	$(RM) *output.bmp *.png $(TARGET) *.log *.o

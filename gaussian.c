@@ -133,8 +133,6 @@ void pt_gaussian_blur_5_tri(unsigned char *src,int num_threads,int w,int h)
         threadInfo->width = w;
         threadInfo->height = h;
         pthread_create(&thread_handler[tnum],NULL,thread_blur,(void *)threadInfo);
-        threadInfo = NULL;
-        free(threadInfo);
     }
     /* Now join with each thread */
     for(int tnum = 0; tnum < num_threads ; tnum++) {
@@ -266,6 +264,101 @@ void naive_gaussian_blur_5(unsigned char *src,int w,int h)
             if(sum > 255)
                 sum = 255;
             src[j*w+i] = sum;
+        }
+    }
+}
+
+void naive_gaussian_blur_5_expand(unsigned char *src,int w,int h)
+{
+    for(int j=2; j<h-2; j+=4) {
+        for(int i=2; i<w-2; i+=4) {
+            int sum=0;
+            const int temp11 = src[(j-2)*w+(i-2)],temp12 = src[(j-2)*w+(i-1)],temp13 = src[(j-2)*w+(i)]
+                               ,temp14 = src[(j-2)*w+(i+1)],temp15 = src[(j-2)*w+(i+2)],temp21 = src[(j-1)*w+(i-2)]
+                                         ,temp22 = src[(j-1)*w+(i-1)],temp23 = src[(j-1)*w+(i)],temp24 = src[(j-1)*w+(i+1)]
+                                                   ,temp25 = src[(j-1)*w+(i+2)],temp31 = src[(j)*w+(i-2)],temp32 = src[(j)*w+(i-1)]
+                                                           ,temp33 = src[(j)*w+(i)],temp34 = src[(j)*w+(i+1)],temp35 = src[(j)*w+(i+2)]
+                                                                   ,temp41 = src[(j+1)*w+(i-2)],temp42 = src[(j+1)*w+(i-1)],temp43 = src[(j+1)*w+(i)]
+                                                                           ,temp44 = src[(j+1)*w+(i+1)],temp45 = src[(j+1)*w+(i+2)],temp51 = src[(j+2)*w+(i-2)]
+                                                                                   ,temp52 = src[(j+2)*w+(i-1)],temp53 = src[(j+2)*w+(i)],temp54 = src[(j+2)*w+(i+1)]
+                                                                                           ,temp55 = src[(j+2)*w+(i+2)];
+            sum = (temp11*gaussian55[0]+temp12*gaussian55[1]+temp13*gaussian55[2]+temp14*gaussian55[3]+temp14*gaussian55[3]
+                   +temp15*gaussian55[4]+temp21*gaussian55[5]+temp22*gaussian55[6]+temp23*gaussian55[7]+temp24*gaussian55[8]
+                   +temp25*gaussian55[9]+temp31*gaussian55[10]+temp32*gaussian55[11]+temp33*gaussian55[12]+temp34*gaussian55[13]
+                   +temp35*gaussian55[14]+temp41*gaussian55[15]+temp42*gaussian55[16]+temp43*gaussian55[17]+temp44*gaussian55[18]
+                   +temp45*gaussian55[19]+temp51*gaussian55[20]+temp52*gaussian55[21]+temp53*gaussian55[22]+temp54*gaussian55[23]
+                   +temp55*gaussian55[24]) / deno55;
+            src[j*w+i] = ((sum > 255) ? 255 : sum);
+            sum = (temp12*gaussian55[0]+temp13*gaussian55[1]+temp14*gaussian55[2]+temp15*gaussian55[3]+temp22*gaussian55[5]
+                   +temp23*gaussian55[6]+temp24*gaussian55[7]+temp25*gaussian55[8]+temp32*gaussian55[10]+temp33*gaussian55[11]
+                   +temp34*gaussian55[12]+temp35*gaussian55[13]+temp42*gaussian55[15]+temp43*gaussian55[16]+temp44*gaussian55[17]
+                   +temp45*gaussian55[18]+temp52*gaussian55[20]+temp53*gaussian55[21]+temp54*gaussian55[22]+temp55*gaussian55[23]) / deno55;
+            src[j*w+i+1] = ((sum > 255) ? 255 : sum);
+            sum = (temp13*gaussian55[0]+temp14*gaussian55[1]+temp15*gaussian55[2]+temp23*gaussian55[5]+temp24*gaussian55[6]+temp25*gaussian55[7]
+                   +temp33*gaussian55[10]+temp34*gaussian55[11]+temp35*gaussian55[12]+temp43*gaussian55[15]+temp44*gaussian55[16]+temp45*gaussian55[17]
+                   +temp53*gaussian55[20]+temp54*gaussian55[21]+temp55*gaussian55[22])/deno55;
+            src[j*w+i+2] = ((sum > 255) ? 255 : sum);
+            sum = (temp14*gaussian55[0]+temp15*gaussian55[1]+temp24*gaussian55[5]+temp25*gaussian55[6]+temp34*gaussian55[10]+temp35*gaussian55[11]
+                   +temp44*gaussian55[15]+temp45*gaussian55[16]+temp54*gaussian55[20]+temp55*gaussian55[21]) / deno55;
+            src[j*w+i+3] += ((sum > 255) ? 255 : sum);
+            sum = (temp25*gaussian55[5]+temp35*gaussian55[10]+temp45*gaussian55[15]+temp55*gaussian55[20]) / deno55;
+            src[j*w+i+4] += ((sum > 255) ? 255 : sum);
+            sum = (temp21*gaussian55[0]+temp22*gaussian55[1]+temp23*gaussian55[2]+temp24*gaussian55[3]+temp25*gaussian55[4]
+                   +temp31*gaussian55[5]+temp32*gaussian55[6]+temp33*gaussian55[7]+temp34*gaussian55[8]+temp35*gaussian55[9]
+                   +temp41*gaussian55[10]+temp42*gaussian55[11]+temp43*gaussian55[12]+temp44*gaussian55[13]+temp45*gaussian55[14]
+                   +temp51*gaussian55[15]+temp52*gaussian55[16]+temp53*gaussian55[17]+temp54*gaussian55[18]+temp55*gaussian55[19]) / deno55;
+            src[(j+1)*w+i] = ((sum > 255) ? 255 : sum);
+            sum = (temp22*gaussian55[0]+temp23*gaussian55[1]+temp24*gaussian55[2]+temp25*gaussian55[3]+temp32*gaussian55[5]+temp33*gaussian55[6]
+                   +temp34*gaussian55[7]+temp35*gaussian55[8]+temp42*gaussian55[10]+temp43*gaussian55[11]+temp44*gaussian55[12]+temp45*gaussian55[13]
+                   +temp52*gaussian55[15]+temp53*gaussian55[16]+temp54*gaussian55[17]+temp55*gaussian55[18]) / deno55;
+            src[(j+1)*w+i+1] = ((sum > 255) ? 255 : sum);
+            sum = (temp23*gaussian55[0]+temp24*gaussian55[1]+temp25*gaussian55[2]+temp33*gaussian55[5]+temp34*gaussian55[6]+temp35*gaussian55[7]
+                   +temp43*gaussian55[10]+temp44*gaussian55[11]+temp45*gaussian55[12]+temp53*gaussian55[15]+temp54*gaussian55[16]
+                   +temp55*gaussian55[17]) / deno55;
+            src[(j+1)*w+i+2] = ((sum > 255) ? 255 : sum);
+            sum = (temp24*gaussian55[0]+temp25*gaussian55[1]+temp34*gaussian55[5]+temp35*gaussian55[6]+temp44*gaussian55[10]
+                   +temp45*gaussian55[11]+temp54*gaussian55[15]+temp55*gaussian55[16]) / deno55;
+            src[(j+1)*w+i+3] += ((sum > 255) ? 255 : sum);
+            sum = (temp25*gaussian55[0]+temp35*gaussian55[5]+temp45*gaussian55[10]+temp55*gaussian55[15]) / deno55;
+            src[(j+1)*w+i+4] += ((sum > 255) ? 255 : sum);
+            sum = (temp31*gaussian55[0]+temp32*gaussian55[1]+temp33*gaussian55[2]+temp34*gaussian55[3]+temp35*gaussian55[4]+temp41*gaussian55[5]
+                   +temp42*gaussian55[6]+temp43*gaussian55[7]+temp44*gaussian55[8]+temp45*gaussian55[9]+temp51*gaussian55[10]+temp52*gaussian55[11]
+                   +temp53*gaussian55[12]+temp54*gaussian55[13]+temp55*gaussian55[14]) / deno55;
+            src[(j+2)*w+i] = ((sum > 255) ? 255 : sum);
+            sum = (temp32*gaussian55[0]+temp33*gaussian55[1]+temp34*gaussian55[2]+temp35*gaussian55[3]+temp42*gaussian55[5]+temp43*gaussian55[6]
+                   +temp44*gaussian55[7]+temp45*gaussian55[8]+temp52*gaussian55[10]+temp53*gaussian55[11]+temp54*gaussian55[12]
+                   +temp55*gaussian55[13]) / deno55;
+            src[(j+2)*w+i+1] = ((sum > 255) ? 255 : sum);
+            sum = (temp33*gaussian55[0]+temp34*gaussian55[1]+temp35*gaussian55[2]+temp43*gaussian55[5]+temp44*gaussian55[6]+temp45*gaussian55[7]
+                   +temp53*gaussian55[10]+temp54*gaussian55[11]+temp55*gaussian55[12]) / deno55;
+            src[(j+2)*w+i+2] = ((sum > 255) ? 255 : sum);
+            sum = (temp34*gaussian55[0]+temp35*gaussian55[1]+temp44*gaussian55[5]+temp45*gaussian55[6]+temp54*gaussian55[10]
+                   +temp55*gaussian55[11]) / deno55;
+            src[(j+2)*w+i+3] += ((sum > 255) ? 255 : sum);
+            sum = (temp35*gaussian55[0]+temp45*gaussian55[5]+temp55*gaussian55[10]) / deno55;
+            src[(j+2)*w+i+4] += ((sum > 255) ? 255 : sum);
+            sum = (temp41*gaussian55[0]+temp42*gaussian55[1]+temp43*gaussian55[2]+temp44*gaussian55[3]+temp45*gaussian55[4]+temp51*gaussian55[5]
+                   +temp52*gaussian55[6]+temp53*gaussian55[7]+temp54*gaussian55[8]+temp55*gaussian55[9]) / deno55;
+            src[(j+3)*w+i] += ((sum > 255) ? 255 : sum);
+            sum = (temp42*gaussian55[0]+temp43*gaussian55[1]+temp44*gaussian55[2]+temp45*gaussian55[3]+temp52*gaussian55[5]+temp53*gaussian55[6]
+                   +temp54*gaussian55[7]+temp55*gaussian55[8]) / deno55;
+            src[(j+3)*w+i+1] += ((sum > 255) ? 255 : sum);
+            sum = (temp43*gaussian55[0]+temp44*gaussian55[1]+temp45*gaussian55[2]+temp53*gaussian55[5]+temp54*gaussian55[6]+temp55*gaussian55[7]) / deno55;
+            src[(j+3)*w+i+2] += ((sum > 255) ? 255 : sum);
+            sum = (temp44*gaussian55[0]+temp45*gaussian55[1]+temp54*gaussian55[5]+temp55*gaussian55[6]) / deno55;
+            src[(j+3)*w+i+3] += ((sum > 255) ? 255 : sum);
+            sum = (temp45*gaussian55[0]+temp55*gaussian55[1]) / deno55;
+            src[(j+3)*w+i+4] += ((sum > 255) ? 255 : sum);
+            sum = (temp51*gaussian55[0]+temp52*gaussian55[1]+temp53*gaussian55[2]+temp54*gaussian55[3]+temp55*gaussian55[4]) / deno55;
+            src[(j+4)*w+i] += ((sum > 255) ? 255 : sum);
+            sum = (temp52*gaussian55[0]+temp53*gaussian55[1]+temp54*gaussian55[2]+temp55*gaussian55[3]) / deno55;
+            src[(j+4)*w+i+1] += ((sum > 255) ? 255 : sum);
+            sum = (temp53*gaussian55[0]+temp54*gaussian55[1]+temp55*gaussian55[2]) / deno55;
+            src[(j+4)*w+i+2] += ((sum > 255) ? 255 : sum);
+            sum = (temp54*gaussian55[0]+temp55*gaussian55[1]) / deno55;
+            src[(j+4)*w+i+3] += ((sum > 255) ? 255 : sum);
+            sum = (temp55*gaussian55[0]) / deno55;
+            src[(j+4)*w+i+4] += ((sum > 255) ? 255 : sum);
         }
     }
 }

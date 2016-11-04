@@ -53,5 +53,6 @@ void sse_gaussian_blur_5_ori(RGBTRIPLE *src,int w,int h);
 void sse_gaussian_blur_5_prefetch_ori(RGBTRIPLE *src,int w,int h);
 void pt_gaussian_blur_5_tri(unsigned char *src,int num_threads,int w,int h);
 void pt_sse_gaussian_blur_5_ori(RGBTRIPLE *src,int num_threads,int w,int h);
+void naive_gaussian_blur_5_expand(unsigned char *src,int w,int h);
 
 #endif
