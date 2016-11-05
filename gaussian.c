@@ -270,8 +270,8 @@ void naive_gaussian_blur_5(unsigned char *src,int w,int h)
 
 void naive_gaussian_blur_5_expand(unsigned char *src,int w,int h)
 {
-    for(int j=2; j<h-2; j+=4) {
-        for(int i=2; i<w-2; i+=4) {
+    for(int j=2; j<h-3; j+=5) {
+        for(int i=2; i<w-3; i+=5) {
             int sum=0;
             const int temp11 = src[(j-2)*w+(i-2)],temp12 = src[(j-2)*w+(i-1)],temp13 = src[(j-2)*w+(i)]
                                ,temp14 = src[(j-2)*w+(i+1)],temp15 = src[(j-2)*w+(i+2)],temp21 = src[(j-1)*w+(i-2)]
