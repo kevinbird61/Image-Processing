@@ -539,7 +539,6 @@ void sse_gaussian_blur_5_tri(unsigned char *src,int w,int h)
     for(int i=0; i<w-5; i++) {
         for(int j=0; j<h-5; j++) {
             int sum = 0;
-            int index = 0;
             __m128i vg1 = _mm_loadu_si128((__m128i *)sse_g1);
             __m128i vg2 = _mm_loadu_si128((__m128i *)sse_g2);
             __m128i vg3 = _mm_loadu_si128((__m128i *)sse_g3);
@@ -771,18 +770,15 @@ void unroll_gaussian_1D_tri(RGBTRIPLE *src,int w,int h)
 {
     for(int j=0; j<h; j++) {
         for(int i=2; i<w-2; i++) {
-            int index = 0;
-            float sum_r = src[j*w+i-2].rgbRed*gaussian15[index++] + src[j*w+i-1].rgbRed*gaussian15[index++]
-                          + src[j*w+i].rgbRed*gaussian15[index++] + src[j*w+i+1].rgbRed*gaussian15[index++]
-                          + src[j*w+i+2].rgbRed*gaussian15[index++];
-            index = 0;
-            float sum_g = src[j*w+i-2].rgbGreen*gaussian15[index++] + src[j*w+i-1].rgbGreen*gaussian15[index++]
-                          + src[j*w+i].rgbGreen*gaussian15[index++] + src[j*w+i+1].rgbGreen*gaussian15[index++]
-                          + src[j*w+i+2].rgbGreen*gaussian15[index++];
-            index = 0;
-            float sum_b = src[j*w+i-2].rgbBlue*gaussian15[index++] + src[j*w+i-1].rgbBlue*gaussian15[index++]
-                          + src[j*w+i].rgbBlue*gaussian15[index++] + src[j*w+i+1].rgbBlue*gaussian15[index++]
-                          + src[j*w+i+2].rgbBlue*gaussian15[index++];
+            float sum_r = src[j*w+i-2].rgbRed*gaussian15[0] + src[j*w+i-1].rgbRed*gaussian15[1]
+                          + src[j*w+i].rgbRed*gaussian15[2] + src[j*w+i+1].rgbRed*gaussian15[3]
+                          + src[j*w+i+2].rgbRed*gaussian15[4];
+            float sum_g = src[j*w+i-2].rgbGreen*gaussian15[0] + src[j*w+i-1].rgbGreen*gaussian15[1]
+                          + src[j*w+i].rgbGreen*gaussian15[2] + src[j*w+i+1].rgbGreen*gaussian15[3]
+                          + src[j*w+i+2].rgbGreen*gaussian15[4];
+            float sum_b = src[j*w+i-2].rgbBlue*gaussian15[0] + src[j*w+i-1].rgbBlue*gaussian15[1]
+                          + src[j*w+i].rgbBlue*gaussian15[2] + src[j*w+i+1].rgbBlue*gaussian15[3]
+                          + src[j*w+i+2].rgbBlue*gaussian15[4];
             src[j*w+i].rgbRed = (sum_r > 255 ) ? 255 : sum_r;
             src[j*w+i].rgbGreen = (sum_g > 255 ) ? 255 : sum_g;
             src[j*w+i].rgbBlue = (sum_b > 255 ) ? 255 : sum_b;
@@ -790,18 +786,15 @@ void unroll_gaussian_1D_tri(RGBTRIPLE *src,int w,int h)
     }
     for(int j=2; j<h-2; j++) {
         for(int i=0; i<w; i++) {
-            int index = 0;
-            float sum_r = src[(j-2)*w+i].rgbRed*gaussian15[index++] + src[(j-1)*w+i].rgbRed*gaussian15[index++]
-                          + src[j*w+i].rgbRed*gaussian15[index++] + src[(j+1)*w+i].rgbRed*gaussian15[index++]
-                          + src[(j+2)*w+i].rgbRed*gaussian15[index++];
-            index = 0;
-            float sum_g = src[(j-2)*w+i].rgbGreen*gaussian15[index++] + src[(j-1)*w+i].rgbGreen*gaussian15[index++]
-                          + src[j*w+i].rgbGreen*gaussian15[index++] + src[(j+1)*w+i].rgbGreen*gaussian15[index++]
-                          + src[(j+2)*w+i].rgbGreen*gaussian15[index++];
-            index = 0;
-            float sum_b = src[(j-2)*w+i].rgbBlue*gaussian15[index++] + src[(j-1)*w+i].rgbBlue*gaussian15[index++]
-                          + src[j*w+i].rgbBlue*gaussian15[index++] + src[(j+1)*w+i].rgbBlue*gaussian15[index++]
-                          + src[(j+2)*w+i].rgbBlue*gaussian15[index++];
+            float sum_r = src[(j-2)*w+i].rgbRed*gaussian15[0] + src[(j-1)*w+i].rgbRed*gaussian15[1]
+                          + src[j*w+i].rgbRed*gaussian15[2] + src[(j+1)*w+i].rgbRed*gaussian15[3]
+                          + src[(j+2)*w+i].rgbRed*gaussian15[4];
+            float sum_g = src[(j-2)*w+i].rgbGreen*gaussian15[0] + src[(j-1)*w+i].rgbGreen*gaussian15[1]
+                          + src[j*w+i].rgbGreen*gaussian15[2] + src[(j+1)*w+i].rgbGreen*gaussian15[3]
+                          + src[(j+2)*w+i].rgbGreen*gaussian15[4];
+            float sum_b = src[(j-2)*w+i].rgbBlue*gaussian15[0] + src[(j-1)*w+i].rgbBlue*gaussian15[1]
+                          + src[j*w+i].rgbBlue*gaussian15[2] + src[(j+1)*w+i].rgbBlue*gaussian15[3]
+                          + src[(j+2)*w+i].rgbBlue*gaussian15[4];
             src[j*w+i].rgbRed = (sum_r > 255 ) ? 255 : sum_r;
             src[j*w+i].rgbGreen = (sum_g > 255 ) ? 255 : sum_g;
             src[j*w+i].rgbBlue = (sum_b > 255 ) ? 255 : sum_b;

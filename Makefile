@@ -1,5 +1,5 @@
 CC := gcc
-CFLAGS := -msse2 -msse3 -msse4 --std gnu99 -O0
+CFLAGS := -msse2 -msse3 -msse4 --std gnu99 -Wall -pedantic -fopenmp -O0 
 OBJS := gaussian.o mirror.o hsv.o
 HEADER := gaussian.h mirror.h hsv.h
 TARGET := bmpreader
