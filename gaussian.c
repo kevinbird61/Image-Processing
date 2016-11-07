@@ -121,18 +121,19 @@ void pt_gaussian_blur_5_tri(unsigned char *src,int num_threads,int w,int h)
 {
     // calculate for width (For a pthread to go through)
     pthread_t *thread_handler;
+    tInfo *threadInfo;
     global_src = src;
     /* Allocate memory for pthread_create() arguments */
     thread_handler = malloc(num_threads*sizeof(pthread_t));
-
+    threadInfo = malloc(num_threads*sizeof(tInfo));
     /* Create one thread for each command-line argument */
     for(int tnum = 0; tnum < num_threads ; tnum++) {
-        tInfo *threadInfo = malloc(sizeof(tInfo));
-        threadInfo->thread_id = tnum;
-        threadInfo->total_thread_size = num_threads;
-        threadInfo->width = w;
-        threadInfo->height = h;
-        pthread_create(&thread_handler[tnum],NULL,thread_blur,(void *)threadInfo);
+        //tInfo *threadInfo = malloc(sizeof(tInfo));
+        threadInfo[tnum].thread_id = tnum;
+        threadInfo[tnum].total_thread_size = num_threads;
+        threadInfo[tnum].width = w;
+        threadInfo[tnum].height = h;
+        pthread_create(&thread_handler[tnum],NULL,thread_blur,&threadInfo[tnum]);
     }
     /* Now join with each thread */
     for(int tnum = 0; tnum < num_threads ; tnum++) {
@@ -140,25 +141,25 @@ void pt_gaussian_blur_5_tri(unsigned char *src,int num_threads,int w,int h)
     }
 
     global_src = NULL;
+    free(threadInfo);
     free(thread_handler);
 }
 
 void pt_sse_gaussian_blur_5_ori(RGBTRIPLE *src,int num_threads,int w,int h)
 {
     pthread_t *thread_handler;
+    tInfo *threadInfo;
     global_src_ori = src;
     thread_handler = malloc(num_threads*sizeof(pthread_t));
+    threadInfo = malloc(num_threads*sizeof(tInfo));
 
     /* Create one thread for each command-line argument */
     for(int tnum = 0; tnum < num_threads ; tnum++) {
-        tInfo *threadInfo = malloc(sizeof(tInfo));
-        threadInfo->thread_id = tnum;
-        threadInfo->total_thread_size = num_threads;
-        threadInfo->width = w;
-        threadInfo->height = h;
-        pthread_create(&thread_handler[tnum],NULL,sse_thread_blur,(void *)threadInfo);
-        threadInfo = NULL;
-        free(threadInfo);
+        threadInfo[tnum].thread_id = tnum;
+        threadInfo[tnum].total_thread_size = num_threads;
+        threadInfo[tnum].width = w;
+        threadInfo[tnum].height = h;
+        pthread_create(&thread_handler[tnum],NULL,sse_thread_blur,&threadInfo[tnum]);
     }
     for(int tnum = 0; tnum < num_threads ; tnum++) {
         pthread_join(thread_handler[tnum],NULL);
@@ -166,6 +167,7 @@ void pt_sse_gaussian_blur_5_ori(RGBTRIPLE *src,int num_threads,int w,int h)
 
     global_src_ori = NULL;
     free(thread_handler);
+    free(threadInfo);
 }
 
 void unroll_gaussian_blur_5_tri(unsigned char *src,int w,int h)
