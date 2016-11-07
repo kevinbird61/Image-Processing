@@ -272,6 +272,8 @@ void naive_gaussian_blur_5(unsigned char *src,int w,int h)
 
 void naive_gaussian_blur_5_expand(unsigned char *src,int w,int h)
 {
+    uint32_t *out = malloc(w*h*sizeof(uint32_t));
+    memset(out,0,w*h*sizeof(uint32_t));
     for(int j=2; j<h-7; j+=5) {
         for(int i=2; i<w-7; i+=5) {
             int sum = 0;
@@ -282,84 +284,84 @@ void naive_gaussian_blur_5_expand(unsigned char *src,int w,int h)
                       temp51 = src[(j+4)*w+(i)],temp52 = src[(j+4)*w+(i+1)],temp53 = src[(j+4)*w+(i+2)],temp54 = src[(j+4)*w+(i+3)],temp55 = src[(j+4)*w+(i+4)];
             // expand 5x5 to 9x9
             // row=j-2
-            src[(j-2)*w+i-2] += (temp11*gaussian55[0]) / deno55;
-            src[(j-2)*w+i-1] += (temp11*gaussian55[1] + temp12*gaussian55[0]) / deno55;
-            src[(j-2)*w+i] += (temp11*gaussian55[2] + temp12*gaussian55[1] + temp13*gaussian55[0]) / deno55;
-            src[(j-2)*w+i+1] += (temp11*gaussian55[3]+temp12*gaussian55[2]+temp13*gaussian55[1]+temp14*gaussian55[0])/deno55;
-            src[(j-2)*w+i+2] += (temp11*gaussian55[4]+temp12*gaussian55[3]+temp13*gaussian55[2]+temp14*gaussian55[1]+temp15*gaussian55[0])/deno55;
-            src[(j-2)*w+i+3] += (temp12*gaussian55[4]+temp13*gaussian55[3]+temp14*gaussian55[2]+temp15*gaussian55[1])/deno55;
-            src[(j-2)*w+i+4] += (temp13*gaussian55[4]+temp14*gaussian55[3]+temp15*gaussian55[2])/deno55;
-            src[(j-2)*w+i+5] += (temp14*gaussian55[4] + temp15*gaussian55[3]) / deno55;
-            src[(j-2)*w+i+6] += (temp15*gaussian55[4]) / deno55;
+            out[(j-2)*w+i-2] += (temp11*gaussian55[0]) / deno55;
+            out[(j-2)*w+i-1] += (temp11*gaussian55[1] + temp12*gaussian55[0]) / deno55;
+            out[(j-2)*w+i] += (temp11*gaussian55[2] + temp12*gaussian55[1] + temp13*gaussian55[0]) / deno55;
+            out[(j-2)*w+i+1] += (temp11*gaussian55[3]+temp12*gaussian55[2]+temp13*gaussian55[1]+temp14*gaussian55[0])/deno55;
+            out[(j-2)*w+i+2] += (temp11*gaussian55[4]+temp12*gaussian55[3]+temp13*gaussian55[2]+temp14*gaussian55[1]+temp15*gaussian55[0])/deno55;
+            out[(j-2)*w+i+3] += (temp12*gaussian55[4]+temp13*gaussian55[3]+temp14*gaussian55[2]+temp15*gaussian55[1])/deno55;
+            out[(j-2)*w+i+4] += (temp13*gaussian55[4]+temp14*gaussian55[3]+temp15*gaussian55[2])/deno55;
+            out[(j-2)*w+i+5] += (temp14*gaussian55[4] + temp15*gaussian55[3]) / deno55;
+            out[(j-2)*w+i+6] += (temp15*gaussian55[4]) / deno55;
             // row=j-1
-            src[(j-1)*w+i-2] += (temp11*gaussian55[5]+temp21*gaussian55[0])/deno55;
-            src[(j-1)*w+i-1] += (temp11*gaussian55[6]+temp12*gaussian55[5]+temp21*gaussian55[1]+temp22*gaussian55[0])/deno55;
-            src[(j-1)*w+i] += (temp11*gaussian55[7]+temp12*gaussian55[6]+temp13*gaussian55[5]+temp21*gaussian55[2]+temp22*gaussian55[1]+temp23*gaussian55[0])/deno55;
-            src[(j-1)*w+i+1] += (temp11*gaussian55[8]+temp12*gaussian55[7]+temp13*gaussian55[6]+temp14*gaussian55[5]+temp21*gaussian55[3]
+            out[(j-1)*w+i-2] += (temp11*gaussian55[5]+temp21*gaussian55[0])/deno55;
+            out[(j-1)*w+i-1] += (temp11*gaussian55[6]+temp12*gaussian55[5]+temp21*gaussian55[1]+temp22*gaussian55[0])/deno55;
+            out[(j-1)*w+i] += (temp11*gaussian55[7]+temp12*gaussian55[6]+temp13*gaussian55[5]+temp21*gaussian55[2]+temp22*gaussian55[1]+temp23*gaussian55[0])/deno55;
+            out[(j-1)*w+i+1] += (temp11*gaussian55[8]+temp12*gaussian55[7]+temp13*gaussian55[6]+temp14*gaussian55[5]+temp21*gaussian55[3]
                                  +temp22*gaussian55[2]+temp23*gaussian55[1]+temp24*gaussian55[0])/deno55;
-            src[(j-1)*w+i+2] += (temp11*gaussian55[9]+temp12*gaussian55[8]+temp13*gaussian55[7]+temp14*gaussian55[6]+temp15*gaussian55[5]
+            out[(j-1)*w+i+2] += (temp11*gaussian55[9]+temp12*gaussian55[8]+temp13*gaussian55[7]+temp14*gaussian55[6]+temp15*gaussian55[5]
                                  +temp21*gaussian55[4]+temp22*gaussian55[3]+temp23*gaussian55[2]+temp24*gaussian55[1]+temp25*gaussian55[0])/deno55;
-            src[(j-1)*w+i+3] += (temp12*gaussian55[9]+temp13*gaussian55[8]+temp14*gaussian55[7]+temp15*gaussian55[6]+temp22*gaussian55[4]
+            out[(j-1)*w+i+3] += (temp12*gaussian55[9]+temp13*gaussian55[8]+temp14*gaussian55[7]+temp15*gaussian55[6]+temp22*gaussian55[4]
                                  +temp23*gaussian55[3]+temp24*gaussian55[2]+temp25*gaussian55[1])/deno55;
-            src[(j-1)*w+i+4] += (temp13*gaussian55[9]+temp14*gaussian55[8]+temp15*gaussian55[7]+temp23*gaussian55[4]+temp24*gaussian55[3]+temp25*gaussian55[2])/deno55;
-            src[(j-1)*w+i+5] += (temp14*gaussian55[9]+temp15*gaussian55[8]+temp24*gaussian55[4]+temp25*gaussian55[3])/deno55;
-            src[(j-1)*w+i+6] += (temp15*gaussian55[9]+temp25*gaussian55[4])/deno55;
+            out[(j-1)*w+i+4] += (temp13*gaussian55[9]+temp14*gaussian55[8]+temp15*gaussian55[7]+temp23*gaussian55[4]+temp24*gaussian55[3]+temp25*gaussian55[2])/deno55;
+            out[(j-1)*w+i+5] += (temp14*gaussian55[9]+temp15*gaussian55[8]+temp24*gaussian55[4]+temp25*gaussian55[3])/deno55;
+            out[(j-1)*w+i+6] += (temp15*gaussian55[9]+temp25*gaussian55[4])/deno55;
             // row=j
-            src[j*w+i-2] += (temp11*gaussian55[10]*temp21*gaussian55[5]+temp31*gaussian55[0])/deno55;
-            src[j*w+i-1] += (temp11*gaussian55[11]*temp12*gaussian55[10]+temp21*gaussian55[6]+temp22*gaussian55[5]+temp31*gaussian55[1]+temp32*gaussian55[0])/deno55;
+            out[j*w+i-2] += (temp11*gaussian55[10]*temp21*gaussian55[5]+temp31*gaussian55[0])/deno55;
+            out[j*w+i-1] += (temp11*gaussian55[11]*temp12*gaussian55[10]+temp21*gaussian55[6]+temp22*gaussian55[5]+temp31*gaussian55[1]+temp32*gaussian55[0])/deno55;
             sum = (temp11*gaussian55[12]+temp12*gaussian55[11]+temp13*gaussian55[10]+temp21*gaussian55[7]+temp22*gaussian55[6]+temp23*gaussian55[5]
                    +temp31*gaussian55[2]+temp32*gaussian55[1]+temp33*gaussian55[0])/deno55;
-            src[j*w+i] = ((sum > 255) ? 255 : sum);
+            out[j*w+i] = ((sum > 255) ? 255 : sum);
             sum = (temp11*gaussian55[13]+temp12*gaussian55[12]+temp13*gaussian55[11]+temp14*gaussian55[10]+temp21*gaussian55[8]+temp22*gaussian55[7]
                    +temp23*gaussian55[6]+temp24*gaussian55[5]+temp31*gaussian55[3]+temp32*gaussian55[2]+temp33*gaussian55[1]+temp34*gaussian55[0])/deno55;
-            src[j*w+i+1] = ((sum > 255) ? 255 : sum);
+            out[j*w+i+1] = ((sum > 255) ? 255 : sum);
             sum = (temp11*gaussian55[14]+temp12*gaussian55[13]+temp13*gaussian55[12]+temp14*gaussian55[11]+temp15*gaussian55[10]
                    +temp21*gaussian55[9]+temp22*gaussian55[8]+temp23*gaussian55[7]+temp24*gaussian55[6]+temp25*gaussian55[5]
                    +temp31*gaussian55[4]+temp32*gaussian55[3]+temp33*gaussian55[2]+temp34*gaussian55[1]+temp35*gaussian55[0])/deno55;
-            src[j*w+i+2] = ((sum > 255) ? 255 : sum);
+            out[j*w+i+2] = ((sum > 255) ? 255 : sum);
             sum = (temp12*gaussian55[14]+temp13*gaussian55[13]+temp14*gaussian55[12]+temp15*gaussian55[11]+temp22*gaussian55[9]
                    +temp23*gaussian55[8]+temp24*gaussian55[7]+temp25*gaussian55[6]+temp32*gaussian55[4]+temp33*gaussian55[3]
                    +temp34*gaussian55[2]+temp35*gaussian55[1])/deno55;
-            src[j*w+i+3] = ((sum > 255) ? 255 : sum);
+            out[j*w+i+3] = ((sum > 255) ? 255 : sum);
             sum = (temp13*gaussian55[14]+temp14*gaussian55[13]+temp15*gaussian55[12]+temp23*gaussian55[9]+temp24*gaussian55[8]+temp25*gaussian55[7]
                    +temp33*gaussian55[4]+temp34*gaussian55[3]+temp35*gaussian55[2])/deno55;
-            src[j*w+i+4] = ((sum > 255) ? 255 : sum);
-            src[j*w+i+5] += (temp14*gaussian55[14]+temp15*gaussian55[13]+temp24*gaussian55[9]+temp25*gaussian55[8]+temp34*gaussian55[4]+temp35*gaussian55[3])/deno55;
-            src[j*w+i+6] += (temp15*gaussian55[14]+temp25*gaussian55[9]+temp35*gaussian55[4])/deno55;
+            out[j*w+i+4] = ((sum > 255) ? 255 : sum);
+            out[j*w+i+5] += (temp14*gaussian55[14]+temp15*gaussian55[13]+temp24*gaussian55[9]+temp25*gaussian55[8]+temp34*gaussian55[4]+temp35*gaussian55[3])/deno55;
+            out[j*w+i+6] += (temp15*gaussian55[14]+temp25*gaussian55[9]+temp35*gaussian55[4])/deno55;
             // row=j+1
-            src[(j+1)*w+i-2] += (temp11*gaussian55[15]+temp21*gaussian55[10]+temp31*gaussian55[5]+temp41*gaussian55[0])/deno55;
-            src[(j+1)*w+i-1] += (temp11*gaussian55[16]+temp12*gaussian55[15]+temp21*gaussian55[11]+temp22*gaussian55[10]+temp31*gaussian55[6]
+            out[(j+1)*w+i-2] += (temp11*gaussian55[15]+temp21*gaussian55[10]+temp31*gaussian55[5]+temp41*gaussian55[0])/deno55;
+            out[(j+1)*w+i-1] += (temp11*gaussian55[16]+temp12*gaussian55[15]+temp21*gaussian55[11]+temp22*gaussian55[10]+temp31*gaussian55[6]
                                  +temp32*gaussian55[5]+temp41*gaussian55[1]+temp42*gaussian55[0])/deno55;
             sum = (temp11*gaussian55[17]+temp12*gaussian55[16]+temp13*gaussian55[15]+temp21*gaussian55[12]+temp22*gaussian55[11]+
                    temp23*gaussian55[10]+temp31*gaussian55[7]+temp32*gaussian55[6]+temp33*gaussian55[5]+temp41*gaussian55[2]+temp42*gaussian55[1]+temp43*gaussian55[0])/deno55;
-            src[(j+1)*w+i] = ((sum > 255) ? 255 : sum);
+            out[(j+1)*w+i] = ((sum > 255) ? 255 : sum);
             sum = (temp11*gaussian55[18]+temp12*gaussian55[17]+temp13*gaussian55[16]+temp14*gaussian55[15]+temp21*gaussian55[13]+temp22*gaussian55[12]+
                    temp23*gaussian55[11]+temp24*gaussian55[10]+temp31*gaussian55[8]+temp32*gaussian55[7]+temp33*gaussian55[6]+temp34*gaussian55[5]
                    +temp41*gaussian55[3]+temp42*gaussian55[2]+temp43*gaussian55[1]+temp44*gaussian55[0])/deno55;
-            src[(j+1)*w+i+1] = ((sum > 255) ? 255 : sum);
+            out[(j+1)*w+i+1] = ((sum > 255) ? 255 : sum);
             sum = (temp11*gaussian55[19]+temp12*gaussian55[18]+temp13*gaussian55[17]+temp14*gaussian55[16]+temp15*gaussian55[15]
                    +temp21*gaussian55[14]+temp22*gaussian55[13]+temp23*gaussian55[12]+temp24*gaussian55[11]+temp25*gaussian55[10]
                    +temp31*gaussian55[9]+temp32*gaussian55[8]+temp33*gaussian55[7]+temp34*gaussian55[6]+temp35*gaussian55[5]
                    +temp41*gaussian55[4]+temp42*gaussian55[3]+temp43*gaussian55[2]+temp44*gaussian55[1]+temp45*gaussian55[0])/deno55;
-            src[(j+1)*w+i+2] = ((sum > 255) ? 255 : sum);
+            out[(j+1)*w+i+2] = ((sum > 255) ? 255 : sum);
             sum = (temp12*gaussian55[19]+temp13*gaussian55[18]+temp14*gaussian55[17]+temp15*gaussian55[16]
                    +temp22*gaussian55[14]+temp23*gaussian55[13]+temp24*gaussian55[12]+temp25*gaussian55[11]
                    +temp32*gaussian55[9]+temp33*gaussian55[8]+temp34*gaussian55[7]+temp35*gaussian55[6]
                    +temp42*gaussian55[4]+temp43*gaussian55[3]+temp44*gaussian55[2]+temp45*gaussian55[1])/deno55;
-            src[(j+1)*w+i+3] = ((sum > 255) ? 255 : sum);
+            out[(j+1)*w+i+3] = ((sum > 255) ? 255 : sum);
             sum = (temp13*gaussian55[19]+temp14*gaussian55[18]+temp15*gaussian55[17]
                    +temp23*gaussian55[14]+temp24*gaussian55[13]+temp25*gaussian55[12]
                    +temp33*gaussian55[9]+temp34*gaussian55[8]+temp35*gaussian55[7]
                    +temp43*gaussian55[4]+temp44*gaussian55[3]+temp45*gaussian55[2])/deno55;
-            src[(j+1)*w+i+4] = ((sum > 255) ? 255 : sum);
-            src[(j+1)*w+i+5] += (temp14*gaussian55[19]+temp15*gaussian55[18]
+            out[(j+1)*w+i+4] = ((sum > 255) ? 255 : sum);
+            out[(j+1)*w+i+5] += (temp14*gaussian55[19]+temp15*gaussian55[18]
                                  +temp24*gaussian55[14]+temp25*gaussian55[13]
                                  +temp34*gaussian55[9]+temp35*gaussian55[8]
                                  +temp44*gaussian55[4]+temp45*gaussian55[3])/deno55;
-            src[(j+1)*w+i+6] += (temp15*gaussian55[19]+temp25*gaussian55[14]+temp35*gaussian55[9]+temp45*gaussian55[4])/deno55;
+            out[(j+1)*w+i+6] += (temp15*gaussian55[19]+temp25*gaussian55[14]+temp35*gaussian55[9]+temp45*gaussian55[4])/deno55;
             // row=j+2
-            src[(j+2)*w+i-2] += (temp11*gaussian55[20]+temp21*gaussian55[15]+temp31*gaussian55[10]+temp41*gaussian55[5]+temp51*gaussian55[0])/deno55;
-            src[(j+2)*w+i-1] += (temp11*gaussian55[21]+temp12*gaussian55[20]
+            out[(j+2)*w+i-2] += (temp11*gaussian55[20]+temp21*gaussian55[15]+temp31*gaussian55[10]+temp41*gaussian55[5]+temp51*gaussian55[0])/deno55;
+            out[(j+2)*w+i-1] += (temp11*gaussian55[21]+temp12*gaussian55[20]
                                  +temp21*gaussian55[16]+temp22*gaussian55[15]
                                  +temp31*gaussian55[11]+temp32*gaussian55[10]
                                  +temp41*gaussian55[6]+temp42*gaussian55[5]
@@ -369,40 +371,40 @@ void naive_gaussian_blur_5_expand(unsigned char *src,int w,int h)
                    +temp31*gaussian55[12]+temp32*gaussian55[11]+temp33*gaussian55[10]
                    +temp41*gaussian55[7]+temp42*gaussian55[6]+temp43*gaussian55[5]
                    +temp51*gaussian55[2]+temp52*gaussian55[1]+temp53*gaussian55[0])/deno55;
-            src[(j+2)*w+i] = ((sum > 255) ? 255 : sum);
+            out[(j+2)*w+i] = ((sum > 255) ? 255 : sum);
             sum = (temp11*gaussian55[23]+temp12*gaussian55[22]+temp13*gaussian55[21]+temp14*gaussian55[20]
                    +temp21*gaussian55[18]+temp22*gaussian55[17]+temp23*gaussian55[16]+temp24*gaussian55[15]
                    +temp31*gaussian55[13]+temp32*gaussian55[12]+temp33*gaussian55[11]+temp34*gaussian55[10]
                    +temp41*gaussian55[8]+temp42*gaussian55[7]+temp43*gaussian55[6]+temp44*gaussian55[5]
                    +temp51*gaussian55[3]+temp52*gaussian55[2]+temp53*gaussian55[1]+temp54*gaussian55[0])/deno55;
-            src[(j+2)*w+i+1] = ((sum > 255) ? 255 : sum);
+            out[(j+2)*w+i+1] = ((sum > 255) ? 255 : sum);
             sum = (temp11*gaussian55[24]+temp12*gaussian55[23]+temp13*gaussian55[22]+temp14*gaussian55[21]+temp15*gaussian55[20]
                    +temp21*gaussian55[19]+temp22*gaussian55[18]+temp23*gaussian55[17]+temp24*gaussian55[16]+temp25*gaussian55[15]
                    +temp31*gaussian55[14]+temp32*gaussian55[13]+temp33*gaussian55[12]+temp34*gaussian55[11]+temp35*gaussian55[10]
                    +temp41*gaussian55[9]+temp42*gaussian55[8]+temp43*gaussian55[7]+temp44*gaussian55[6]+temp45*gaussian55[5]
                    +temp51*gaussian55[4]+temp52*gaussian55[3]+temp53*gaussian55[2]+temp54*gaussian55[1]+temp55*gaussian55[0])/deno55;
-            src[(j+2)*w+i+2] = ((sum > 255) ? 255 : sum);
+            out[(j+2)*w+i+2] = ((sum > 255) ? 255 : sum);
             sum = (temp12*gaussian55[24]+temp13*gaussian55[23]+temp14*gaussian55[22]+temp15*gaussian55[21]
                    +temp22*gaussian55[19]+temp23*gaussian55[18]+temp24*gaussian55[17]+temp25*gaussian55[16]
                    +temp32*gaussian55[14]+temp33*gaussian55[13]+temp34*gaussian55[12]+temp35*gaussian55[11]
                    +temp42*gaussian55[9]+temp43*gaussian55[8]+temp44*gaussian55[7]+temp45*gaussian55[6]
                    +temp52*gaussian55[4]+temp53*gaussian55[3]+temp54*gaussian55[2]+temp55*gaussian55[1])/deno55;
-            src[(j+2)*w+i+3] = ((sum > 255) ? 255 : sum);
+            out[(j+2)*w+i+3] = ((sum > 255) ? 255 : sum);
             sum = (temp13*gaussian55[24]+temp14*gaussian55[23]+temp15*gaussian55[22]
                    +temp23*gaussian55[19]+temp24*gaussian55[18]+temp25*gaussian55[17]
                    +temp33*gaussian55[14]+temp34*gaussian55[13]+temp35*gaussian55[12]
                    +temp43*gaussian55[9]+temp44*gaussian55[8]+temp45*gaussian55[7]
                    +temp53*gaussian55[4]+temp54*gaussian55[3]+temp55*gaussian55[2])/deno55;
-            src[(j+2)*w+i+4] = ((sum > 255) ? 255 : sum);
-            src[(j+2)*w+i+5] += (temp14*gaussian55[24]+temp15*gaussian55[23]
+            out[(j+2)*w+i+4] = ((sum > 255) ? 255 : sum);
+            out[(j+2)*w+i+5] += (temp14*gaussian55[24]+temp15*gaussian55[23]
                                  +temp24*gaussian55[19]+temp25*gaussian55[18]
                                  +temp34*gaussian55[14]+temp35*gaussian55[13]
                                  +temp44*gaussian55[9]+temp45*gaussian55[8]
                                  +temp54*gaussian55[4]+temp55*gaussian55[3])/deno55;
-            src[(j+2)*w+i+6] += (temp15*gaussian55[24]+temp25*gaussian55[19]+temp35*gaussian55[14]+temp45*gaussian55[9]+temp55*gaussian55[4])/deno55;
+            out[(j+2)*w+i+6] += (temp15*gaussian55[24]+temp25*gaussian55[19]+temp35*gaussian55[14]+temp45*gaussian55[9]+temp55*gaussian55[4])/deno55;
             // row=j+3
-            src[(j+3)*w+i-2] += (temp21*gaussian55[20]+temp31*gaussian55[15]+temp41*gaussian55[10]+temp51*gaussian55[5])/deno55;
-            src[(j+3)*w+i-2] += (temp21*gaussian55[21]+temp22*gaussian55[20]
+            out[(j+3)*w+i-2] += (temp21*gaussian55[20]+temp31*gaussian55[15]+temp41*gaussian55[10]+temp51*gaussian55[5])/deno55;
+            out[(j+3)*w+i-2] += (temp21*gaussian55[21]+temp22*gaussian55[20]
                                  +temp31*gaussian55[16]+temp32*gaussian55[15]
                                  +temp41*gaussian55[11]+temp42*gaussian55[10]
                                  +temp51*gaussian55[6]+temp52*gaussian55[5])/deno55;
@@ -410,89 +412,97 @@ void naive_gaussian_blur_5_expand(unsigned char *src,int w,int h)
                    +temp31*gaussian55[17]+temp32*gaussian55[16]+temp33*gaussian55[15]
                    +temp41*gaussian55[12]+temp42*gaussian55[11]+temp43*gaussian55[10]
                    +temp51*gaussian55[7]+temp52*gaussian55[6]+temp53*gaussian55[5])/deno55;
-            src[(j+3)*w+i] = ((sum > 255) ? 255 : sum);
+            out[(j+3)*w+i] = ((sum > 255) ? 255 : sum);
             sum = (temp21*gaussian55[23]+temp22*gaussian55[22]+temp23*gaussian55[21]+temp24*gaussian55[20]
                    +temp31*gaussian55[18]+temp32*gaussian55[17]+temp33*gaussian55[16]+temp34*gaussian55[15]
                    +temp41*gaussian55[13]+temp42*gaussian55[12]+temp43*gaussian55[11]+temp44*gaussian55[10]
                    +temp51*gaussian55[8]+temp52*gaussian55[7]+temp53*gaussian55[6]+temp54*gaussian55[5])/deno55;
-            src[(j+3)*w+i+1] = ((sum > 255) ? 255 : sum);
+            out[(j+3)*w+i+1] = ((sum > 255) ? 255 : sum);
             sum = (temp21*gaussian55[24]+temp22*gaussian55[23]+temp23*gaussian55[22]+temp24*gaussian55[21]+temp25*gaussian55[20]
                    +temp31*gaussian55[19]+temp32*gaussian55[18]+temp33*gaussian55[17]+temp34*gaussian55[16]+temp35*gaussian55[15]
                    +temp41*gaussian55[14]+temp42*gaussian55[13]+temp43*gaussian55[12]+temp44*gaussian55[11]+temp45*gaussian55[10]
                    +temp51*gaussian55[9]+temp52*gaussian55[8]+temp53*gaussian55[7]+temp54*gaussian55[6]+temp55*gaussian55[5])/deno55;
-            src[(j+3)*w+i+2] = ((sum > 255) ? 255 : sum);
+            out[(j+3)*w+i+2] = ((sum > 255) ? 255 : sum);
             sum = (temp22*gaussian55[24]+temp23*gaussian55[23]+temp24*gaussian55[22]+temp25*gaussian55[21]
                    +temp32*gaussian55[19]+temp33*gaussian55[18]+temp34*gaussian55[17]+temp35*gaussian55[16]
                    +temp42*gaussian55[14]+temp43*gaussian55[13]+temp44*gaussian55[12]+temp45*gaussian55[11]
                    +temp52*gaussian55[9]+temp53*gaussian55[8]+temp54*gaussian55[7]+temp55*gaussian55[6])/deno55;
-            src[(j+3)*w+i+3] = ((sum > 255) ? 255 : sum);
+            out[(j+3)*w+i+3] = ((sum > 255) ? 255 : sum);
             sum = (temp23*gaussian55[24]+temp24*gaussian55[23]+temp25*gaussian55[22]
                    +temp33*gaussian55[19]+temp34*gaussian55[18]+temp35*gaussian55[17]
                    +temp43*gaussian55[14]+temp44*gaussian55[13]+temp45*gaussian55[12]
                    +temp53*gaussian55[9]+temp54*gaussian55[8]+temp55*gaussian55[7])/deno55;
-            src[(j+3)*w+i+4] = ((sum > 255) ? 255 : sum);
-            src[(j+3)*w+i+5] += (temp24*gaussian55[24]+temp23*gaussian55[23]
+            out[(j+3)*w+i+4] = ((sum > 255) ? 255 : sum);
+            out[(j+3)*w+i+5] += (temp24*gaussian55[24]+temp23*gaussian55[23]
                                  +temp34*gaussian55[19]+temp35*gaussian55[18]
                                  +temp44*gaussian55[14]+temp45*gaussian55[13]
                                  +temp54*gaussian55[9]+temp55*gaussian55[8])/deno55;
-            src[(j+3)*w+i+6] += (temp25*gaussian55[24]+temp35*gaussian55[19]+temp45*gaussian55[14]+temp55*gaussian55[9])/deno55;
+            out[(j+3)*w+i+6] += (temp25*gaussian55[24]+temp35*gaussian55[19]+temp45*gaussian55[14]+temp55*gaussian55[9])/deno55;
             // row=j+4
-            src[(j+4)*w+i-2] += (temp31*gaussian55[20]+temp41*gaussian55[15]+temp51*gaussian55[10])/deno55;
-            src[(j+4)*w+i-1] += (temp31*gaussian55[21]+temp32*gaussian55[20]
+            out[(j+4)*w+i-2] += (temp31*gaussian55[20]+temp41*gaussian55[15]+temp51*gaussian55[10])/deno55;
+            out[(j+4)*w+i-1] += (temp31*gaussian55[21]+temp32*gaussian55[20]
                                  +temp41*gaussian55[16]+temp42*gaussian55[15]
                                  +temp51*gaussian55[11]+temp52*gaussian55[10])/deno55;
             sum = (temp31*gaussian55[22]+temp32*gaussian55[21]+temp33*gaussian55[20]
                    +temp41*gaussian55[17]+temp42*gaussian55[16]+temp43*gaussian55[15]
                    +temp51*gaussian55[12]+temp52*gaussian55[11]+temp53*gaussian55[10])/deno55;
-            src[(j+4)*w+i] = ((sum > 255) ? 255 : sum);
+            out[(j+4)*w+i] = ((sum > 255) ? 255 : sum);
             sum = (temp31*gaussian55[23]+temp32*gaussian55[22]+temp33*gaussian55[21]+temp34*gaussian55[20]
                    +temp41*gaussian55[18]+temp42*gaussian55[17]+temp43*gaussian55[16]+temp44*gaussian55[15]
                    +temp51*gaussian55[13]+temp52*gaussian55[12]+temp53*gaussian55[11]+temp54*gaussian55[10])/deno55;
-            src[(j+4)*w+i+1] = ((sum > 255) ? 255 : sum);
+            out[(j+4)*w+i+1] = ((sum > 255) ? 255 : sum);
             sum = (temp31*gaussian55[24]+temp32*gaussian55[23]+temp33*gaussian55[22]+temp34*gaussian55[21]+temp35*gaussian55[20]
                    +temp41*gaussian55[19]+temp42*gaussian55[18]+temp43*gaussian55[17]+temp44*gaussian55[16]+temp45*gaussian55[15]
                    +temp51*gaussian55[14]+temp52*gaussian55[13]+temp53*gaussian55[12]+temp54*gaussian55[11]+temp55*gaussian55[10])/deno55;
-            src[(j+4)*w+i+2] = ((sum > 255) ? 255 : sum);
+            out[(j+4)*w+i+2] = ((sum > 255) ? 255 : sum);
             sum = (temp32*gaussian55[24]+temp33*gaussian55[23]+temp34*gaussian55[22]+temp35*gaussian55[21]
                    +temp42*gaussian55[19]+temp43*gaussian55[18]+temp44*gaussian55[17]+temp45*gaussian55[16]
                    +temp52*gaussian55[14]+temp53*gaussian55[13]+temp54*gaussian55[12]+temp55*gaussian55[11])/deno55;
-            src[(j+4)*w+i+3] = ((sum > 255) ? 255 : sum);
+            out[(j+4)*w+i+3] = ((sum > 255) ? 255 : sum);
             sum = (temp33*gaussian55[24]+temp34*gaussian55[23]+temp35*gaussian55[22]
                    +temp43*gaussian55[19]+temp44*gaussian55[18]+temp45*gaussian55[17]
                    +temp53*gaussian55[14]+temp54*gaussian55[13]+temp55*gaussian55[12])/deno55;
-            src[(j+4)*w+i+4] = ((sum > 255) ? 255 : sum);
-            src[(j+4)*w+i+5] += (temp34*gaussian55[24]+temp35*gaussian55[23]
+            out[(j+4)*w+i+4] = ((sum > 255) ? 255 : sum);
+            out[(j+4)*w+i+5] += (temp34*gaussian55[24]+temp35*gaussian55[23]
                                  +temp44*gaussian55[19]+temp45*gaussian55[18]
                                  +temp54*gaussian55[14]+temp55*gaussian55[13])/deno55;
-            src[(j+4)*w+i+6] += (temp35*gaussian55[24]+temp45*gaussian55[19]+temp55*gaussian55[14])/deno55;
+            out[(j+4)*w+i+6] += (temp35*gaussian55[24]+temp45*gaussian55[19]+temp55*gaussian55[14])/deno55;
             // row=j+5
-            src[(j+5)*w+i-2] += (temp41*gaussian55[20]+temp51*gaussian55[15])/deno55;
-            src[(j+5)*w+i-1] += (temp41*gaussian55[21]+temp42*gaussian55[20]+temp51*gaussian55[16]+temp52*gaussian55[15])/deno55;
-            src[(j+5)*w+i] += (temp41*gaussian55[22]+temp42*gaussian55[21]+temp43*gaussian55[20]
+            out[(j+5)*w+i-2] += (temp41*gaussian55[20]+temp51*gaussian55[15])/deno55;
+            out[(j+5)*w+i-1] += (temp41*gaussian55[21]+temp42*gaussian55[20]+temp51*gaussian55[16]+temp52*gaussian55[15])/deno55;
+            out[(j+5)*w+i] += (temp41*gaussian55[22]+temp42*gaussian55[21]+temp43*gaussian55[20]
                                +temp51*gaussian55[17]+temp52*gaussian55[16]+temp53*gaussian55[15])/deno55;
-            src[(j+5)*w+i+1] += (temp41*gaussian55[23]+temp42*gaussian55[22]+temp43*gaussian55[21]+temp44*gaussian55[20]
+            out[(j+5)*w+i+1] += (temp41*gaussian55[23]+temp42*gaussian55[22]+temp43*gaussian55[21]+temp44*gaussian55[20]
                                  +temp51*gaussian55[18]+temp52*gaussian55[17]+temp53*gaussian55[16]+temp54*gaussian55[15])/deno55;
-            src[(j+5)*w+i+2] += (temp41*gaussian55[24]+temp42*gaussian55[23]+temp43*gaussian55[22]+temp44*gaussian55[21]+temp45*gaussian55[20]
+            out[(j+5)*w+i+2] += (temp41*gaussian55[24]+temp42*gaussian55[23]+temp43*gaussian55[22]+temp44*gaussian55[21]+temp45*gaussian55[20]
                                  +temp51*gaussian55[19]+temp52*gaussian55[18]+temp53*gaussian55[17]+temp54*gaussian55[16]+temp55*gaussian55[15])/deno55;
-            src[(j+5)*w+i+3] += (temp42*gaussian55[24]+temp43*gaussian55[23]+temp44*gaussian55[22]+temp45*gaussian55[21]
+            out[(j+5)*w+i+3] += (temp42*gaussian55[24]+temp43*gaussian55[23]+temp44*gaussian55[22]+temp45*gaussian55[21]
                                  +temp52*gaussian55[19]+temp53*gaussian55[18]+temp54*gaussian55[17]+temp55*gaussian55[16])/deno55;
-            src[(j+5)*w+i+4] += (temp43*gaussian55[24]+temp44*gaussian55[23]+temp45*gaussian55[22]
+            out[(j+5)*w+i+4] += (temp43*gaussian55[24]+temp44*gaussian55[23]+temp45*gaussian55[22]
                                  +temp53*gaussian55[19]+temp54*gaussian55[18]+temp55*gaussian55[17])/deno55;
-            src[(j+5)*w+i+5] += (temp44*gaussian55[24]+temp45*gaussian55[23]
+            out[(j+5)*w+i+5] += (temp44*gaussian55[24]+temp45*gaussian55[23]
                                  +temp54*gaussian55[19]+temp55*gaussian55[18])/deno55;
-            src[(j+5)*w+i+6] += (temp45*gaussian55[24]+temp55*gaussian55[19])/deno55;
+            out[(j+5)*w+i+6] += (temp45*gaussian55[24]+temp55*gaussian55[19])/deno55;
             // row=j+6
-            src[(j+6)*w+i-2] += (temp51*gaussian55[20])/deno55;
-            src[(j+6)*w+i-1] += (temp51*gaussian55[21]+temp52*gaussian55[20])/deno55;
-            src[(j+6)*w+i] += (temp51*gaussian55[22]+temp52*gaussian55[21]+temp53*gaussian55[20])/deno55;
-            src[(j+6)*w+i+1] += (temp51*gaussian55[23]+temp52*gaussian55[22]+temp53*gaussian55[21]+temp54*gaussian55[20])/deno55;
-            src[(j+6)*w+i+2] += (temp51*gaussian55[24]+temp52*gaussian55[23]+temp53*gaussian55[22]+temp54*gaussian55[21]+temp55*gaussian55[20])/deno55;
-            src[(j+6)*w+i+3] += (temp52*gaussian55[24]+temp53*gaussian55[23]+temp54*gaussian55[22]+temp55*gaussian55[21])/deno55;
-            src[(j+6)*w+i+4] += (temp53*gaussian55[24]+temp54*gaussian55[23]+temp55*gaussian55[22])/deno55;
-            src[(j+6)*w+i+5] += (temp54*gaussian55[24]+temp55*gaussian55[23])/deno55;
-            src[(j+6)*w+i+5] += (temp55*gaussian55[24])/deno55;
+            out[(j+6)*w+i-2] += (temp51*gaussian55[20])/deno55;
+            out[(j+6)*w+i-1] += (temp51*gaussian55[21]+temp52*gaussian55[20])/deno55;
+            out[(j+6)*w+i] += (temp51*gaussian55[22]+temp52*gaussian55[21]+temp53*gaussian55[20])/deno55;
+            out[(j+6)*w+i+1] += (temp51*gaussian55[23]+temp52*gaussian55[22]+temp53*gaussian55[21]+temp54*gaussian55[20])/deno55;
+            out[(j+6)*w+i+2] += (temp51*gaussian55[24]+temp52*gaussian55[23]+temp53*gaussian55[22]+temp54*gaussian55[21]+temp55*gaussian55[20])/deno55;
+            out[(j+6)*w+i+3] += (temp52*gaussian55[24]+temp53*gaussian55[23]+temp54*gaussian55[22]+temp55*gaussian55[21])/deno55;
+            out[(j+6)*w+i+4] += (temp53*gaussian55[24]+temp54*gaussian55[23]+temp55*gaussian55[22])/deno55;
+            out[(j+6)*w+i+5] += (temp54*gaussian55[24]+temp55*gaussian55[23])/deno55;
+            out[(j+6)*w+i+5] += (temp55*gaussian55[24])/deno55;
         }
     }
+
+    for(int j=0; j<h; j++) {
+        for(int i=0; i<w; i++) {
+            src[j*w+i] = (out[j*w+i] > 255) ? 255: (unsigned char)out[j*w+i];
+        }
+    }
+
+    free(out);
 }
 
 void naive_gaussian_blur_5_original(RGBTRIPLE *src,int w,int h)
