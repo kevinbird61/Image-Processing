@@ -242,6 +242,22 @@ int main(int argc,char *argv[])
     color_g = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
     color_b = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
     split_structure();
+#ifdef MIRROR_ARM
+    clock_gettime(CLOCK_REALTIME, &start);
+    neon_flip_vertical_tri(color_r,bmpInfo.biWidth,bmpInfo.biHeight);
+    neon_flip_vertical_tri(color_g,bmpInfo.biWidth,bmpInfo.biHeight);
+    neon_flip_vertical_tri(color_b,bmpInfo.biWidth,bmpInfo.biHeight);
+    clock_gettime(CLOCK_REALTIME, &end);
+    cpu_time = diff_in_millisecond(start, end);
+    printf("neon flip vertical tri, execution time : %f ms\n", cpu_time);
+    clock_gettime(CLOCK_REALTIME, &start);
+    neon_flip_horizontal_tri(color_r,bmpInfo.biWidth,bmpInfo.biHeight);
+    neon_flip_horizontal_tri(color_g,bmpInfo.biWidth,bmpInfo.biHeight);
+    neon_flip_horizontal_tri(color_b,bmpInfo.biWidth,bmpInfo.biHeight);
+    clock_gettime(CLOCK_REALTIME, &end);
+    cpu_time = diff_in_millisecond(start, end);
+    printf("neon flip horizontal tri using, execution time : %f ms\n", cpu_time);
+#else
     clock_gettime(CLOCK_REALTIME, &start);
     naive_flip_vertical_ori(BMPSaveData,bmpInfo.biWidth,bmpInfo.biHeight);
     clock_gettime(CLOCK_REALTIME, &end);
@@ -294,6 +310,7 @@ int main(int argc,char *argv[])
     clock_gettime(CLOCK_REALTIME, &end);
     cpu_time = diff_in_millisecond(start, end);
     printf("omp flip horizontal tri using, execution time : %f ms\n", cpu_time);
+#endif
     merge_structure();
     free(color_r);
     free(color_b);
