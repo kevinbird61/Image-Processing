@@ -23,7 +23,7 @@ void *thread_blur(void *arg)
                   + global_src[(j+2)*info->width + i-2]*gaussian55[20] + global_src[(j+2)*info->width + i-1]*gaussian55[21]
                   + global_src[(j+2)*info->width + i]*gaussian55[22] + global_src[(j+2)*info->width + i+1]*gaussian55[23]
                   + global_src[(j+2)*info->width + i+2]*gaussian55[24];
-            global_src[j*info->width + i] = ((sum / 273) > 255 ? 255 : sum/273);
+            global_out[j*info->width + i] = ((sum/=deno55)>255) ? 255 : sum;
         }
     }
     return NULL;
@@ -123,6 +123,8 @@ void pt_gaussian_blur_5_tri(unsigned char *src,int num_threads,int w,int h)
     pthread_t *thread_handler;
     tInfo *threadInfo;
     global_src = src;
+    global_out = malloc(w*h*sizeof(uint32_t));
+    memset(global_out,0,w*h*sizeof(uint32_t));
     /* Allocate memory for pthread_create() arguments */
     thread_handler = malloc(num_threads*sizeof(pthread_t));
     threadInfo = malloc(num_threads*sizeof(tInfo));
@@ -139,8 +141,8 @@ void pt_gaussian_blur_5_tri(unsigned char *src,int num_threads,int w,int h)
     for(int tnum = 0; tnum < num_threads ; tnum++) {
         pthread_join(thread_handler[tnum],NULL);
     }
-
     global_src = NULL;
+    global_out = NULL;
     free(threadInfo);
     free(thread_handler);
 }
