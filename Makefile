@@ -1,6 +1,4 @@
 CC := gcc
-://github.com/SwimGlass/Image-Processing.gitinclude <pthread.h>
-#include "bmp.h"
 CFLAGS := -msse2 -msse3 -msse4 --std gnu99 -Wall -pedantic -fopenmp -O0 
 ARM_CC ?= arm-linux-gnueabihf-gcc-5
 ARM_CFLAGS = -c -g -Wall -Wextra -Ofast -mfpu=neon
