@@ -1,4 +1,6 @@
 CC := gcc
+://github.com/SwimGlass/Image-Processing.gitinclude <pthread.h>
+#include "bmp.h"
 CFLAGS := -msse2 -msse3 -msse4 --std gnu99 -Wall -pedantic -fopenmp -O0 
 ARM_CC ?= arm-linux-gnueabihf-gcc-5
 ARM_CFLAGS = -c -g -Wall -Wextra -Ofast -mfpu=neon
@@ -35,8 +37,8 @@ mirror_all: $(GIT_HOOKS) format main.c $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -DGAUSSIAN=0 -DMIRROR=1 -DHSV=0 -o $(TARGET) main.c
 
 mirror_arm: $(GIT_HOOKS) format main.c 
-	$(ARM_CC) $(ARM_CFLAGS) -DMIRROR_ARM -o mirror_arm.o mirror_arm.c
-	$(ARM_CC) $(ARM_LDFLAGS) -DMIRROR_ARM -DMIRROR=0 -o $(TARGET) main_arm.o
+	$(ARM_CC) $(ARM_CFLAGS) -DARM -DMIRROR_ARM -o mirror_arm.o mirror_arm.c
+	$(ARM_CC) $(ARM_LDFLAGS) -DMIRROR_ARM -DHSV=0 -DGAUSSIAN=0 -DMIRROR=0 -DARM mirror_arm.o -o $(TARGET) main.c
 
 hsv: $(GIT_HOOKS) format main.c $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -DGAUSSIAN=0 -DMIRROR=0 -DHSV=1 -o $(TARGET) main.c -fopenmp

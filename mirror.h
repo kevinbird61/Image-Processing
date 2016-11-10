@@ -1,6 +1,6 @@
 #ifndef MIRROR
 #define MIRROR
-#ifdef MIRROR_ARM
+#ifdef ARM
 #include <arm_neon.h>
 #else
 #include <xmmintrin.h>

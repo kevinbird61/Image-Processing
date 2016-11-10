@@ -4,11 +4,14 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdint.h>
+#ifdef ARM
+#else
 #include <xmmintrin.h>
 #include <immintrin.h>
 #include <tmmintrin.h>
 //#include <avxintrin.h>
 #include <emmintrin.h>
+#endif
 #include <pthread.h>
 #include "bmp.h"
 
