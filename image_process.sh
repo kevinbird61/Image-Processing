@@ -21,7 +21,7 @@ usage()
   echo "Usage: bash `basename $0` [-a -v -t -m -h -s | -g NUMBER]"
   echo "  -g NUMBER : define with the function we want to test, if don't set "
   echo "    just compile with all type"
-  echo "  [--plot --clean --help | --perf NUMBER]"
+  echo "  [--clean --help | --perf NUMBER]"
   echo "  --perf NUMBER : define the time we want to apply perf on this program"
   exit 1
 }
@@ -36,7 +36,7 @@ OBJS=(gaussian mirror hsv)
 TARGET=image_process
 # =========== defined Objects here ===========
 # Get string from command line
-ARGS=`getopt -o aevtmhsg: --long plot,help,clean,perf: -n 'execute.sh' -- "$@"`
+ARGS=`getopt -o aevtmhsg: --long help,clean,perf: -n 'execute.sh' -- "$@"`
 if [ $? != 0 ]; then
     usage
 fi
@@ -96,11 +96,6 @@ do
       echo "compile with target gaussian: $2"
       GAU_TYPE=$2
       shift 2
-      ;;
-    --plot)
-      echo "compile + run and plot the figure"
-      PLOT=y
-      shift
       ;;
     --perf)
       echo "compile + run and plot execution times: $2"
