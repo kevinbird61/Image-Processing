@@ -103,9 +103,9 @@ do
       shift 2
       ;;
     --clean)
-      echo "clean all object files"
+      echo "${RED}clean all object files${RESET}"
       # clean all the object file and useless files
-      rm *output*.bmp *.png $TARGET *.log *.o
+      rm *output*.bmp *.png $TARGET *.log *.o 2> /dev/null
       exit 1
       ;;
     --help)
@@ -127,9 +127,9 @@ echo "The program will be compile with:"
 CC="gcc"
 CFLAGS=
 if [ $STRICT = "y" ]; then
-  CFLAGS="-msse2 -msse3 -msse4 --std gnu99 -Wall -pedantic -fopenmp -O0"
+  CFLAGS="-msse -msse2 -msse3 -msse4 --std gnu99 -Wall -pedantic -fopenmp -O0"
 else
-  CFLAGS="-msse2 -msse3 -msse4 --std gnu99 -fopenmp -O0"
+  CFLAGS="-msse -msse2 -msse3 -msse4 --std gnu99 -fopenmp -O0"
 fi
 
 # generate those object file

@@ -10,7 +10,7 @@ void *thread_blur(void *arg)
         for(int i=2; i < info->width-2 ; i++) {
             // do the image blur
             int sum = 0;
-            sum = (int)global_src[(j-2)*info->width + i-2]*gaussian55[0] + global_src[(j-2)*info->width + i-1]*gaussian55[1]
+            sum = global_src[(j-2)*info->width + i-2]*gaussian55[0] + global_src[(j-2)*info->width + i-1]*gaussian55[1]
                   + global_src[(j-2)*info->width + i]*gaussian55[2] + global_src[(j-2)*info->width + i+1]*gaussian55[3]
                   + global_src[(j-2)*info->width + i+2]*gaussian55[4] + global_src[(j-1)*info->width + i-2]*gaussian55[5]
                   + global_src[(j-1)*info->width + i-1]*gaussian55[6] + global_src[(j-1)*info->width + i]*gaussian55[7]
@@ -178,7 +178,7 @@ void unroll_gaussian_blur_5_tri(unsigned char *src,int w,int h)
         for(int i=2; i<w-2; i++) {
             int sum = 0;
             // Unroll the 5x5 for loop
-            sum = (int)src[(j-2)*w+(i-2)]*gaussian55[0] + src[(j-2)*w+(i-1)]*gaussian55[1]
+            sum = src[(j-2)*w+(i-2)]*gaussian55[0] + src[(j-2)*w+(i-1)]*gaussian55[1]
                   + src[(j-2)*w+(i)]*gaussian55[2] + src[(j-2)*w+(i+1)]*gaussian55[3]
                   + src[(j-2)*w+(i+2)]*gaussian55[4] + src[(j-1)*w+(i-2)]*gaussian55[5]
                   + src[(j-1)*w+(i-1)]*gaussian55[6] + src[(j-1)*w+(i)]*gaussian55[7]
@@ -203,7 +203,7 @@ void unroll_gaussian_blur_5_ori(RGBTRIPLE *src,int w,int h)
         for(int i=2; i<w-2; i++) {
             int sum_r = 0,sum_g = 0,sum_b = 0;
             // Unroll the 5x5 for loop
-            sum_r = (int)src[(j-2)*w+(i-2)].rgbRed*gaussian55[0] + src[(j-2)*w+(i-1)].rgbRed*gaussian55[1]
+            sum_r = src[(j-2)*w+(i-2)].rgbRed*gaussian55[0] + src[(j-2)*w+(i-1)].rgbRed*gaussian55[1]
                     + src[(j-2)*w+(i)].rgbRed*gaussian55[2] + src[(j-2)*w+(i+1)].rgbRed*gaussian55[3]
                     + src[(j-2)*w+(i+2)].rgbRed*gaussian55[4] + src[(j-1)*w+(i-2)].rgbRed*gaussian55[5]
                     + src[(j-1)*w+(i-1)].rgbRed*gaussian55[6] + src[(j-1)*w+(i)].rgbRed*gaussian55[7]
@@ -216,7 +216,7 @@ void unroll_gaussian_blur_5_ori(RGBTRIPLE *src,int w,int h)
                     + src[(j+2)*w+(i-2)].rgbRed*gaussian55[20] + src[(j+2)*w+(i-1)].rgbRed*gaussian55[21]
                     + src[(j+2)*w+(i)].rgbRed*gaussian55[22] + src[(j+2)*w+(i+1)].rgbRed*gaussian55[23]
                     + src[(j+2)*w+(i+2)].rgbRed*gaussian55[24];
-            sum_g = (int)src[(j-2)*w+(i-2)].rgbGreen*gaussian55[0] + src[(j-2)*w+(i-1)].rgbGreen*gaussian55[1]
+            sum_g = src[(j-2)*w+(i-2)].rgbGreen*gaussian55[0] + src[(j-2)*w+(i-1)].rgbGreen*gaussian55[1]
                     + src[(j-2)*w+(i)].rgbGreen*gaussian55[2] + src[(j-2)*w+(i+1)].rgbGreen*gaussian55[3]
                     + src[(j-2)*w+(i+2)].rgbGreen*gaussian55[4] + src[(j-1)*w+(i-2)].rgbGreen*gaussian55[5]
                     + src[(j-1)*w+(i-1)].rgbGreen*gaussian55[6] + src[(j-1)*w+(i)].rgbGreen*gaussian55[7]
@@ -229,7 +229,7 @@ void unroll_gaussian_blur_5_ori(RGBTRIPLE *src,int w,int h)
                     + src[(j+2)*w+(i-2)].rgbGreen*gaussian55[20] + src[(j+2)*w+(i-1)].rgbGreen*gaussian55[21]
                     + src[(j+2)*w+(i)].rgbGreen*gaussian55[22] + src[(j+2)*w+(i+1)].rgbGreen*gaussian55[23]
                     + src[(j+2)*w+(i+2)].rgbGreen*gaussian55[24];
-            sum_b = (int)src[(j-2)*w+(i-2)].rgbBlue*gaussian55[0] + src[(j-2)*w+(i-1)].rgbBlue*gaussian55[1]
+            sum_b = src[(j-2)*w+(i-2)].rgbBlue*gaussian55[0] + src[(j-2)*w+(i-1)].rgbBlue*gaussian55[1]
                     + src[(j-2)*w+(i)].rgbBlue*gaussian55[2] + src[(j-2)*w+(i+1)].rgbBlue*gaussian55[3]
                     + src[(j-2)*w+(i+2)].rgbBlue*gaussian55[4] + src[(j-1)*w+(i-2)].rgbBlue*gaussian55[5]
                     + src[(j-1)*w+(i-1)].rgbBlue*gaussian55[6] + src[(j-1)*w+(i)].rgbBlue*gaussian55[7]
@@ -261,7 +261,7 @@ void naive_gaussian_blur_5(unsigned char *src,int w,int h)
             int index = 0;
             for(int sqr_j=j-2; sqr_j<j+3; sqr_j++) {
                 for(int sqr_i=i-2; sqr_i<i+3; sqr_i++) {
-                    sum += (int)src[sqr_j*w+sqr_i]*gaussian55[index++];
+                    sum += src[sqr_j*w+sqr_i]*gaussian55[index++];
                 }
             }
             sum /= 273;
@@ -316,6 +316,42 @@ void naive_gaussian_blur_5_expand(unsigned char *src,int w,int h)
     free(out);
 }
 
+void unroll_gaussian_1D_tri(RGBTRIPLE *src,int w,int h)
+{
+    for(int j=0; j<h; j++) {
+        for(int i=2; i<w-2; i++) {
+            float sum_r = (float)src[j*w+i-2].rgbRed*gaussian15[0] + src[j*w+i-1].rgbRed*gaussian15[1]
+                          + src[j*w+i].rgbRed*gaussian15[2] + src[j*w+i+1].rgbRed*gaussian15[3]
+                          + src[j*w+i+2].rgbRed*gaussian15[4];
+            float sum_g = (float)src[j*w+i-2].rgbGreen*gaussian15[0] + src[j*w+i-1].rgbGreen*gaussian15[1]
+                          + src[j*w+i].rgbGreen*gaussian15[2] + src[j*w+i+1].rgbGreen*gaussian15[3]
+                          + src[j*w+i+2].rgbGreen*gaussian15[4];
+            float sum_b = (float)src[j*w+i-2].rgbBlue*gaussian15[0] + src[j*w+i-1].rgbBlue*gaussian15[1]
+                          + src[j*w+i].rgbBlue*gaussian15[2] + src[j*w+i+1].rgbBlue*gaussian15[3]
+                          + src[j*w+i+2].rgbBlue*gaussian15[4];
+            src[j*w+i].rgbRed = (sum_r > 255 ) ? 255 : sum_r;
+            src[j*w+i].rgbGreen = (sum_g > 255 ) ? 255 : sum_g;
+            src[j*w+i].rgbBlue = (sum_b > 255 ) ? 255 : sum_b;
+        }
+    }
+    for(int j=2; j<h-2; j++) {
+        for(int i=0; i<w; i++) {
+            float sum_r = (float)src[(j-2)*w+i].rgbRed*gaussian15[0] + src[(j-1)*w+i].rgbRed*gaussian15[1]
+                          + src[j*w+i].rgbRed*gaussian15[2] + src[(j+1)*w+i].rgbRed*gaussian15[3]
+                          + src[(j+2)*w+i].rgbRed*gaussian15[4];
+            float sum_g = (float)src[(j-2)*w+i].rgbGreen*gaussian15[0] + src[(j-1)*w+i].rgbGreen*gaussian15[1]
+                          + src[j*w+i].rgbGreen*gaussian15[2] + src[(j+1)*w+i].rgbGreen*gaussian15[3]
+                          + src[(j+2)*w+i].rgbGreen*gaussian15[4];
+            float sum_b = (float)src[(j-2)*w+i].rgbBlue*gaussian15[0] + src[(j-1)*w+i].rgbBlue*gaussian15[1]
+                          + src[j*w+i].rgbBlue*gaussian15[2] + src[(j+1)*w+i].rgbBlue*gaussian15[3]
+                          + src[(j+2)*w+i].rgbBlue*gaussian15[4];
+            src[j*w+i].rgbRed = (sum_r > 255 ) ? 255 : sum_r;
+            src[j*w+i].rgbGreen = (sum_g > 255 ) ? 255 : sum_g;
+            src[j*w+i].rgbBlue = (sum_b > 255 ) ? 255 : sum_b;
+        }
+    }
+}
+
 void naive_gaussian_blur_5_original(RGBTRIPLE *src,int w,int h)
 {
     for(int j=2; j<h-2; j++) {
@@ -333,71 +369,6 @@ void naive_gaussian_blur_5_original(RGBTRIPLE *src,int w,int h)
             src[j*w+i].rgbRed = ((sum_r/273) > 255 ) ? 255 : sum_r/273 ;
             src[j*w+i].rgbGreen = ((sum_g/273) > 255 ) ? 255 : sum_g/273 ;
             src[j*w+i].rgbBlue = ((sum_b/273) > 255 ) ? 255 : sum_b/273 ;
-        }
-    }
-}
-
-void sse_gaussian_blur_5_tri(unsigned char *src,int w,int h)
-{
-    // const data
-    const __m128i vk0 = _mm_set1_epi8(0);
-    const unsigned char sse_g1[16] = { 1,0,4,0,7,0,4,0,1,0,0,0,0,0,0,0 };
-    const unsigned char sse_g2[16] = { 4,0,16,0,26,0,16,0,4,0,0,0,0,0,0,0 };
-    const unsigned char sse_g3[16] = { 7,0,26,0,41,0,26,0,7,0,0,0,0,0,0,0 };
-    const unsigned char sse_g4[16] = { 4,0,16,0,26,0,16,0,4,0,0,0,0,0,0,0 };
-    const unsigned char sse_g5[16] = { 1,0,4,0,7,0,4,0,1,0,0,0,0,0,0,0 };
-    // Operation to image
-    for(int i=0; i<w-5; i++) {
-        for(int j=0; j<h-5; j++) {
-            int sum = 0;
-            __m128i vg1 = _mm_loadu_si128((__m128i *)sse_g1);
-            __m128i vg2 = _mm_loadu_si128((__m128i *)sse_g2);
-            __m128i vg3 = _mm_loadu_si128((__m128i *)sse_g3);
-            __m128i vg4 = _mm_loadu_si128((__m128i *)sse_g4);
-            __m128i vg5 = _mm_loadu_si128((__m128i *)sse_g5);
-
-            __m128i vsum = _mm_set1_epi8(0),vtemplow = _mm_set1_epi8(0),vtemphigh = _mm_set1_epi8(0),vempty = _mm_set1_epi8(0);
-            // First element src[j*w+i]
-            // Load in data
-            __m128i L0 = _mm_loadu_si128((__m128i *)(src+(j+0)*w + i));
-            __m128i L1 = _mm_loadu_si128((__m128i *)(src+(j+1)*w + i));
-            __m128i L2 = _mm_loadu_si128((__m128i *)(src+(j+2)*w + i));
-            __m128i L3 = _mm_loadu_si128((__m128i *)(src+(j+3)*w + i));
-            __m128i L4 = _mm_loadu_si128((__m128i *)(src+(j+4)*w + i));
-            // Get the data we need (5 element per-line) , because we only
-            // need 5 element from sse instruction set , so only get low part(contain 8 elements)
-            __m128i v0 = _mm_unpacklo_epi8(L0,vk0);
-            __m128i v1 = _mm_unpacklo_epi8(L1,vk0);
-            __m128i v2 = _mm_unpacklo_epi8(L2,vk0);
-            __m128i v3 = _mm_unpacklo_epi8(L3,vk0);
-            __m128i v4 = _mm_unpacklo_epi8(L4,vk0);
-            // Multiple with specific Gaussian coef.
-            v0 = _mm_maddubs_epi16(v0,vg1);
-            v1 = _mm_maddubs_epi16(v1,vg2);
-            v2 = _mm_maddubs_epi16(v2,vg3);
-            v3 = _mm_maddubs_epi16(v3,vg4);
-            v4 = _mm_maddubs_epi16(v4,vg5);
-            // Summation the 5 line
-            vsum = _mm_add_epi16(vsum,v0);
-            vsum = _mm_add_epi16(vsum,v1);
-            vsum = _mm_add_epi16(vsum,v2);
-            vsum = _mm_add_epi16(vsum,v3);
-            vsum = _mm_add_epi16(vsum,v4);
-            // Vsum summation
-            // Summation all - (Summation all - (Summation with shift-off 5 number))
-            vtemplow = _mm_unpacklo_epi16(vsum,vempty); // 1,2,3,4
-            vtemphigh = _mm_unpackhi_epi16(vsum,vempty); // 5
-
-            sum += _mm_cvtsi128_si32(vtemplow); // get 1
-            sum += _mm_cvtsi128_si32(_mm_srli_si128(vtemplow,4)); // get 2
-            sum += _mm_cvtsi128_si32(_mm_srli_si128(vtemplow,8)); // get 3
-            sum += _mm_cvtsi128_si32(_mm_srli_si128(vtemplow,12)); // get 4
-            sum += _mm_cvtsi128_si32(vtemphigh); // get 5
-
-            sum /= deno55;
-            if(sum > 255)
-                sum = 255;
-            src[(j+2)*w+(i+2)] = sum;
         }
     }
 }
@@ -577,38 +548,390 @@ void sse_gaussian_blur_5_prefetch_ori(RGBTRIPLE *src,int w,int h)
     }
 }
 
-void unroll_gaussian_1D_tri(RGBTRIPLE *src,int w,int h)
+
+void sse_gaussian_blur_5_tri(unsigned char *src,int w,int h)
 {
-    for(int j=0; j<h; j++) {
-        for(int i=2; i<w-2; i++) {
-            float sum_r = (float)src[j*w+i-2].rgbRed*gaussian15[0] + src[j*w+i-1].rgbRed*gaussian15[1]
-                          + src[j*w+i].rgbRed*gaussian15[2] + src[j*w+i+1].rgbRed*gaussian15[3]
-                          + src[j*w+i+2].rgbRed*gaussian15[4];
-            float sum_g = (float)src[j*w+i-2].rgbGreen*gaussian15[0] + src[j*w+i-1].rgbGreen*gaussian15[1]
-                          + src[j*w+i].rgbGreen*gaussian15[2] + src[j*w+i+1].rgbGreen*gaussian15[3]
-                          + src[j*w+i+2].rgbGreen*gaussian15[4];
-            float sum_b = (float)src[j*w+i-2].rgbBlue*gaussian15[0] + src[j*w+i-1].rgbBlue*gaussian15[1]
-                          + src[j*w+i].rgbBlue*gaussian15[2] + src[j*w+i+1].rgbBlue*gaussian15[3]
-                          + src[j*w+i+2].rgbBlue*gaussian15[4];
-            src[j*w+i].rgbRed = (sum_r > 255 ) ? 255 : sum_r;
-            src[j*w+i].rgbGreen = (sum_g > 255 ) ? 255 : sum_g;
-            src[j*w+i].rgbBlue = (sum_b > 255 ) ? 255 : sum_b;
-        }
-    }
+    // const data
+    const __m128i vk0 = _mm_set1_epi8(0);
+    const __m128i gas1 = _mm_set1_epi8(1);
+    const __m128i gas4 = _mm_set1_epi8(4);
+    const __m128i gas7 = _mm_set1_epi8(7);
+    const __m128i gas16 = _mm_set1_epi8(16);
+    const __m128i gas26 = _mm_set1_epi8(26);
+    const __m128i gas41 = _mm_set1_epi8(41);
+    global_out = malloc(w*h*sizeof(uint32_t));
+    memset(global_out,0,w*h*sizeof(uint32_t));
+    // Operation to image
     for(int j=2; j<h-2; j++) {
-        for(int i=0; i<w; i++) {
-            float sum_r = (float)src[(j-2)*w+i].rgbRed*gaussian15[0] + src[(j-1)*w+i].rgbRed*gaussian15[1]
-                          + src[j*w+i].rgbRed*gaussian15[2] + src[(j+1)*w+i].rgbRed*gaussian15[3]
-                          + src[(j+2)*w+i].rgbRed*gaussian15[4];
-            float sum_g = (float)src[(j-2)*w+i].rgbGreen*gaussian15[0] + src[(j-1)*w+i].rgbGreen*gaussian15[1]
-                          + src[j*w+i].rgbGreen*gaussian15[2] + src[(j+1)*w+i].rgbGreen*gaussian15[3]
-                          + src[(j+2)*w+i].rgbGreen*gaussian15[4];
-            float sum_b = (float)src[(j-2)*w+i].rgbBlue*gaussian15[0] + src[(j-1)*w+i].rgbBlue*gaussian15[1]
-                          + src[j*w+i].rgbBlue*gaussian15[2] + src[(j+1)*w+i].rgbBlue*gaussian15[3]
-                          + src[(j+2)*w+i].rgbBlue*gaussian15[4];
-            src[j*w+i].rgbRed = (sum_r > 255 ) ? 255 : sum_r;
-            src[j*w+i].rgbGreen = (sum_g > 255 ) ? 255 : sum_g;
-            src[j*w+i].rgbBlue = (sum_b > 255 ) ? 255 : sum_b;
+        for(int i=2 ; i<w; i+=16) {
+            // FIXME: Checking whether if i index is on "w-14" , need to dealing with boundary
+            __m128i L0 = _mm_loadu_si128((__m128i *)(src+(j)*w + i));
+            // Make two part
+            __m128i v0lo = _mm_unpacklo_epi8(L0,vk0);
+            __m128i v0hi = _mm_unpackhi_epi8(L0,vk0);
+            // Get 1 Multiple
+            v0lo = _mm_maddubs_epi16(v0lo,gas1);
+            v0hi = _mm_maddubs_epi16(v0hi,gas1);
+            __m128i v0lohi = _mm_unpackhi_epi16(v0lo,vk0); // 5~8
+            __m128i v0lolo = _mm_unpacklo_epi16(v0lo,vk0); // 1~4
+            __m128i v0hihi = _mm_unpackhi_epi16(v0hi,vk0); // 13~16
+            __m128i v0hilo = _mm_unpacklo_epi16(v0hi,vk0); // 9~12
+            // Pack it up and add + store back to global_out : 0 , 4 , 20 , 24
+            // 0
+            __m128i temp = _mm_loadu_si128((__m128i *)(global_out+(j-2)*w + i-2));
+            temp = _mm_add_epi32(v0lolo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-2)*w + i-2),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-2)*w + i+2));
+            temp = _mm_add_epi32(v0lohi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-2)*w + i+2),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-2)*w + i+6));
+            temp = _mm_add_epi32(v0hilo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-2)*w + i+6),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-2)*w + i+10));
+            temp = _mm_add_epi32(v0hihi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-2)*w + i+10),temp);
+            // 4
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-2)*w + i+2));
+            temp = _mm_add_epi32(v0lolo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-2)*w + i+2),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-2)*w + i+6));
+            temp = _mm_add_epi32(v0lohi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-2)*w + i+6),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-2)*w + i+10));
+            temp = _mm_add_epi32(v0hilo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-2)*w + i+10),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-2)*w + i+14));
+            temp = _mm_add_epi32(v0hihi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-2)*w + i+14),temp);
+            // 20
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j+2)*w + i-2));
+            temp = _mm_add_epi32(v0lolo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j+2)*w + i-2),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j+2)*w + i+2));
+            temp = _mm_add_epi32(v0lohi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j+2)*w + i+2),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j+2)*w + i+6));
+            temp = _mm_add_epi32(v0hilo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j+2)*w + i+6),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j+2)*w + i+10));
+            temp = _mm_add_epi32(v0hihi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j+2)*w + i+10),temp);
+            // 24
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j+2)*w + i+2));
+            temp = _mm_add_epi32(v0lolo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j+2)*w + i+2),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j+2)*w + i+6));
+            temp = _mm_add_epi32(v0lohi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j+2)*w + i+6),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j+2)*w + i+10));
+            temp = _mm_add_epi32(v0hilo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j+2)*w + i+10),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j+2)*w + i+14));
+            temp = _mm_add_epi32(v0hihi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j+2)*w + i+14),temp);
+            // Get 4 Multiple
+            v0lo = _mm_unpacklo_epi8(L0,vk0);
+            v0hi = _mm_unpackhi_epi8(L0,vk0);
+            v0lo = _mm_maddubs_epi16(v0lo,gas4);
+            v0hi = _mm_maddubs_epi16(v0hi,gas4);
+            v0lohi = _mm_unpackhi_epi16(v0lo,vk0); // 5~8
+            v0lolo = _mm_unpacklo_epi16(v0lo,vk0); // 1~4
+            v0hihi = _mm_unpackhi_epi16(v0hi,vk0); // 13~16
+            v0hilo = _mm_unpacklo_epi16(v0hi,vk0); // 9~12
+            // Pack it up and add + store back to global_out : 1,3,5,9,15,19,21,23
+            // 1
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-2)*w + i-1));
+            temp = _mm_add_epi32(v0lolo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-2)*w + i-1),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-2)*w + i+3));
+            temp = _mm_add_epi32(v0lohi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-2)*w + i+3),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-2)*w + i+7));
+            temp = _mm_add_epi32(v0hilo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-2)*w + i+7),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-2)*w + i+11));
+            temp = _mm_add_epi32(v0hihi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-2)*w + i+11),temp);
+            // 3
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-2)*w + i+1));
+            temp = _mm_add_epi32(v0lolo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-2)*w + i+1),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-2)*w + i+5));
+            temp = _mm_add_epi32(v0lohi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-2)*w + i+5),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-2)*w + i+9));
+            temp = _mm_add_epi32(v0hilo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-2)*w + i+9),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-2)*w + i+13));
+            temp = _mm_add_epi32(v0hihi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-2)*w + i+13),temp);
+            // 5
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-1)*w + i-2));
+            temp = _mm_add_epi32(v0lolo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-1)*w + i-2),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-1)*w + i+2));
+            temp = _mm_add_epi32(v0lohi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-1)*w + i+2),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-1)*w + i+6));
+            temp = _mm_add_epi32(v0hilo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-1)*w + i+6),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-1)*w + i+10));
+            temp = _mm_add_epi32(v0hihi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-1)*w + i+10),temp);
+            // 9
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-1)*w + i+2));
+            temp = _mm_add_epi32(v0lolo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-1)*w + i+2),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-1)*w + i+6));
+            temp = _mm_add_epi32(v0lohi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-1)*w + i+6),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-1)*w + i+10));
+            temp = _mm_add_epi32(v0hilo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-1)*w + i+10),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-1)*w + i+14));
+            temp = _mm_add_epi32(v0hihi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-1)*w + i+14),temp);
+            // 15
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j+1)*w + i-2));
+            temp = _mm_add_epi32(v0lolo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j+1)*w + i-2),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j+1)*w + i+2));
+            temp = _mm_add_epi32(v0lohi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j+1)*w + i+2),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j+1)*w + i+6));
+            temp = _mm_add_epi32(v0hilo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j+1)*w + i+6),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j+1)*w + i+10));
+            temp = _mm_add_epi32(v0hihi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j+1)*w + i+10),temp);
+            // 19
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j+1)*w + i+2));
+            temp = _mm_add_epi32(v0lolo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j+1)*w + i+2),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j+1)*w + i+6));
+            temp = _mm_add_epi32(v0lohi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j+1)*w + i+6),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j+1)*w + i+10));
+            temp = _mm_add_epi32(v0hilo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j+1)*w + i+10),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j+1)*w + i+14));
+            temp = _mm_add_epi32(v0hihi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j+1)*w + i+14),temp);
+            // 21
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j+2)*w + i-1));
+            temp = _mm_add_epi32(v0lolo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j+2)*w + i-1),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j+2)*w + i+3));
+            temp = _mm_add_epi32(v0lohi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j+2)*w + i+3),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j+2)*w + i+7));
+            temp = _mm_add_epi32(v0hilo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j+2)*w + i+7),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j+2)*w + i+11));
+            temp = _mm_add_epi32(v0hihi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j+2)*w + i+11),temp);
+            // 23
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j+2)*w + i+1));
+            temp = _mm_add_epi32(v0lolo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j+2)*w + i+1),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j+2)*w + i+5));
+            temp = _mm_add_epi32(v0lohi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j+2)*w + i+5),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j+2)*w + i+9));
+            temp = _mm_add_epi32(v0hilo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j+2)*w + i+9),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j+2)*w + i+13));
+            temp = _mm_add_epi32(v0hihi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j+2)*w + i+13),temp);
+            // Get 7 Multiple
+            v0lo = _mm_unpacklo_epi8(L0,vk0);
+            v0hi = _mm_unpackhi_epi8(L0,vk0);
+            v0lo = _mm_maddubs_epi16(v0lo,gas7);
+            v0hi = _mm_maddubs_epi16(v0hi,gas7);
+            v0lohi = _mm_unpackhi_epi16(v0lo,vk0); // 5~8
+            v0lolo = _mm_unpacklo_epi16(v0lo,vk0); // 1~4
+            v0hihi = _mm_unpackhi_epi16(v0hi,vk0); // 13~16
+            v0hilo = _mm_unpacklo_epi16(v0hi,vk0); // 9~12
+            // Pack it up and add + store back to global_out : 2,10,14,22
+            // 2
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-2)*w + i));
+            temp = _mm_add_epi32(v0lolo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-2)*w + i),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-2)*w + i+4));
+            temp = _mm_add_epi32(v0lohi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-2)*w + i+4),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-2)*w + i+8));
+            temp = _mm_add_epi32(v0hilo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-2)*w + i+8),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-2)*w + i+12));
+            temp = _mm_add_epi32(v0hihi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-2)*w + i+12),temp);
+            // 10
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j)*w + i-2));
+            temp = _mm_add_epi32(v0lolo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j)*w + i-2),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j)*w + i+2));
+            temp = _mm_add_epi32(v0lohi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j)*w + i+2),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j)*w + i+6));
+            temp = _mm_add_epi32(v0hilo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j)*w + i+6),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j)*w + i+10));
+            temp = _mm_add_epi32(v0hihi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j)*w + i+10),temp);
+            // 14
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j)*w + i+2));
+            temp = _mm_add_epi32(v0lolo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j)*w + i+2),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j)*w + i+6));
+            temp = _mm_add_epi32(v0lohi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j)*w + i+6),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j)*w + i+10));
+            temp = _mm_add_epi32(v0hilo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j)*w + i+10),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j)*w + i+14));
+            temp = _mm_add_epi32(v0hihi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j)*w + i+14),temp);
+            // 22
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j+2)*w + i));
+            temp = _mm_add_epi32(v0lolo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j+2)*w + i),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j+2)*w + i+4));
+            temp = _mm_add_epi32(v0lohi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j+2)*w + i+4),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j+2)*w + i+8));
+            temp = _mm_add_epi32(v0hilo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j+2)*w + i+8),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j+2)*w + i+12));
+            temp = _mm_add_epi32(v0hihi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j+2)*w + i+12),temp);
+            // Get 16 Multiple
+            v0lo = _mm_unpacklo_epi8(L0,vk0);
+            v0hi = _mm_unpackhi_epi8(L0,vk0);
+            v0lo = _mm_maddubs_epi16(v0lo,gas16);
+            v0hi = _mm_maddubs_epi16(v0hi,gas16);
+            v0lohi = _mm_unpackhi_epi16(v0lo,vk0); // 5~8
+            v0lolo = _mm_unpacklo_epi16(v0lo,vk0); // 1~4
+            v0hihi = _mm_unpackhi_epi16(v0hi,vk0); // 13~16
+            v0hilo = _mm_unpacklo_epi16(v0hi,vk0); // 9~12
+            // Pack it up and add + store back to global_out : 6,8,16,18
+            // 6
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-1)*w + i-1));
+            temp = _mm_add_epi32(v0lolo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-1)*w + i-1),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-1)*w + i+3));
+            temp = _mm_add_epi32(v0lohi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-1)*w + i+3),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-1)*w + i+7));
+            temp = _mm_add_epi32(v0hilo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-1)*w + i+7),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-1)*w + i+11));
+            temp = _mm_add_epi32(v0hihi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-1)*w + i+11),temp);
+            // 8
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-1)*w + i+1));
+            temp = _mm_add_epi32(v0lolo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-1)*w + i+1),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-1)*w + i+5));
+            temp = _mm_add_epi32(v0lohi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-1)*w + i+5),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-1)*w + i+9));
+            temp = _mm_add_epi32(v0hilo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-1)*w + i+9),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-1)*w + i+13));
+            temp = _mm_add_epi32(v0hihi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-1)*w + i+13),temp);
+            // Get 26 Multiple
+            v0lo = _mm_unpacklo_epi8(L0,vk0);
+            v0hi = _mm_unpackhi_epi8(L0,vk0);
+            v0lo = _mm_maddubs_epi16(v0lo,gas26);
+            v0hi = _mm_maddubs_epi16(v0hi,gas26);
+            v0lohi = _mm_unpackhi_epi16(v0lo,vk0); // 5~8
+            v0lolo = _mm_unpacklo_epi16(v0lo,vk0); // 1~4
+            v0hihi = _mm_unpackhi_epi16(v0hi,vk0); // 13~16
+            v0hilo = _mm_unpacklo_epi16(v0hi,vk0); // 9~12
+            // Pack it up and add + store back to global_out : 7,11,13,17
+            // 7
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-1)*w + i));
+            temp = _mm_add_epi32(v0lolo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-1)*w + i),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-1)*w + i+4));
+            temp = _mm_add_epi32(v0lohi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-1)*w + i+4),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-1)*w + i+8));
+            temp = _mm_add_epi32(v0hilo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-1)*w + i+8),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j-1)*w + i+12));
+            temp = _mm_add_epi32(v0hihi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j-1)*w + i+12),temp);
+            // 11
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j)*w + i-1));
+            temp = _mm_add_epi32(v0lolo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j)*w + i-1),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j)*w + i+3));
+            temp = _mm_add_epi32(v0lohi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j)*w + i+3),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j)*w + i+7));
+            temp = _mm_add_epi32(v0hilo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j)*w + i+7),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j)*w + i+11));
+            temp = _mm_add_epi32(v0hihi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j)*w + i+11),temp);
+            // 13
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j)*w + i+1));
+            temp = _mm_add_epi32(v0lolo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j)*w + i+1),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j)*w + i+5));
+            temp = _mm_add_epi32(v0lohi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j)*w + i+5),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j)*w + i+9));
+            temp = _mm_add_epi32(v0hilo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j)*w + i+9),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j)*w + i+13));
+            temp = _mm_add_epi32(v0hihi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j)*w + i+13),temp);
+            // 17
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j+1)*w + i));
+            temp = _mm_add_epi32(v0lolo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j+1)*w + i),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j+1)*w + i+4));
+            temp = _mm_add_epi32(v0lohi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j+1)*w + i+4),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j+1)*w + i+8));
+            temp = _mm_add_epi32(v0hilo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j+1)*w + i+8),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j+1)*w + i+12));
+            temp = _mm_add_epi32(v0hihi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j+1)*w + i+12),temp);
+            // Get 41 Multiple
+            v0lo = _mm_unpacklo_epi8(L0,vk0);
+            v0hi = _mm_unpackhi_epi8(L0,vk0);
+            v0lo = _mm_maddubs_epi16(v0lo,gas41);
+            v0hi = _mm_maddubs_epi16(v0hi,gas41);
+            v0lohi = _mm_unpackhi_epi16(v0lo,vk0); // 5~8
+            v0lolo = _mm_unpacklo_epi16(v0lo,vk0); // 1~4
+            v0hihi = _mm_unpackhi_epi16(v0hi,vk0); // 13~16
+            v0hilo = _mm_unpacklo_epi16(v0hi,vk0); // 9~12
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j)*w + i));
+            temp = _mm_add_epi32(v0lolo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j)*w + i),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j)*w + i+4));
+            temp = _mm_add_epi32(v0lohi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j)*w + i+4),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j)*w + i+8));
+            temp = _mm_add_epi32(v0hilo,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j)*w + i+8),temp);
+            temp = _mm_loadu_si128((__m128i *)(global_out+(j)*w + i+12));
+            temp = _mm_add_epi32(v0hihi,temp);
+            _mm_storeu_si128((__m128i *)(global_out+(j)*w + i+12),temp);
         }
     }
+
+    for(int i=0; i<w; i++) {
+        for(int j=0; j<h; j++) {
+            src[j*w+i]= ((global_out[j*w+i]/=deno55)>255) ? 255 : global_out[j*w+i];
+        }
+    }
+
+    global_out = NULL;
 }

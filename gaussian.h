@@ -25,7 +25,7 @@ unsigned char gaussian33[9] = {
     1,2,1
 };
 // Gaussian kernel #2
-unsigned char gaussian55[25] = {
+int gaussian55[25] = {
     1,  4,  7,  4, 1,
     4, 16, 26, 16, 4,
     7, 26, 41, 26, 7,
