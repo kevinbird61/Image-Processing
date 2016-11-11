@@ -320,15 +320,15 @@ void unroll_gaussian_1D_tri(RGBTRIPLE *src,int w,int h)
 {
     for(int j=0; j<h; j++) {
         for(int i=2; i<w-2; i++) {
-            float sum_r = (float)src[j*w+i-2].rgbRed*gaussian15[0] + src[j*w+i-1].rgbRed*gaussian15[1]
-                          + src[j*w+i].rgbRed*gaussian15[2] + src[j*w+i+1].rgbRed*gaussian15[3]
-                          + src[j*w+i+2].rgbRed*gaussian15[4];
-            float sum_g = (float)src[j*w+i-2].rgbGreen*gaussian15[0] + src[j*w+i-1].rgbGreen*gaussian15[1]
-                          + src[j*w+i].rgbGreen*gaussian15[2] + src[j*w+i+1].rgbGreen*gaussian15[3]
-                          + src[j*w+i+2].rgbGreen*gaussian15[4];
-            float sum_b = (float)src[j*w+i-2].rgbBlue*gaussian15[0] + src[j*w+i-1].rgbBlue*gaussian15[1]
-                          + src[j*w+i].rgbBlue*gaussian15[2] + src[j*w+i+1].rgbBlue*gaussian15[3]
-                          + src[j*w+i+2].rgbBlue*gaussian15[4];
+            float sum_r = (float)src[j*w+i-2].rgbRed*gaussian15[0] + (float)src[j*w+i-1].rgbRed*gaussian15[1]
+                          + (float)src[j*w+i].rgbRed*gaussian15[2] + (float)src[j*w+i+1].rgbRed*gaussian15[3]
+                          + (float)src[j*w+i+2].rgbRed*gaussian15[4];
+            float sum_g = (float)src[j*w+i-2].rgbGreen*gaussian15[0] + (float)src[j*w+i-1].rgbGreen*gaussian15[1]
+                          + (float)src[j*w+i].rgbGreen*gaussian15[2] + (float)src[j*w+i+1].rgbGreen*gaussian15[3]
+                          + (float)src[j*w+i+2].rgbGreen*gaussian15[4];
+            float sum_b = (float)src[j*w+i-2].rgbBlue*gaussian15[0] + (float)src[j*w+i-1].rgbBlue*gaussian15[1]
+                          + (float)src[j*w+i].rgbBlue*gaussian15[2] + (float)src[j*w+i+1].rgbBlue*gaussian15[3]
+                          + (float)src[j*w+i+2].rgbBlue*gaussian15[4];
             src[j*w+i].rgbRed = (sum_r > 255 ) ? 255 : sum_r;
             src[j*w+i].rgbGreen = (sum_g > 255 ) ? 255 : sum_g;
             src[j*w+i].rgbBlue = (sum_b > 255 ) ? 255 : sum_b;
@@ -336,15 +336,15 @@ void unroll_gaussian_1D_tri(RGBTRIPLE *src,int w,int h)
     }
     for(int j=2; j<h-2; j++) {
         for(int i=0; i<w; i++) {
-            float sum_r = (float)src[(j-2)*w+i].rgbRed*gaussian15[0] + src[(j-1)*w+i].rgbRed*gaussian15[1]
-                          + src[j*w+i].rgbRed*gaussian15[2] + src[(j+1)*w+i].rgbRed*gaussian15[3]
-                          + src[(j+2)*w+i].rgbRed*gaussian15[4];
-            float sum_g = (float)src[(j-2)*w+i].rgbGreen*gaussian15[0] + src[(j-1)*w+i].rgbGreen*gaussian15[1]
-                          + src[j*w+i].rgbGreen*gaussian15[2] + src[(j+1)*w+i].rgbGreen*gaussian15[3]
-                          + src[(j+2)*w+i].rgbGreen*gaussian15[4];
-            float sum_b = (float)src[(j-2)*w+i].rgbBlue*gaussian15[0] + src[(j-1)*w+i].rgbBlue*gaussian15[1]
-                          + src[j*w+i].rgbBlue*gaussian15[2] + src[(j+1)*w+i].rgbBlue*gaussian15[3]
-                          + src[(j+2)*w+i].rgbBlue*gaussian15[4];
+            float sum_r = (float)src[(j-2)*w+i].rgbRed*gaussian15[0] + (float)src[(j-1)*w+i].rgbRed*gaussian15[1]
+                          + (float)src[j*w+i].rgbRed*gaussian15[2] + (float)src[(j+1)*w+i].rgbRed*gaussian15[3]
+                          + (float)src[(j+2)*w+i].rgbRed*gaussian15[4];
+            float sum_g = (float)src[(j-2)*w+i].rgbGreen*gaussian15[0] + (float)src[(j-1)*w+i].rgbGreen*gaussian15[1]
+                          + (float)src[j*w+i].rgbGreen*gaussian15[2] + (float)src[(j+1)*w+i].rgbGreen*gaussian15[3]
+                          + (float)src[(j+2)*w+i].rgbGreen*gaussian15[4];
+            float sum_b = (float)src[(j-2)*w+i].rgbBlue*gaussian15[0] + (float)src[(j-1)*w+i].rgbBlue*gaussian15[1]
+                          + (float)src[j*w+i].rgbBlue*gaussian15[2] + (float)src[(j+1)*w+i].rgbBlue*gaussian15[3]
+                          + (float)src[(j+2)*w+i].rgbBlue*gaussian15[4];
             src[j*w+i].rgbRed = (sum_r > 255 ) ? 255 : sum_r;
             src[j*w+i].rgbGreen = (sum_g > 255 ) ? 255 : sum_g;
             src[j*w+i].rgbBlue = (sum_b > 255 ) ? 255 : sum_b;
