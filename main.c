@@ -67,38 +67,19 @@ int main(int argc,char *argv[])
         printf("Read file failed\n");
 
     // =================== Main Operation to BMP data ===================== //
-#if FILTER(GAUSSIAN,1)
-    color_r = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
-    color_g = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
-    color_b = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
-    split_structure();
-    clock_gettime(CLOCK_REALTIME, &start);
-    for(int i=0; i<execution_times; i++) {
-        naive_gaussian_blur_5(color_r,bmpInfo.biWidth,bmpInfo.biHeight);
-        naive_gaussian_blur_5(color_g,bmpInfo.biWidth,bmpInfo.biHeight);
-        naive_gaussian_blur_5(color_b,bmpInfo.biWidth,bmpInfo.biHeight);
-    }
-    clock_gettime(CLOCK_REALTIME, &end);
-    cpu_time = diff_in_millisecond(start, end);
-    merge_structure();
-    free(color_r);
-    free(color_b);
-    free(color_g);
-#ifdef PERF
-    printf("%f ",cpu_time);
-#else
-    printf("Gaussian blur[5x5][split structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
-#endif
+#if FILTER(GAUSSIAN,1) // sse pthread original
     clock_gettime(CLOCK_REALTIME, &start);
     for(int i=0; i<execution_times; i++)
-        naive_gaussian_blur_5_original(BMPSaveData,bmpInfo.biWidth,bmpInfo.biHeight);
+        pt_sse_gaussian_blur_5_ori(BMPSaveData,threadcount,bmpInfo.biWidth,bmpInfo.biHeight);
     clock_gettime(CLOCK_REALTIME, &end);
     cpu_time = diff_in_millisecond(start, end);
 #ifdef PERF
     printf("%f ",cpu_time);
 #else
-    printf("Gaussian blur[5x5][original structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
+    printf("Gaussian blur[5x5][sse pthread original structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
 #endif
+#endif
+#if FILTER(GAUSSIAN,2) // sse split_structure
     color_r = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
     color_g = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
     color_b = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
@@ -120,6 +101,32 @@ int main(int argc,char *argv[])
 #else
     printf("Gaussian blur[5x5][sse split structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
 #endif
+#endif
+#if FILTER(GAUSSIAN,4) // sse original
+    clock_gettime(CLOCK_REALTIME, &start);
+    for(int i=0; i<execution_times; i++)
+        sse_gaussian_blur_5_ori(BMPSaveData,bmpInfo.biWidth,bmpInfo.biHeight);
+    clock_gettime(CLOCK_REALTIME, &end);
+    cpu_time = diff_in_millisecond(start, end);
+#ifdef PERF
+    printf("%f ",cpu_time);
+#else
+    printf("Gaussian blur[5x5][sse original structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
+#endif
+#endif
+#if FILTER(GAUSSIAN,8) // sse prefetch
+    clock_gettime(CLOCK_REALTIME, &start);
+    for(int i=0; i<execution_times; i++)
+        sse_gaussian_blur_5_prefetch_ori(BMPSaveData,bmpInfo.biWidth,bmpInfo.biHeight);
+    clock_gettime(CLOCK_REALTIME, &end);
+    cpu_time = diff_in_millisecond(start, end);
+#ifdef PERF
+    printf("%f ",cpu_time);
+#else
+    printf("Gaussian blur[5x5][prefetch sse original structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
+#endif
+#endif
+#if FILTER(GAUSSIAN,16) // unroll split
     color_r = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
     color_g = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
     color_b = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
@@ -141,6 +148,8 @@ int main(int argc,char *argv[])
 #else
     printf("Gaussian blur[5x5][unroll split structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
 #endif
+#endif
+#if FILTER(GAUSSIAN,32) // unroll original
     clock_gettime(CLOCK_REALTIME, &start);
     for(int i=0; i<execution_times; i++)
         unroll_gaussian_blur_5_ori(BMPSaveData,bmpInfo.biWidth,bmpInfo.biHeight);
@@ -151,6 +160,8 @@ int main(int argc,char *argv[])
 #else
     printf("Gaussian blur[5x5][unroll original structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
 #endif
+#endif
+#if FILTER(GAUSSIAN,64) // pthread split(unroll)
     color_r = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
     color_g = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
     color_b = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
@@ -172,36 +183,8 @@ int main(int argc,char *argv[])
 #else
     printf("Gaussian blur[5x5][pthread unroll split structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
 #endif
-    clock_gettime(CLOCK_REALTIME, &start);
-    for(int i=0; i<execution_times; i++)
-        sse_gaussian_blur_5_ori(BMPSaveData,bmpInfo.biWidth,bmpInfo.biHeight);
-    clock_gettime(CLOCK_REALTIME, &end);
-    cpu_time = diff_in_millisecond(start, end);
-#ifdef PERF
-    printf("%f ",cpu_time);
-#else
-    printf("Gaussian blur[5x5][sse original structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
 #endif
-    clock_gettime(CLOCK_REALTIME, &start);
-    for(int i=0; i<execution_times; i++)
-        sse_gaussian_blur_5_prefetch_ori(BMPSaveData,bmpInfo.biWidth,bmpInfo.biHeight);
-    clock_gettime(CLOCK_REALTIME, &end);
-    cpu_time = diff_in_millisecond(start, end);
-#ifdef PERF
-    printf("%f ",cpu_time);
-#else
-    printf("Gaussian blur[5x5][prefetch sse original structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
-#endif
-    clock_gettime(CLOCK_REALTIME, &start);
-    for(int i=0; i<execution_times; i++)
-        pt_sse_gaussian_blur_5_ori(BMPSaveData,threadcount,bmpInfo.biWidth,bmpInfo.biHeight);
-    clock_gettime(CLOCK_REALTIME, &end);
-    cpu_time = diff_in_millisecond(start, end);
-#ifdef PERF
-    printf("%f ",cpu_time);
-#else
-    printf("Gaussian blur[5x5][sse pthread original structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
-#endif
+#if FILTER(GAUSSIAN,128) // unroll 1D
     clock_gettime(CLOCK_REALTIME, &start);
     for(int i=0; i<execution_times; i++)
         unroll_gaussian_1D_tri(BMPSaveData,bmpInfo.biWidth,bmpInfo.biHeight);
@@ -212,6 +195,8 @@ int main(int argc,char *argv[])
 #else
     printf("Gaussian blur[1x5][unroll original structure 1D], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
 #endif
+#endif
+#if FILTER(GAUSSIAN,256) // unroll expand
     color_r = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
     color_g = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
     color_b = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
@@ -233,7 +218,41 @@ int main(int argc,char *argv[])
 #else
     printf("Gaussian blur[5x5][unroll expand split structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
 #endif
-
+#endif
+#if FILTER(GAUSSIAN,512) // naive split
+    color_r = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
+    color_g = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
+    color_b = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
+    split_structure();
+    clock_gettime(CLOCK_REALTIME, &start);
+    for(int i=0; i<execution_times; i++) {
+        naive_gaussian_blur_5(color_r,bmpInfo.biWidth,bmpInfo.biHeight);
+        naive_gaussian_blur_5(color_g,bmpInfo.biWidth,bmpInfo.biHeight);
+        naive_gaussian_blur_5(color_b,bmpInfo.biWidth,bmpInfo.biHeight);
+    }
+    clock_gettime(CLOCK_REALTIME, &end);
+    cpu_time = diff_in_millisecond(start, end);
+    merge_structure();
+    free(color_r);
+    free(color_b);
+    free(color_g);
+#ifdef PERF
+    printf("%f ",cpu_time);
+#else
+    printf("Gaussian blur[5x5][split structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
+#endif
+#endif
+#if FILTER(GAUSSIAN,1024) // naive original
+    clock_gettime(CLOCK_REALTIME, &start);
+    for(int i=0; i<execution_times; i++)
+        naive_gaussian_blur_5_original(BMPSaveData,bmpInfo.biWidth,bmpInfo.biHeight);
+    clock_gettime(CLOCK_REALTIME, &end);
+    cpu_time = diff_in_millisecond(start, end);
+#ifdef PERF
+    printf("%f ",cpu_time);
+#else
+    printf("Gaussian blur[5x5][original structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
+#endif
 #endif
     printf("\n");
 

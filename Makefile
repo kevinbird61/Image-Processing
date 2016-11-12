@@ -1,5 +1,5 @@
 CC := gcc
-CFLAGS := -msse -msse2 -msse3 -msse4 --std gnu99 -Wall -pedantic -fopenmp -O0 
+CFLAGS := -msse -msse2 -msse3 -msse4 --std gnu99 -Wall -pedantic -fopenmp -O0
 ARM_CC ?= arm-linux-gnueabihf-gcc-5
 ARM_CFLAGS = -c -g -Wall -Wextra -Ofast -mfpu=neon
 ARM_LDFLAGS = -Wall -g -Wextra -Ofast
@@ -15,14 +15,14 @@ format:
 	$(CC) -c $(CFLAGS) -o $@ $<
 
 main.o: main.c $(HEADER)
-	$(CC) -std=gnu99 -c -DPERF=1 -DGAUSSIAN=1 -DMIRROR=0 -DHSV=0 -o $@ $<
+	$(CC) -std=gnu99 -c -DPERF=1 -DGAUSSIAN=2047 -DMIRROR=0 -DHSV=0 -o $@ $<
 
 # non-print version
 npmain.o: main.c $(HEADER)
-	$(CC) -std=gnu99 -c -DGAUSSIAN=1 -DMIRROR=0 -DHSV=0 -o $@ $<
+	$(CC) -std=gnu99 -c -DGAUSSIAN=2047 -DMIRROR=0 -DHSV=0 -o $@ $<
 
 vmain.o: main.c $(HEADER)
-	$(CC) -c -DPERF=1 -DGAUSSIAN=1 -DMIRROR=0 -DHSV=0 -g -o $@ $<
+	$(CC) -c -DPERF=1 -DGAUSSIAN=2047 -DMIRROR=0 -DHSV=0 -g -o $@ $<
 
 # Gaussian blur
 gau_all: $(GIT_HOOKS) format $(OBJS) main.o

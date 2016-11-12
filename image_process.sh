@@ -44,7 +44,7 @@ fi
 # Parsing ARGS
 eval set -- "${ARGS}"
 # defined filter
-GAU_TYPE=0
+GAU_TYPE=1
 ENVI=0
 VALG=n
 TEST=n
@@ -60,7 +60,7 @@ do
   case "$1" in
     -a)
       echo "compile with gau_all"
-      GAU_TYPE=0
+      GAU_TYPE=2047
       shift
       ;;
     -e)
@@ -100,6 +100,7 @@ do
     --perf)
       echo "compile + run and plot execution times: $2"
       PERF=$2
+      # And must set gau_type to 2047
       shift 2
       ;;
     --clean)
