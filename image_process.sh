@@ -94,13 +94,19 @@ do
       ;;
     -g)
       echo "compile with target gaussian: $2"
-      GAU_TYPE=$2
-      shift 2
+      if [[ "$2" =~ ^[0-9]+$ ]]; then
+        GAU_TYPE=$2
+        shift 2
+      else
+        echo "${RED}You can't assign non-value to -g !${RESET}"
+        usage
+      fi
       ;;
     --perf)
       echo "compile + run and plot execution times: $2"
       PERF=$2
       # And must set gau_type to 2047
+      GAU_TYPE=2047
       shift 2
       ;;
     --clean)
