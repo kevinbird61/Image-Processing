@@ -198,7 +198,7 @@ void unroll_gaussian_blur_5_tri(unsigned char *src,int w,int h)
                   + src[(j+2)*w+(i)]*gaussian55[22] + src[(j+2)*w+(i+1)]*gaussian55[23]
                   + src[(j+2)*w+(i+2)]*gaussian55[24];
 
-            src[j*w+i] = ((sum / 273) > 255 ? 255 : sum/273);
+            src[j*w+i] = ((sum / 273) > 255) ? 255 : sum/273;
         }
     }
 }
