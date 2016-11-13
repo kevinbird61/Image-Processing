@@ -6,7 +6,7 @@ void *thread_blur(void *arg)
     // working range : 2 ~ w-2 ; 2 ~ h-2 (size : w-4 , h-4)
     // calculate work load per thread (direction : col)
     int workload = (info->height - 4) / info->total_thread_size;
-    for(int j=2+(workload)*(int)info->thread_id ; j < 2 + (workload)*((int)(info->thread_id)+1); j++) {
+    for(int j=2+(workload)*(int)info->thread_id ; j < 2+(workload)*((int)(info->thread_id)+1); j++) {
         for(int i=2; i < info->width-2 ; i++) {
             // do the image blur
             int sum = 0;
@@ -23,7 +23,7 @@ void *thread_blur(void *arg)
                   + global_src[(j+2)*info->width + i-2]*gaussian55[20] + global_src[(j+2)*info->width + i-1]*gaussian55[21]
                   + global_src[(j+2)*info->width + i]*gaussian55[22] + global_src[(j+2)*info->width + i+1]*gaussian55[23]
                   + global_src[(j+2)*info->width + i+2]*gaussian55[24];
-            global_out[j*info->width + i] = ((sum/=deno55)>255) ? 255 : sum;
+            global_out[(j)*info->width + i] = ((sum/=deno55)>255) ? 255 : sum;
         }
     }
     return NULL;
@@ -39,13 +39,9 @@ void *sse_thread_blur(void *arg)
     const unsigned char sse_g2_hi[16] = {26,0,16,0,16,0,16,0,4,0,4,0,4,0,0,0};
     const unsigned char sse_g3_lo[16] = {7,0,7,0,7,0,26,0,26,0,26,0,41,0,41,0};
     const unsigned char sse_g3_hi[16] = {41,0,26,0,26,0,26,0,7,0,7,0,7,0,0,0};
-    const unsigned char sse_g4_lo[16] = {4,0,4,0,4,0,16,0,16,0,16,0,26,0,26,0};
-    const unsigned char sse_g4_hi[16] = {26,0,16,0,16,0,16,0,4,0,4,0,4,0,0,0};
-    const unsigned char sse_g5_lo[16] = {1,0,1,0,1,0,4,0,4,0,4,0,7,0,7,0};
-    const unsigned char sse_g5_hi[16] = {7,0,4,0,4,0,4,0,1,0,1,0,1,0,0,0};
-    int workload = (info->height - 4) / info->total_thread_size;
-    for(int i=0; i < info->width-5 ; i++) {
-        for(int j=(workload)*(int)info->thread_id ; j < (workload)*((int)(info->thread_id)+1)-5 ; j++) {
+    int workload = (info->height) / info->total_thread_size;
+    for(int j=(workload)*(int)info->thread_id-2 ; j < (workload)*((int)(info->thread_id)+1)-2; j++) {
+        for(int i=0; i < info->width ; i++) {
             int sum_r = 0,sum_g = 0,sum_b = 0;
             __m128i vg1lo = _mm_loadu_si128((__m128i *)sse_g1_lo);
             __m128i vg1hi = _mm_loadu_si128((__m128i *)sse_g1_hi);
@@ -53,10 +49,6 @@ void *sse_thread_blur(void *arg)
             __m128i vg2hi = _mm_loadu_si128((__m128i *)sse_g2_hi);
             __m128i vg3lo = _mm_loadu_si128((__m128i *)sse_g3_lo);
             __m128i vg3hi = _mm_loadu_si128((__m128i *)sse_g3_hi);
-            __m128i vg4lo = _mm_loadu_si128((__m128i *)sse_g4_lo);
-            __m128i vg4hi = _mm_loadu_si128((__m128i *)sse_g4_hi);
-            __m128i vg5lo = _mm_loadu_si128((__m128i *)sse_g5_lo);
-            __m128i vg5hi = _mm_loadu_si128((__m128i *)sse_g5_hi);
 
             __m128i L0 = _mm_loadu_si128((__m128i *)(global_src_ori+(j+0)*info->width + i));
             __m128i L1 = _mm_loadu_si128((__m128i *)(global_src_ori+(j+1)*info->width + i));
@@ -75,16 +67,16 @@ void *sse_thread_blur(void *arg)
             __m128i v4lo = _mm_unpacklo_epi8(L4,vk0);
             __m128i v4hi = _mm_unpackhi_epi8(L4,vk0);
 
-            v0lo = _mm_maddubs_epi16(v0lo,vg1lo);
-            v0hi = _mm_maddubs_epi16(v0hi,vg1hi);
-            v1lo = _mm_maddubs_epi16(v1lo,vg2lo);
-            v1hi = _mm_maddubs_epi16(v1hi,vg2hi);
-            v2lo = _mm_maddubs_epi16(v2lo,vg3lo);
-            v2hi = _mm_maddubs_epi16(v2hi,vg3hi);
-            v3lo = _mm_maddubs_epi16(v3lo,vg4lo);
-            v3hi = _mm_maddubs_epi16(v3hi,vg4hi);
-            v4lo = _mm_maddubs_epi16(v4lo,vg5lo);
-            v4hi = _mm_maddubs_epi16(v4hi,vg5hi);
+            v0lo = _mm_mullo_epi16(v0lo,vg1lo);
+            v0hi = _mm_mullo_epi16(v0hi,vg1hi);
+            v1lo = _mm_mullo_epi16(v1lo,vg2lo);
+            v1hi = _mm_mullo_epi16(v1hi,vg2hi);
+            v2lo = _mm_mullo_epi16(v2lo,vg3lo);
+            v2hi = _mm_mullo_epi16(v2hi,vg3hi);
+            v3lo = _mm_mullo_epi16(v3lo,vg2lo);
+            v3hi = _mm_mullo_epi16(v3hi,vg2hi);
+            v4lo = _mm_mullo_epi16(v4lo,vg1lo);
+            v4hi = _mm_mullo_epi16(v4hi,vg1hi);
 
             __m128i vsumlo = _mm_set1_epi16(0),vsumhi = _mm_set1_epi16(0),vtemp_1 = _mm_set1_epi16(0),vtemp_2 = _mm_set1_epi16(0),vtemp_3 = _mm_set1_epi16(0),vtemp_4 = _mm_set1_epi16(0);
             vsumlo = _mm_add_epi16(vsumlo,v0lo);
@@ -109,9 +101,9 @@ void *sse_thread_blur(void *arg)
             sum_g += _mm_cvtsi128_si32(_mm_srli_si128(vtemp_1,4)) + _mm_cvtsi128_si32(vtemp_2) + _mm_cvtsi128_si32(_mm_srli_si128(vtemp_2,12)) + _mm_cvtsi128_si32(_mm_srli_si128(vtemp_3,8)) + _mm_cvtsi128_si32(_mm_srli_si128(vtemp_4,4));
             sum_r += _mm_cvtsi128_si32(_mm_srli_si128(vtemp_1,8)) + _mm_cvtsi128_si32(_mm_srli_si128(vtemp_2,4)) + _mm_cvtsi128_si32(vtemp_3) + _mm_cvtsi128_si32(_mm_srli_si128(vtemp_3,12)) + _mm_cvtsi128_si32(_mm_srli_si128(vtemp_4,8));
 
-            global_src_ori[j*info->width+i].rgbRed = ((sum_r/273) > 255 ) ? 255 : sum_r/273 ;
-            global_src_ori[j*info->width+i].rgbGreen = ((sum_g/273) > 255 ) ? 255 : sum_g/273 ;
-            global_src_ori[j*info->width+i].rgbBlue = ((sum_b/273) > 255 ) ? 255 : sum_b/273 ;
+            global_out_ori[(j+2)*info->width+i+2].rgbRed = ((sum_r/273) > 255 ) ? 255 : sum_r/273 ;
+            global_out_ori[(j+2)*info->width+i+2].rgbGreen = ((sum_g/273) > 255 ) ? 255 : sum_g/273 ;
+            global_out_ori[(j+2)*info->width+i+2].rgbBlue = ((sum_b/273) > 255 ) ? 255 : sum_b/273 ;
         }
     }
     return NULL;
@@ -141,8 +133,14 @@ void pt_gaussian_blur_5_tri(unsigned char *src,int num_threads,int w,int h)
     for(int tnum = 0; tnum < num_threads ; tnum++) {
         pthread_join(thread_handler[tnum],NULL);
     }
+    for(int j=0; j<h; j++) {
+        for(int i=0; i<w; i++) {
+            src[j*w+i] = global_out[j*w+i];
+        }
+    }
     global_src = NULL;
     global_out = NULL;
+    free(global_out);
     free(threadInfo);
     free(thread_handler);
 }
@@ -152,6 +150,8 @@ void pt_sse_gaussian_blur_5_ori(RGBTRIPLE *src,int num_threads,int w,int h)
     pthread_t *thread_handler;
     tInfo *threadInfo;
     global_src_ori = src;
+    global_out_ori = malloc(w*h*sizeof(RGBTRIPLE));
+    memset(global_out_ori,0,w*h*sizeof(RGBTRIPLE));
     thread_handler = malloc(num_threads*sizeof(pthread_t));
     threadInfo = malloc(num_threads*sizeof(tInfo));
 
@@ -166,8 +166,14 @@ void pt_sse_gaussian_blur_5_ori(RGBTRIPLE *src,int num_threads,int w,int h)
     for(int tnum = 0; tnum < num_threads ; tnum++) {
         pthread_join(thread_handler[tnum],NULL);
     }
-
+    for(int j=0; j<h; j++) {
+        for(int i=0; i<w; i++) {
+            src[j*w+i] = global_out_ori[j*w+i];
+        }
+    }
     global_src_ori = NULL;
+    global_out_ori = NULL;
+    free(global_out_ori);
     free(thread_handler);
     free(threadInfo);
 }
@@ -391,10 +397,6 @@ void sse_gaussian_blur_5_ori(RGBTRIPLE *src,int w,int h)
             __m128i vg2hi = _mm_loadu_si128((__m128i *)sse_g2_hi);
             __m128i vg3lo = _mm_loadu_si128((__m128i *)sse_g3_lo);
             __m128i vg3hi = _mm_loadu_si128((__m128i *)sse_g3_hi);
-            //__m128i vg4lo = _mm_loadu_si128((__m128i *)sse_g4_lo); ==g2lo
-            //__m128i vg4hi = _mm_loadu_si128((__m128i *)sse_g4_hi); ==g2hi
-            //__m128i vg5lo = _mm_loadu_si128((__m128i *)sse_g5_lo); ==g1lo
-            //__m128i vg5hi = _mm_loadu_si128((__m128i *)sse_g5_hi); ==g1hi
 
             __m128i L0 = _mm_loadu_si128((__m128i *)(src+(j+0)*w + i));
             __m128i L1 = _mm_loadu_si128((__m128i *)(src+(j+1)*w + i));
@@ -917,7 +919,7 @@ void sse_gaussian_blur_5_tri(unsigned char *src,int w,int h)
 
     for(int i=0; i<w; i++) {
         for(int j=0; j<h; j++) {
-            src[j*w+i]= ((global_out[j*w+i]/=deno55)>255) ? 255 : global_out[j*w+i];
+            src[j*w+i]= ((global_out[j*w+i]/deno55)>255) ? 255 : global_out[j*w+i]/deno55;
         }
     }
 

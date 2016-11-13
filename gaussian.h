@@ -47,6 +47,7 @@ typedef struct thread_info {
 unsigned char *global_src = NULL;
 uint32_t *global_out = NULL;
 RGBTRIPLE *global_src_ori = NULL;
+RGBTRIPLE *global_out_ori = NULL;
 
 void unroll_gaussian_blur_5_tri(unsigned char *src,int w,int h);
 void unroll_gaussian_blur_5_ori(RGBTRIPLE *src,int w,int h);
