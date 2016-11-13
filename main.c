@@ -66,7 +66,11 @@ int main(int argc,char *argv[])
     } else
         printf("Read file failed\n");
 
-    // =================== Main Operation to BMP data ===================== //
+// =================== Main Operation to BMP data ===================== //
+#ifdef TEST
+    // Part of Area we can test our code here
+#endif
+
 #if FILTER(GAUSSIAN,1) // sse pthread original
     clock_gettime(CLOCK_REALTIME, &start);
     for(int i=0; i<execution_times; i++)

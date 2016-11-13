@@ -179,29 +179,35 @@ else
   OUTPUT="output"
 fi
 # compile and run
-if [ $PERF -eq "0" ]; then
-  if [ $VALG = "n" ]; then
-    $CC -std=gnu99 -c -DGAUSSIAN=$GAU_TYPE -DMIRROR=$MIRROR -DHSV=$HSV -o main.o main.c
-    $CC $CFLAGS gaussian.o mirror.o hsv.o main.o -o $TARGET -lpthread
-    ./$TARGET ${INPUT} ${OUTPUT}_${GAU_TYPE}_${MIRROR}_${HSV}.bmp ${TIMES} ${THREADS}
-  else
-    $CC -std=gnu99 -c -DGAUSSIAN=$GAU_TYPE -DMIRROR=$MIRROR -DHSV=$HSV -g -o main.o main.c
-    $CC $CFLAGS gaussian.o mirror.o hsv.o main.o -o $TARGET -lpthread
-    valgrind --leak-check=full ./$TARGET img/input.bmp output_${GAU_TYPE}_${MIRROR}_${HSV}.bmp 1 4
-  fi
+if [ $TEST = "y" ]; then
+  $CC -std=gnu99 -c -DTEST -o main.o main.c
+  $CC $CFLAGS gaussian.o mirror.o hsv.o main.o -o $TARGET -lpthread
+  ./$TARGET ${INPUT} ${OUTPUT}_${GAU_TYPE}_${MIRROR}_${HSV}.bmp ${TIMES} ${THREADS}
 else
-  if [ $VALG = "n" ]; then
-    $CC -std=gnu99 -c -DPERF=1 -DGAUSSIAN=$GAU_TYPE -DMIRROR=$MIRROR -DHSV=$HSV -o main.o main.c
-    $CC $CFLAGS gaussian.o mirror.o hsv.o main.o -o $TARGET -lpthread
-    echo "Start to perf !"
-    perf stat -r $PERF -e cache-misses,cache-references \
-  	./$TARGET img/input.bmp output.bmp 1 4 > exec_time.log
-    gnuplot scripts/plot_time.gp
-  	gnuplot scripts/plot_time_2.gp
+  if [ $PERF -eq "0" ]; then
+    if [ $VALG = "n" ]; then
+      $CC -std=gnu99 -c -DGAUSSIAN=$GAU_TYPE -DMIRROR=$MIRROR -DHSV=$HSV -o main.o main.c
+      $CC $CFLAGS gaussian.o mirror.o hsv.o main.o -o $TARGET -lpthread
+      ./$TARGET ${INPUT} ${OUTPUT}_${GAU_TYPE}_${MIRROR}_${HSV}.bmp ${TIMES} ${THREADS}
+    else
+      $CC -std=gnu99 -c -DGAUSSIAN=$GAU_TYPE -DMIRROR=$MIRROR -DHSV=$HSV -g -o main.o main.c
+      $CC $CFLAGS gaussian.o mirror.o hsv.o main.o -o $TARGET -lpthread
+      valgrind --leak-check=full ./$TARGET img/input.bmp output_${GAU_TYPE}_${MIRROR}_${HSV}.bmp 1 4
+    fi
   else
-    #$CC -std=gnu99 -c -DPERF=1 -DGAUSSIAN=$GAU_TYPE -DMIRROR=$MIRROR -DHSV=$HSV -g -o main.o main.c
-    #$CC $CFLAGS gaussian.o mirror.o hsv.o main.o -o $TARGET -lpthread
-    echo "No avaliable! Terminating ... "
-    exit 1
+    if [ $VALG = "n" ]; then
+      $CC -std=gnu99 -c -DPERF=1 -DGAUSSIAN=$GAU_TYPE -DMIRROR=$MIRROR -DHSV=$HSV -o main.o main.c
+      $CC $CFLAGS gaussian.o mirror.o hsv.o main.o -o $TARGET -lpthread
+      echo "Start to perf !"
+      perf stat -r $PERF -e cache-misses,cache-references \
+    	./$TARGET img/input.bmp output.bmp 1 4 > exec_time.log
+      gnuplot scripts/plot_time.gp
+    	gnuplot scripts/plot_time_2.gp
+    else
+      #$CC -std=gnu99 -c -DPERF=1 -DGAUSSIAN=$GAU_TYPE -DMIRROR=$MIRROR -DHSV=$HSV -g -o main.o main.c
+      #$CC $CFLAGS gaussian.o mirror.o hsv.o main.o -o $TARGET -lpthread
+      echo "No avaliable! Terminating ... "
+      exit 1
+    fi
   fi
 fi

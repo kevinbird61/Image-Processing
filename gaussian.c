@@ -382,10 +382,6 @@ void sse_gaussian_blur_5_ori(RGBTRIPLE *src,int w,int h)
     const unsigned char sse_g2_hi[16] = {26,0,16,0,16,0,16,0,4,0,4,0,4,0,0,0};
     const unsigned char sse_g3_lo[16] = {7,0,7,0,7,0,26,0,26,0,26,0,41,0,41,0};
     const unsigned char sse_g3_hi[16] = {41,0,26,0,26,0,26,0,7,0,7,0,7,0,0,0};
-    const unsigned char sse_g4_lo[16] = {4,0,4,0,4,0,16,0,16,0,16,0,26,0,26,0};
-    const unsigned char sse_g4_hi[16] = {26,0,16,0,16,0,16,0,4,0,4,0,4,0,0,0};
-    const unsigned char sse_g5_lo[16] = {1,0,1,0,1,0,4,0,4,0,4,0,7,0,7,0};
-    const unsigned char sse_g5_hi[16] = {7,0,4,0,4,0,4,0,1,0,1,0,1,0,0,0};
     for(int i=0; i<(w-5); i++) {
         for(int j=0; j<(h-5); j++) {
             int sum_r = 0,sum_g = 0,sum_b = 0;
@@ -395,10 +391,10 @@ void sse_gaussian_blur_5_ori(RGBTRIPLE *src,int w,int h)
             __m128i vg2hi = _mm_loadu_si128((__m128i *)sse_g2_hi);
             __m128i vg3lo = _mm_loadu_si128((__m128i *)sse_g3_lo);
             __m128i vg3hi = _mm_loadu_si128((__m128i *)sse_g3_hi);
-            __m128i vg4lo = _mm_loadu_si128((__m128i *)sse_g4_lo);
-            __m128i vg4hi = _mm_loadu_si128((__m128i *)sse_g4_hi);
-            __m128i vg5lo = _mm_loadu_si128((__m128i *)sse_g5_lo);
-            __m128i vg5hi = _mm_loadu_si128((__m128i *)sse_g5_hi);
+            //__m128i vg4lo = _mm_loadu_si128((__m128i *)sse_g4_lo); ==g2lo
+            //__m128i vg4hi = _mm_loadu_si128((__m128i *)sse_g4_hi); ==g2hi
+            //__m128i vg5lo = _mm_loadu_si128((__m128i *)sse_g5_lo); ==g1lo
+            //__m128i vg5hi = _mm_loadu_si128((__m128i *)sse_g5_hi); ==g1hi
 
             __m128i L0 = _mm_loadu_si128((__m128i *)(src+(j+0)*w + i));
             __m128i L1 = _mm_loadu_si128((__m128i *)(src+(j+1)*w + i));
@@ -423,10 +419,10 @@ void sse_gaussian_blur_5_ori(RGBTRIPLE *src,int w,int h)
             v1hi = _mm_maddubs_epi16(v1hi,vg2hi);
             v2lo = _mm_maddubs_epi16(v2lo,vg3lo);
             v2hi = _mm_maddubs_epi16(v2hi,vg3hi);
-            v3lo = _mm_maddubs_epi16(v3lo,vg4lo);
-            v3hi = _mm_maddubs_epi16(v3hi,vg4hi);
-            v4lo = _mm_maddubs_epi16(v4lo,vg5lo);
-            v4hi = _mm_maddubs_epi16(v4hi,vg5hi);
+            v3lo = _mm_maddubs_epi16(v3lo,vg2lo);
+            v3hi = _mm_maddubs_epi16(v3hi,vg2hi);
+            v4lo = _mm_maddubs_epi16(v4lo,vg1lo);
+            v4hi = _mm_maddubs_epi16(v4hi,vg1hi);
 
             __m128i vsumlo = _mm_set1_epi16(0),vsumhi = _mm_set1_epi16(0),vtemp_1 = _mm_set1_epi16(0),vtemp_2 = _mm_set1_epi16(0),vtemp_3 = _mm_set1_epi16(0),vtemp_4 = _mm_set1_epi16(0);
             vsumlo = _mm_add_epi16(vsumlo,v0lo);
@@ -467,10 +463,6 @@ void sse_gaussian_blur_5_prefetch_ori(RGBTRIPLE *src,int w,int h)
     const unsigned char sse_g2_hi[16] = {26,0,16,0,16,0,16,0,4,0,4,0,4,0,0,0};
     const unsigned char sse_g3_lo[16] = {7,0,7,0,7,0,26,0,26,0,26,0,41,0,41,0};
     const unsigned char sse_g3_hi[16] = {41,0,26,0,26,0,26,0,7,0,7,0,7,0,0,0};
-    const unsigned char sse_g4_lo[16] = {4,0,4,0,4,0,16,0,16,0,16,0,26,0,26,0};
-    const unsigned char sse_g4_hi[16] = {26,0,16,0,16,0,16,0,4,0,4,0,4,0,0,0};
-    const unsigned char sse_g5_lo[16] = {1,0,1,0,1,0,4,0,4,0,4,0,7,0,7,0};
-    const unsigned char sse_g5_hi[16] = {7,0,4,0,4,0,4,0,1,0,1,0,1,0,0,0};
     for(int i=0; i<(w-5); i++) {
         for(int j=0; j<(h-5); j++) {
             _mm_prefetch(src+(j + 16 + 0) *w + i, _MM_HINT_T0);
@@ -485,10 +477,6 @@ void sse_gaussian_blur_5_prefetch_ori(RGBTRIPLE *src,int w,int h)
             __m128i vg2hi = _mm_loadu_si128((__m128i *)sse_g2_hi);
             __m128i vg3lo = _mm_loadu_si128((__m128i *)sse_g3_lo);
             __m128i vg3hi = _mm_loadu_si128((__m128i *)sse_g3_hi);
-            __m128i vg4lo = _mm_loadu_si128((__m128i *)sse_g4_lo);
-            __m128i vg4hi = _mm_loadu_si128((__m128i *)sse_g4_hi);
-            __m128i vg5lo = _mm_loadu_si128((__m128i *)sse_g5_lo);
-            __m128i vg5hi = _mm_loadu_si128((__m128i *)sse_g5_hi);
 
             __m128i L0 = _mm_loadu_si128((__m128i *)(src+(j+0)*w + i));
             __m128i L1 = _mm_loadu_si128((__m128i *)(src+(j+1)*w + i));
@@ -513,10 +501,10 @@ void sse_gaussian_blur_5_prefetch_ori(RGBTRIPLE *src,int w,int h)
             v1hi = _mm_maddubs_epi16(v1hi,vg2hi);
             v2lo = _mm_maddubs_epi16(v2lo,vg3lo);
             v2hi = _mm_maddubs_epi16(v2hi,vg3hi);
-            v3lo = _mm_maddubs_epi16(v3lo,vg4lo);
-            v3hi = _mm_maddubs_epi16(v3hi,vg4hi);
-            v4lo = _mm_maddubs_epi16(v4lo,vg5lo);
-            v4hi = _mm_maddubs_epi16(v4hi,vg5hi);
+            v3lo = _mm_maddubs_epi16(v3lo,vg2lo);
+            v3hi = _mm_maddubs_epi16(v3hi,vg2hi);
+            v4lo = _mm_maddubs_epi16(v4lo,vg1lo);
+            v4hi = _mm_maddubs_epi16(v4hi,vg1hi);
 
             __m128i vsumlo = _mm_set1_epi16(0),vsumhi = _mm_set1_epi16(0),vtemp_1 = _mm_set1_epi16(0),vtemp_2 = _mm_set1_epi16(0),vtemp_3 = _mm_set1_epi16(0),vtemp_4 = _mm_set1_epi16(0);
             vsumlo = _mm_add_epi16(vsumlo,v0lo);
