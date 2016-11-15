@@ -2,10 +2,18 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
-#include "gaussian.h"
 #include "bmp.h"
-//#include "mirror.h"
+
+#ifdef MIRROR_ARM
+#include "mirror.h"
+#endif
+
+#ifdef GAUSSIAN_ARM
+#include "gaussian.h"
+#endif
+
 #define FILTER(a,b) a&b
+
 /*********************************************************/
 /*  Global variables declaration：                                             */
 /*  bmpHeader    ： BMP's header part
@@ -259,6 +267,27 @@ int main(int argc,char *argv[])
     printf("omp flip horizontal tri using, execution time : %f ms\n", cpu_time);
     merge_structure();
 #endif
+#if MIRROR_ARM
+    color_r = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
+    color_g = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
+    color_b = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
+    split_structure();
+    clock_gettime(CLOCK_REALTIME, &start);
+    neon_flip_vertical_tri(color_r,bmpInfo.biWidth,bmpInfo.biHeight);
+    neon_flip_vertical_tri(color_g,bmpInfo.biWidth,bmpInfo.biHeight);
+    neon_flip_vertical_tri(color_b,bmpInfo.biWidth,bmpInfo.biHeight);
+    clock_gettime(CLOCK_REALTIME, &end);
+    cpu_time = diff_in_millisecond(start, end);
+    printf("neon flip vertical tri, execution time : %f ms\n", cpu_time);
+    clock_gettime(CLOCK_REALTIME, &start);
+    neon_flip_horizontal_tri(color_r,bmpInfo.biWidth,bmpInfo.biHeight);
+    neon_flip_horizontal_tri(color_g,bmpInfo.biWidth,bmpInfo.biHeight);
+    neon_flip_horizontal_tri(color_b,bmpInfo.biWidth,bmpInfo.biHeight);
+    clock_gettime(CLOCK_REALTIME, &end);
+    cpu_time = diff_in_millisecond(start, end);
+    printf("neon flip horizontal tri, execution time : %f ms\n", cpu_time);
+    merge_structure();
+#endif
 #if FILTER(HSV,1)
     clock_gettime(CLOCK_REALTIME, &start);
     change_brightness(BMPSaveData, 1, bmpInfo.biWidth,bmpInfo.biHeight);
@@ -270,6 +299,26 @@ int main(int argc,char *argv[])
     clock_gettime(CLOCK_REALTIME, &end);
     cpu_time = diff_in_millisecond(start, end);
     printf("change saturation: %f ms\n", cpu_time);
+#endif
+#ifdef GAUSSIAN_ARM
+    color_r = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
+    color_g = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
+    color_b = (unsigned char*)malloc(bmpInfo.biWidth*bmpInfo.biHeight*sizeof(unsigned char));
+    split_structure();
+    clock_gettime(CLOCK_REALTIME, &start);
+    for(int i=0; i<execution_times; i++) {
+        neon_gaussian_blur_5_tri(color_r,bmpInfo.biWidth,bmpInfo.biHeight);
+        neon_gaussian_blur_5_tri(color_g,bmpInfo.biWidth,bmpInfo.biHeight);
+        neon_gaussian_blur_5_tri(color_b,bmpInfo.biWidth,bmpInfo.biHeight);
+    }
+    clock_gettime(CLOCK_REALTIME, &end);
+    cpu_time = diff_in_millisecond(start, end);
+    merge_structure();
+#ifdef PERF
+    printf("%f ",cpu_time);
+#else
+    printf("Gaussian blur[5x5][sse split structure], execution time : %f ms , with %d times Gaussian blur\n",cpu_time,execution_times);
+#endif
 #endif
     // =================== Main Operation to BMP data ===================== //
 

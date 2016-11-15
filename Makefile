@@ -1,6 +1,9 @@
 CC := gcc
 CFLAGS := -msse2 -msse3 -msse4 --std gnu99 -O0
 PFLAGS := -lpthread
+ARM_CC ?= arm-linux-gnueabihf-gcc-5
+ARM_CFLAGS = -c -g -Wall -Wextra -Ofast -mfpu=neon
+ARM_LDFLAGS = -Wall -g -Wextra -Ofast
 OBJS := gaussian.o mirror.o hsv.o
 TARGET := bmpreader
 GIT_HOOKS := .git/hooks/pre-commit
@@ -18,7 +21,7 @@ format:
 # 8: 5x5 with	unroll split structure
 # 16: 5x5 with unroll original structure
 gau_blur_tri: $(GIT_HOOKS) format main.c $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -DGAUSSIAN=1 -o $(TARGET) main.c $(PFLAGS)
+	$(CC) $(CFLAGS) $(OBJS) -DARM -DGAUSSIAN=1 -o $(TARGET) main.c $(PFLAGS)
 
 gau_blur_ori: $(GIT_HOOKS) format main.c $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -DGAUSSIAN=2 -o $(TARGET) main.c $(PFLAGS)
@@ -44,6 +47,10 @@ gau_blur_sse_ori_prefetch: $(GIT_HOOKS) format main.c $(OBJS)
 gau_blur_ptsse_ori: $(GIT_HOOKS) format main.c $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -DGAUSSIAN=256 -o $(TARGET) main.c $(PFLAGS)
 
+#gau_blur_arm_tri: $(GIT_HOOKS) main.c
+#	$(ARM_CC) $(ARM_CFLAGS) $(OBJS) -DARM -o $(TARGET) main.c
+#	$(ARM_CC) $(ARM_LDFLAGS) -o main_arm main_arm.o
+
 gau_all: $(GIT_HOOKS) format main.c $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -DPERF=1 -DGAUSSIAN=511 -o $(TARGET) main.c $(PFLAGS)
 
@@ -52,6 +59,16 @@ mirror_all: $(GIT_HOOKS) format main.c $(OBJS)
 
 hsv: $(GIT_HOOKS) format main.c $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -DGAUSSIAN=0 -DMIRROR=0 -DHSV=1 -o $(TARGET) main.c -fopenmp
+
+gau_blur_neon_ori: $(GIT_HOOKS) format main.c
+	arm-linux-gnueabihf-gcc-5 -O0 -c -g -Wall -Wextra -Ofast -mfpu=neon -DARM -o gaussian.o gaussian_arm.c 
+	arm-linux-gnueabihf-gcc-5 --std gnu99 -DARM -DGAUSSIAN_ARM -DGAUSSIAN=0 -Wall -Wcomment -O3 -g -Wextra -Ofast gaussian.o -o main_arm main.c
+	bash execute.sh main_arm img/input.bmp output.bmp;
+
+mirror_neon_tri: $(GIT_HOOKS) format main.c gaussian.o
+	arm-linux-gnueabihf-gcc-5 -O0 -c -g -Wall -Wextra -Ofast -mfpu=neon -DARM -o mirror.o mirror_arm.c 
+	arm-linux-gnueabihf-gcc-5 --std gnu99 -DARM -DMIRROR_ARM -DMIRROR=0 -Wall -Wcomment -O0 -g -Wextra -Ofast mirror.o -o main_arm main.c
+	bash execute.sh main_arm img/input.bmp output.bmp;
 
 perf_time: gau_all
 	@read -p "Enter the times you want to execute Gaussian blur on the input picture:" TIMES; \

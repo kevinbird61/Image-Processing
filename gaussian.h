@@ -3,13 +3,18 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <pthread.h>
+#include "bmp.h"
+
+#ifdef ARM
+#include <arm_neon.h>
+#else
 #include <xmmintrin.h>
 #include <immintrin.h>
 #include <tmmintrin.h>
 #include <avxintrin.h>
 #include <emmintrin.h>
-#include <pthread.h>
-#include "bmp.h"
+#endif
 
 int deno33 = 16;
 int deno55 = 273;
@@ -40,6 +45,9 @@ typedef struct thread_info {
 unsigned char *global_src;
 RGBTRIPLE *global_src_ori;
 
+#ifdef ARM
+void neon_gaussian_blur_5_tri(unsigned char *src,int w,int h);
+#else
 void unroll_gaussian_blur_5_tri(unsigned char *src,int w,int h);
 void unroll_gaussian_blur_5_ori(RGBTRIPLE *src,int w,int h);
 void naive_gaussian_blur_5(unsigned char *src,int w,int h);
@@ -49,5 +57,6 @@ void sse_gaussian_blur_5_ori(RGBTRIPLE *src,int w,int h);
 void sse_gaussian_blur_5_prefetch_ori(RGBTRIPLE *src,int w,int h);
 void pt_gaussian_blur_5_tri(unsigned char *src,int num_threads,int w,int h);
 void pt_sse_gaussian_blur_5_ori(RGBTRIPLE *src,int num_threads,int w,int h);
+#endif
 
 #endif

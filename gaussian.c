@@ -1,5 +1,4 @@
 #include "gaussian.h"
-
 void *thread_blur(void *arg)
 {
     tInfo *info = arg;
@@ -299,7 +298,7 @@ void sse_gaussian_blur_5_tri(unsigned char *src,int w,int h)
     for(int i=0; i<w-2; i++) {
         for(int j=0; j<h-2; j++) {
             int sum = 0;
-            int index = 0;
+
             __m128i vg1 = _mm_loadu_si128((__m128i *)sse_g1);
             __m128i vg2 = _mm_loadu_si128((__m128i *)sse_g2);
             __m128i vg3 = _mm_loadu_si128((__m128i *)sse_g3);
@@ -351,6 +350,7 @@ void sse_gaussian_blur_5_tri(unsigned char *src,int w,int h)
         }
     }
 }
+
 
 void sse_gaussian_blur_5_ori(RGBTRIPLE *src,int w,int h)
 {
@@ -526,3 +526,4 @@ void sse_gaussian_blur_5_prefetch_ori(RGBTRIPLE *src,int w,int h)
         }
     }
 }
+

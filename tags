@@ -1,0 +1,107 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+BMPData	main.c	/^RGBTRIPLE *BMPData = NULL;$/;"	v
+BMPHEADER	bmp.h	/^} BMPHEADER;$/;"	t	typeref:struct:tagBITMAPFILEHEADER
+BMPINFO	bmp.h	/^} BMPINFO;$/;"	t	typeref:struct:tagBITMAPINFOHEADER
+BMPREADER	bmp.h	2;"	d
+BMPSaveData	main.c	/^RGBTRIPLE *BMPSaveData = NULL;$/;"	v
+BYTE	bmp.h	/^typedef unsigned char BYTE;$/;"	t
+CC	Makefile	/^CC := gcc$/;"	m
+CFLAGS	Makefile	/^CFLAGS := -msse2 -msse3 -msse4 --std gnu99 -O0$/;"	m
+DWORD	bmp.h	/^typedef unsigned int DWORD;$/;"	t
+FILTER	main.c	8;"	d	file:
+GAUSSIAN	gaussian.h	2;"	d
+GIT_HOOKS	Makefile	/^GIT_HOOKS := .git\/hooks\/pre-commit$/;"	m
+HSV	hsv.h	2;"	d
+HSVTRIPLE	hsv.h	/^} HSVTRIPLE;$/;"	t	typeref:struct:_HSV
+LONG	bmp.h	/^typedef int LONG;$/;"	t
+MIRROR	mirror.h	2;"	d
+OBJS	Makefile	/^OBJS := gaussian.o mirror.o hsv.o$/;"	m
+PFLAGS	Makefile	/^PFLAGS := -lpthread$/;"	m
+RGBTRIPLE	bmp.h	/^} RGBTRIPLE;$/;"	t	typeref:struct:tagRGBTRIPLE
+TARGET	Makefile	/^TARGET := bmpreader$/;"	m
+THREADS	mirror.c	3;"	d	file:
+WORD	bmp.h	/^typedef unsigned short int WORD;$/;"	t
+_HSV	hsv.h	/^typedef struct _HSV {$/;"	s
+alloc_memory	main.c	/^RGBTRIPLE *alloc_memory(int Y, int X )$/;"	f
+bfOffbytes	bmp.h	/^    DWORD bfOffbytes;                   \/\/(4bytes)        Size of Headers + Palette, 14 + 40 + 4 * 28 in our case$/;"	m	struct:tagBITMAPFILEHEADER
+bfReserved1	bmp.h	/^    WORD bfReserved1;                   \/\/(2bytes)        Always 0$/;"	m	struct:tagBITMAPFILEHEADER
+bfReserved2	bmp.h	/^    WORD bfReserved2;                   \/\/(2bytes)        Always 0$/;"	m	struct:tagBITMAPFILEHEADER
+bfSize	bmp.h	/^    DWORD bfSize;                       \/\/(4bytes)        BMP file size$/;"	m	struct:tagBITMAPFILEHEADER
+bfType	bmp.h	/^    WORD bfType;                        \/\/(2bytes)         File type, in BMP case, (0x424D)$/;"	m	struct:tagBITMAPFILEHEADER
+biBitCount	bmp.h	/^    WORD biBitCount;                    \/\/(2bytes)        How many bits stand for a pixel, 8 in our case$/;"	m	struct:tagBITMAPINFOHEADER
+biClrImportant	bmp.h	/^    DWORD biClrImportant;               \/\/(4bytes)        How many colors are important, 0 for all$/;"	m	struct:tagBITMAPINFOHEADER
+biClrUsed	bmp.h	/^    DWORD biClrUsed;                    \/\/(4bytes)        How many colors used in palette, 0 for all colors$/;"	m	struct:tagBITMAPINFOHEADER
+biCompression	bmp.h	/^    DWORD biCompression;                \/\/(4bytes)        0 is no compression, 1 is 8-bitRLE compression, 2 is 4-bitRLE compression.$/;"	m	struct:tagBITMAPINFOHEADER
+biHeight	bmp.h	/^    LONG biHeight;                      \/\/(4bytes)        The height of image$/;"	m	struct:tagBITMAPINFOHEADER
+biPlanes	bmp.h	/^    WORD biPlanes;                      \/\/(2bytes)        How many images in this file. For BMP, it¡¦s  always 1$/;"	m	struct:tagBITMAPINFOHEADER
+biSize	bmp.h	/^    DWORD biSize;                       \/\/(4bytes)        After Windows 3.X, It is always 40, which is the structure size of BITMAPINFOHEADER$/;"	m	struct:tagBITMAPINFOHEADER
+biSizeImage	bmp.h	/^    DWORD biSizeImage;                  \/\/(4bytes)         The image size after compress. If no compression, it could be 0 or image size$/;"	m	struct:tagBITMAPINFOHEADER
+biWidth	bmp.h	/^    LONG biWidth;                       \/\/(4bytes)        The width of image$/;"	m	struct:tagBITMAPINFOHEADER
+biXPelsPerMeter	bmp.h	/^    LONG biXPelsPerMeter;               \/\/(4bytes)        horizontal dots per meter$/;"	m	struct:tagBITMAPINFOHEADER
+biYPelsPerMeter	bmp.h	/^    LONG biYPelsPerMeter;               \/\/(4bytes)        vertical dots per meter$/;"	m	struct:tagBITMAPINFOHEADER
+bmpHeader	main.c	/^BMPHEADER bmpHeader;$/;"	v
+bmpInfo	main.c	/^BMPINFO bmpInfo;$/;"	v
+change_brightness	hsv.c	/^void change_brightness(RGBTRIPLE *src, float brightness, int w, int h)$/;"	f
+change_saturation	hsv.c	/^void change_saturation(RGBTRIPLE *src, float saturation, int w, int h)$/;"	f
+color_b	main.c	/^unsigned char *color_b;$/;"	v
+color_g	main.c	/^unsigned char *color_g;$/;"	v
+color_r	main.c	/^unsigned char *color_r;$/;"	v
+deno33	gaussian.h	/^int deno33 = 16;$/;"	v
+deno55	gaussian.h	/^int deno55 = 273;$/;"	v
+diff_in_millisecond	main.c	/^static double diff_in_millisecond(struct timespec t1, struct timespec t2)$/;"	f	file:
+fetchloc	main.c	/^RGBTRIPLE fetchloc(RGBTRIPLE *arr, int Y, int X)$/;"	f
+find_min_max	hsv.c	/^static void find_min_max(RGBTRIPLE rgb, unsigned char *max, unsigned char *min)$/;"	f	file:
+gaussian33	gaussian.h	/^unsigned char gaussian33[9] = {$/;"	v
+gaussian55	gaussian.h	/^unsigned char gaussian55[25] = {$/;"	v
+global_src	gaussian.h	/^unsigned char *global_src;$/;"	v
+global_src_ori	gaussian.h	/^RGBTRIPLE *global_src_ori;$/;"	v
+h	hsv.h	/^    float h;$/;"	m	struct:_HSV
+height	gaussian.h	/^    int height; \/\/ image height$/;"	m	struct:thread_info
+hsv2rgb	hsv.c	/^void hsv2rgb(RGBTRIPLE *rgb, HSVTRIPLE *hsv, int w, int h)$/;"	f
+main	main.c	/^int main(int argc,char *argv[])$/;"	f
+merge_structure	main.c	/^void merge_structure()$/;"	f
+naive_flip_horizontal_ori	mirror.c	/^void naive_flip_horizontal_ori(RGBTRIPLE *src, int w, int h)$/;"	f
+naive_flip_horizontal_tri	mirror.c	/^void naive_flip_horizontal_tri(unsigned char *src, int w, int h)$/;"	f
+naive_flip_vertical_ori	mirror.c	/^void naive_flip_vertical_ori(RGBTRIPLE *src, int w, int h)$/;"	f
+naive_flip_vertical_tri	mirror.c	/^void naive_flip_vertical_tri(unsigned char *src, int w, int h)$/;"	f
+naive_gaussian_blur_5	gaussian.c	/^void naive_gaussian_blur_5(unsigned char *src,int w,int h)$/;"	f
+naive_gaussian_blur_5_original	gaussian.c	/^void naive_gaussian_blur_5_original(RGBTRIPLE *src,int w,int h)$/;"	f
+neon_gaussian_blur_5_tri	gaussian_arm.c	/^void neon_gaussian_blur_5_tri(unsigned char *src,int w,int h)$/;"	f
+omp_flip_horizontal_tri	mirror.c	/^void omp_flip_horizontal_tri(unsigned char *src, int w, int h)$/;"	f
+omp_flip_vertical_tri	mirror.c	/^void omp_flip_vertical_tri(unsigned char *src, int w, int h)$/;"	f
+pt_gaussian_blur_5_tri	gaussian.c	/^void pt_gaussian_blur_5_tri(unsigned char *src,int num_threads,int w,int h)$/;"	f
+pt_sse_gaussian_blur_5_ori	gaussian.c	/^void pt_sse_gaussian_blur_5_ori(RGBTRIPLE *src,int num_threads,int w,int h)$/;"	f
+readBMP	main.c	/^int readBMP(char *fileName)$/;"	f
+rgb2hsv	hsv.c	/^void rgb2hsv(const RGBTRIPLE *rgb, HSVTRIPLE *hsv, int w, int h)$/;"	f
+rgbBlue	bmp.h	/^    BYTE rgbBlue;                       \/\/(1bytes)        blue channel$/;"	m	struct:tagRGBTRIPLE
+rgbGreen	bmp.h	/^    BYTE rgbGreen;                      \/\/(1bytes)        green channel$/;"	m	struct:tagRGBTRIPLE
+rgbRed	bmp.h	/^    BYTE rgbRed;                        \/\/(1bytes)        red channel$/;"	m	struct:tagRGBTRIPLE
+s	hsv.h	/^    float s;$/;"	m	struct:_HSV
+saveBMP	main.c	/^int saveBMP( char *fileName)$/;"	f
+split_structure	main.c	/^void split_structure()$/;"	f
+sse_flip_horizontal_tri	mirror.c	/^void sse_flip_horizontal_tri(unsigned char *src, int w, int h)$/;"	f
+sse_flip_vertical_tri	mirror.c	/^void sse_flip_vertical_tri(unsigned char *src, int w, int h)$/;"	f
+sse_gaussian_blur_5_ori	gaussian.c	/^void sse_gaussian_blur_5_ori(RGBTRIPLE *src,int w,int h)$/;"	f
+sse_gaussian_blur_5_prefetch_ori	gaussian.c	/^void sse_gaussian_blur_5_prefetch_ori(RGBTRIPLE *src,int w,int h)$/;"	f
+sse_gaussian_blur_5_tri	gaussian.c	/^void sse_gaussian_blur_5_tri(unsigned char *src,int w,int h)$/;"	f
+sse_thread_blur	gaussian.c	/^void *sse_thread_blur(void *arg)$/;"	f
+swap	main.c	/^void swap(RGBTRIPLE **a, RGBTRIPLE **b)$/;"	f
+swap_byte	mirror.c	/^static void swap_byte(unsigned char *a, unsigned char *b)$/;"	f	file:
+swap_pixel	mirror.c	/^static void swap_pixel(RGBTRIPLE *a, RGBTRIPLE *b)$/;"	f	file:
+tInfo	gaussian.h	/^} tInfo;$/;"	t	typeref:struct:thread_info
+tagBITMAPFILEHEADER	bmp.h	/^typedef struct tagBITMAPFILEHEADER {        \/\/(14bytes)$/;"	s
+tagBITMAPINFOHEADER	bmp.h	/^typedef struct tagBITMAPINFOHEADER {        \/\/(40bytes)$/;"	s
+tagRGBTRIPLE	bmp.h	/^typedef struct tagRGBTRIPLE {               \/\/(3bytes)$/;"	s
+thread_blur	gaussian.c	/^void *thread_blur(void *arg)$/;"	f
+thread_id	gaussian.h	/^    pthread_t thread_id; \/\/ the id of thread$/;"	m	struct:thread_info
+thread_info	gaussian.h	/^typedef struct thread_info {$/;"	s
+total_thread_size	gaussian.h	/^    int total_thread_size; \/\/ count for total$/;"	m	struct:thread_info
+unroll_gaussian_blur_5_ori	gaussian.c	/^void unroll_gaussian_blur_5_ori(RGBTRIPLE *src,int w,int h)$/;"	f
+unroll_gaussian_blur_5_tri	gaussian.c	/^void unroll_gaussian_blur_5_tri(unsigned char *src,int w,int h)$/;"	f
+v	hsv.h	/^    float v;$/;"	m	struct:_HSV
+width	gaussian.h	/^    int width; \/\/ image width$/;"	m	struct:thread_info
