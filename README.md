@@ -44,3 +44,6 @@ Using image processing to test some interest expriment.
 ### Another Usage
 - `execute.sh` : let user edit the argument(with "enter = default") , call by make run , depend on with type of executed file that user compile.
 - `scripts/plot_time.gp` : gnuplot script.
+
+### Record
+- [透過 SIMD 加速高斯模糊運算](https://hackmd.io/s/BJOTYoHge)
