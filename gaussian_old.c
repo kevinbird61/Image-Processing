@@ -11,7 +11,7 @@ void naive_gaussian_blur_5(unsigned char *src,int w,int h)
                     sum += src[sqr_j*w+sqr_i]*gaussian55[index++];
                 }
             }
-            printf("%d\n",sum);
+            //printf("%d\n",sum);
             sum /= 273;
             if(sum > 255)
                 sum = 255;
